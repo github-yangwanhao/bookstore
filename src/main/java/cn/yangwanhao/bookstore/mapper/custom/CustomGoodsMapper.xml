@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.yangwanhao.bookstore.mapper.custom.CustomGoodsMapper" >
+
+  <resultMap id="goodsVoResultMap" type="cn.yangwanhao.bookstore.vo.GoodsVo">
+    <result column="id" property="goodsId" jdbcType="BIGINT" />
+    <result column="goods_version" property="goodsVersion" jdbcType="BIGINT" />
+  </resultMap>
+
+    <select id="selectGoods" resultMap="goodsVoResultMap">
+    SELECT
+    gb.id, gb.goods_version
+    FROM goods_base gb
+    WGERE gb.id=#{goodsId}
+  </select>
+
+  <insert id="insertGoodsBaseGenerateId" useGeneratedKeys="true" keyProperty="id">
+      insert into goods_base (goods_status, price,
+      stock, category, goods_version,
+      goods_buy_version, create_time, create_user_id,
+      update_time, update_user_id)
+      values (#{goodsStatus,jdbcType=INTEGER}, #{price,jdbcType=BIGINT},
+        #{stock,jdbcType=INTEGER}, #{category,jdbcType=INTEGER}, #{goodsVersion,jdbcType=BIGINT},
+        #{goodsBuyVersion,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, #{createUserId,jdbcType=BIGINT},
+        #{updateTime,jdbcType=TIMESTAMP}, #{updateUserId,jdbcType=BIGINT})
+    </insert>
+
+    <resultMap id="goodsListVoResultMap" type="cn.yangwanhao.bookstore.vo.GoodsListVo">
+        <result column="id" property="goodsId" jdbcType="BIGINT" />
+        <result column="goods_status" property="goodsStatus" jdbcType="INTEGER" />
+        <result column="price" property="price" jdbcType="BIGINT" />
+        <result column="stock" property="stock" jdbcType="INTEGER" />
+        <result column="category" property="category" jdbcType="INTEGER" />
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+        <result column="goods_buy_version" property="goodsBuyVersion" jdbcType="BIGINT" />
+        <result column="title" property="title" jdbcType="VARCHAR" />
+        <result column="imgs" property="imgs" jdbcType="VARCHAR" />
+        <result column="tags" property="tags" jdbcType="VARCHAR" />
+        <result column="author" property="author" jdbcType="VARCHAR" />
+        <result column="publisher" property="publisher" jdbcType="VARCHAR" />
+    </resultMap>
+
+    <select id="selectGoodsList" parameterType="cn.yangwanhao.bookstore.dto.GoodsListDto" resultMap="goodsListVoResultMap">
+        SELECT
+        gb.id, gb.goods_status, gb.price, gb.stock, gb.category, gb.create_time, gb.goods_buy_version,
+        gi.title, gi.imgs, gi.tags,
+        book.author, book.publisher
+        FROM goods_base gb
+        LEFT JOIN goods_info gi ON gi.id=gb.id
+        LEFT JOIN goods_books book ON book.goods_id=gb.id
+        <where>
+            <if test="title != null and title != ''">
+                gi.title LIKE CONCAT('%', #{title}, '%')
+            </if>
+            <if test="goodsStatus != null and goodsStatus != 0">
+                AND gb.goods_status = #{goodsStatus}
+            </if>
+        </where>
+        ORDER BY
+        <if test="orderByStock == 1">
+            gb.stock ASC,
+        </if>
+        <if test="orderByStock == 2">
+            gb.stock DESC,
+        </if>
+        <if test="orderByGoodsBuyVersion == 1">
+            gb.goods_buy_version ASC,
+        </if>
+        <if test="orderByGoodsBuyVersion == 2">
+            gb.goods_buy_version DESC,
+        </if>
+        gb.id ASC
+    </select>
+    <select id="selectOneGoodsByCategory" resultType="cn.yangwanhao.bookstore.entity.GoodsBase">
+        SELECT id
+        FROM goods_base
+        WHERE category=#{categoryId}
+        LIMIT 1
+    </select>
+</mapper>

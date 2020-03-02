@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.yangwanhao.bookstore.mapper.custom.CustomOrderGoodsMapper" >
+  <resultMap id="BaseResultMap" type="cn.yangwanhao.bookstore.entity.OrderGoods" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="order_id" property="orderId" jdbcType="BIGINT" />
+    <result column="goods_id" property="goodsId" jdbcType="BIGINT" />
+    <result column="goods_num" property="goodsNum" jdbcType="INTEGER" />
+    <result column="goods_price" property="goodsPrice" jdbcType="BIGINT" />
+    <result column="goods_total_price" property="goodsTotalPrice" jdbcType="BIGINT" />
+    <result column="goods_status" property="goodsStatus" jdbcType="INTEGER" />
+  </resultMap>
+
+  <insert id="insertBatchOrderGoods">
+    INSERT INTO order_goods
+    (order_id, goods_id, goods_num, goods_price, goods_total_price, goods_status)
+    VALUES
+    <foreach collection="list" item="item" index="index" separator=",">
+      (
+        #{item.orderId},
+        #{item.goodsId},
+        #{item.goodsNum},
+        #{item.goodsPrice},
+        #{item.goodsTotalPrice},
+        #{item.goodsStatus}
+      )
+    </foreach>
+  </insert>
+
+</mapper>
