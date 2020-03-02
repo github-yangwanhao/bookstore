@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.yangwanhao.bookstore.mapper.CartMapper" >
+  <resultMap id="BaseResultMap" type="cn.yangwanhao.bookstore.entity.Cart" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="user_id" property="userId" jdbcType="BIGINT" />
+    <result column="goods_id" property="goodsId" jdbcType="BIGINT" />
+    <result column="goods_num" property="goodsNum" jdbcType="INTEGER" />
+    <result column="goods_is_deleted" property="goodsIsDeleted" jdbcType="INTEGER" />
+    <result column="goods_is_off_the_shelves" property="goodsIsOffTheShelves" jdbcType="INTEGER" />
+    <result column="goods_version" property="goodsVersion" jdbcType="BIGINT" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    id, user_id, goods_id, goods_num, goods_is_deleted, goods_is_off_the_shelves, goods_version
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="cn.yangwanhao.bookstore.entity.CartExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from cart
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from cart
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from cart
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByExample" parameterType="cn.yangwanhao.bookstore.entity.CartExample" >
+    delete from cart
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="cn.yangwanhao.bookstore.entity.Cart" >
+    insert into cart (id, user_id, goods_id, 
+      goods_num, goods_is_deleted, goods_is_off_the_shelves, 
+      goods_version)
+    values (#{id,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT}, #{goodsId,jdbcType=BIGINT}, 
+      #{goodsNum,jdbcType=INTEGER}, #{goodsIsDeleted,jdbcType=INTEGER}, #{goodsIsOffTheShelves,jdbcType=INTEGER}, 
+      #{goodsVersion,jdbcType=BIGINT})
+  </insert>
+  <insert id="insertSelective" parameterType="cn.yangwanhao.bookstore.entity.Cart" >
+    insert into cart
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="userId != null" >
+        user_id,
+      </if>
+      <if test="goodsId != null" >
+        goods_id,
+      </if>
+      <if test="goodsNum != null" >
+        goods_num,
+      </if>
+      <if test="goodsIsDeleted != null" >
+        goods_is_deleted,
+      </if>
+      <if test="goodsIsOffTheShelves != null" >
+        goods_is_off_the_shelves,
+      </if>
+      <if test="goodsVersion != null" >
+        goods_version,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="goodsId != null" >
+        #{goodsId,jdbcType=BIGINT},
+      </if>
+      <if test="goodsNum != null" >
+        #{goodsNum,jdbcType=INTEGER},
+      </if>
+      <if test="goodsIsDeleted != null" >
+        #{goodsIsDeleted,jdbcType=INTEGER},
+      </if>
+      <if test="goodsIsOffTheShelves != null" >
+        #{goodsIsOffTheShelves,jdbcType=INTEGER},
+      </if>
+      <if test="goodsVersion != null" >
+        #{goodsVersion,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="cn.yangwanhao.bookstore.entity.CartExample" resultType="java.lang.Integer" >
+    select count(*) from cart
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update cart
+    <set >
+      <if test="record.id != null" >
+        id = #{record.id,jdbcType=BIGINT},
+      </if>
+      <if test="record.userId != null" >
+        user_id = #{record.userId,jdbcType=BIGINT},
+      </if>
+      <if test="record.goodsId != null" >
+        goods_id = #{record.goodsId,jdbcType=BIGINT},
+      </if>
+      <if test="record.goodsNum != null" >
+        goods_num = #{record.goodsNum,jdbcType=INTEGER},
+      </if>
+      <if test="record.goodsIsDeleted != null" >
+        goods_is_deleted = #{record.goodsIsDeleted,jdbcType=INTEGER},
+      </if>
+      <if test="record.goodsIsOffTheShelves != null" >
+        goods_is_off_the_shelves = #{record.goodsIsOffTheShelves,jdbcType=INTEGER},
+      </if>
+      <if test="record.goodsVersion != null" >
+        goods_version = #{record.goodsVersion,jdbcType=BIGINT},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update cart
+    set id = #{record.id,jdbcType=BIGINT},
+      user_id = #{record.userId,jdbcType=BIGINT},
+      goods_id = #{record.goodsId,jdbcType=BIGINT},
+      goods_num = #{record.goodsNum,jdbcType=INTEGER},
+      goods_is_deleted = #{record.goodsIsDeleted,jdbcType=INTEGER},
+      goods_is_off_the_shelves = #{record.goodsIsOffTheShelves,jdbcType=INTEGER},
+      goods_version = #{record.goodsVersion,jdbcType=BIGINT}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.yangwanhao.bookstore.entity.Cart" >
+    update cart
+    <set >
+      <if test="userId != null" >
+        user_id = #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="goodsId != null" >
+        goods_id = #{goodsId,jdbcType=BIGINT},
+      </if>
+      <if test="goodsNum != null" >
+        goods_num = #{goodsNum,jdbcType=INTEGER},
+      </if>
+      <if test="goodsIsDeleted != null" >
+        goods_is_deleted = #{goodsIsDeleted,jdbcType=INTEGER},
+      </if>
+      <if test="goodsIsOffTheShelves != null" >
+        goods_is_off_the_shelves = #{goodsIsOffTheShelves,jdbcType=INTEGER},
+      </if>
+      <if test="goodsVersion != null" >
+        goods_version = #{goodsVersion,jdbcType=BIGINT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.yangwanhao.bookstore.entity.Cart" >
+    update cart
+    set user_id = #{userId,jdbcType=BIGINT},
+      goods_id = #{goodsId,jdbcType=BIGINT},
+      goods_num = #{goodsNum,jdbcType=INTEGER},
+      goods_is_deleted = #{goodsIsDeleted,jdbcType=INTEGER},
+      goods_is_off_the_shelves = #{goodsIsOffTheShelves,jdbcType=INTEGER},
+      goods_version = #{goodsVersion,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>
