@@ -14,7 +14,7 @@ public interface CustomOrderGoodsMapper {
      * Description: 批量插入OrderGoods
      * @param list order_goods_list
      * @return
-     * @author 青鲤
+     * @author 杨万浩
      * @createDate 2019/12/26 15:55
      */
     Integer insertBatchOrderGoods(List<OrderGoods> list);

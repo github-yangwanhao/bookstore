@@ -96,7 +96,7 @@ public class BigDecimalUtils {
      * @param num 数字
      * @param n 小数点左移几位
      * @return num * 10^n
-     * @author 青鲤
+     * @author 杨万浩
      * @createDate 2019/12/16 14:55
      */
     public static BigDecimal movePointLeft(String num, int n) {
@@ -108,7 +108,7 @@ public class BigDecimalUtils {
      * @param num 数字
      * @param n 小数点右移几位
      * @return num * 10^-n
-     * @author 青鲤
+     * @author 杨万浩
      * @createDate 2019/12/16 14:55
      */
     public static BigDecimal movePointRight(String num, int n) {

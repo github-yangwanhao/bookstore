@@ -21,7 +21,7 @@ public class PublicUtils {
      * Description: 判断对象是否不为空
      * @param pObj 对象
      * @return true/false
-     * @author 青鲤
+     * @author 杨万浩
      * @createDate 2019/12/17 20:00
      */
     public static boolean isNotEmpty(Object pObj) {
@@ -50,7 +50,7 @@ public class PublicUtils {
      * Description: 判断对象是否为空
      * @param pObj 要判断的对象
      * @return true/false
-     * @author 青鲤
+     * @author 杨万浩
      * @createDate 2019/12/19 9:46
      */
     public static boolean isEmpty(Object pObj) {

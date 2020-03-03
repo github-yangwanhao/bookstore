@@ -23,7 +23,7 @@ public class PubUtils {
      * @param realname 真名
      * @param gender 性别
      * @return 脱敏姓名
-     * @author 青鲤
+     * @author 杨万浩
      * @createDate 2019/12/19 10:26
      */
     public static String getMaskName(String realname, int gender) {
@@ -34,7 +34,7 @@ public class PubUtils {
      * Description: 获取脱敏手机号(前3 + **** + 后4)
      * @param phone 手机号
      * @return 脱敏手机号
-     * @author 青鲤
+     * @author 杨万浩
      * @createDate 2019/12/19 10:36
      */
     public static String getMaskPhone(String phone) {

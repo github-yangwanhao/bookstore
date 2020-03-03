@@ -12,7 +12,7 @@ public interface CustomOrderMapper {
      * Description: 插入order，返回生成的id
      * @param order order
      * @return
-     * @author 青鲤
+     * @author 杨万浩
      * @createDate 2019/12/26 15:47
      */
     Integer insertOrderBaseGenerateId(Order order);

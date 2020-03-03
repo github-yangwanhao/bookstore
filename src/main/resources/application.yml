@@ -1,1 +1,22 @@
-
+server:
+  port: 8080
+spring:
+  application:
+    name: bookstore
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/bookshop
+    username: root
+    password: '******'
+  redis:
+    database: 0
+    host: 121.36.150.173
+    port: 6380
+    password: '******'
+mybatis:
+  type-aliases-package:
+logging:
+  level:
+    org.springframework.data.mongodb.core.MongoTemplate: DEBUG
+    cn.yangwanhao.bookshop.controller.cart.mapper: DEBUG

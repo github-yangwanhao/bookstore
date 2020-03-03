@@ -2,6 +2,7 @@ package cn.yangwanhao.bookstore.handler;
 
 import cn.yangwanhao.bookstore.common.exception.GlobalException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.ModelAndView;
 
 /**
@@ -11,13 +12,28 @@ import org.springframework.web.servlet.ModelAndView;
  */
 
 @ControllerAdvice
-public class ExceptionHandler {
+public class GlobalExceptionHandler {
 
-    @ExceptionHandler(GlobalException.class)//可以直接写@ExceptionHandler,不指明异常类，会自动映射
-    public ModelAndView customGenericExceptionHnadler(GlobalException exception){ //还可以声明接收其他任意参数
-        ModelAndView modelAndView = new ModelAndView("generic_error");
-        modelAndView.addObject("errCode",exception.getCode();
-        modelAndView.addObject("errMsg",exception.getMessage());
+    /**
+     * Description: 全局异常处理
+     * @param exception exception
+     * @return ModelAndView 500页面
+     * @author 杨万浩
+     * @date 2020/3/2 19:50
+     */
+    @ExceptionHandler(GlobalException.class)
+    public ModelAndView customGenericExceptionHandler(GlobalException exception){
+        ModelAndView modelAndView = new ModelAndView("/error/500.html");
+        modelAndView.addObject("code",exception.getCode());
+        modelAndView.addObject("message",exception.getMessage());
+        return modelAndView;
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ModelAndView allExceptionHandler(Exception exception){
+        ModelAndView modelAndView = new ModelAndView("/error/500.html");
+        modelAndView.addObject("code", 500);
+        modelAndView.addObject("message", "网络出错了,请稍后再试");
         return modelAndView;
     }
 
