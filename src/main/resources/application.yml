@@ -14,9 +14,17 @@ spring:
     host: 121.36.150.173
     port: 6380
     password: '******'
+  data:
+    mongodb:
+      uri: mongodb://root:******@121.36.150.173:27017/?authSource=admin
+      database: bookstore
+  thymeleaf:
+    cache: false
 mybatis:
-  type-aliases-package:
+  type-aliases-package: cn.yangwanhao.bookstore.entity
 logging:
+  config: classpath:logback-spring.xml
   level:
     org.springframework.data.mongodb.core.MongoTemplate: DEBUG
-    cn.yangwanhao.bookshop.controller.cart.mapper: DEBUG
+    cn.yangwanhao.bookstore.mapper: DEBUG
+    web: DEBUG

@@ -1,7 +1,10 @@
 package cn.yangwanhao.bookstore.common.support;
 
+import cn.yangwanhao.bookstore.vo.LoginUserVo;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * BaseController
@@ -16,15 +19,15 @@ public class BaseController {
 
     protected final Logger logger = log;
 
-    protected void getLoginUser() {
+    protected LoginUserVo getLoginUser(HttpServletRequest request) {
         logger.info("获取登录用户信息");
-        // TODO
+        LoginUserVo vo = (LoginUserVo) request.getSession().getAttribute("loginUser");
+        return vo;
     }
 
-    protected Long getLoginUserId() {
+    protected Long getLoginUserId(HttpServletRequest request) {
         logger.info("获取登录用户的id");
-        // TODO
-        return null;
+        return getLoginUser(request).getId();
     }
 
 }

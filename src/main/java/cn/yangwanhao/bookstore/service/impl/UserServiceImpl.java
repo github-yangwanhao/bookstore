@@ -8,8 +8,11 @@ import cn.yangwanhao.bookstore.dto.AddUserDto;
 import cn.yangwanhao.bookstore.entity.User;
 import cn.yangwanhao.bookstore.entity.UserExample;
 import cn.yangwanhao.bookstore.mapper.UserMapper;
+import cn.yangwanhao.bookstore.mapper.custom.CustomUserMapper;
 import cn.yangwanhao.bookstore.service.UserService;
 import cn.yangwanhao.bookstore.vo.LoginUserVo;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,6 +34,8 @@ public class UserServiceImpl implements UserService {
 
     @Resource
     private UserMapper userMapper;
+    @Autowired
+    private CustomUserMapper customUserMapper;
 
     @Override
     public Integer unlockAccount() {
@@ -45,6 +50,29 @@ public class UserServiceImpl implements UserService {
         User user = new User();
         user.setPwdErrorCount(0);
         user.setId(userId);
+        return userMapper.updateByPrimaryKeySelective(user);
+    }
+
+    @Override
+    public Integer addPwdErrorCount(Long userId) {
+        return customUserMapper.addPwdErrorCount(userId);
+    }
+
+    @Override
+    public Integer lockAccount(Long userId) {
+        User user = new User();
+        user.setIsLocked(GlobalConstant.YES);
+        user.setId(userId);
+        user.setLastUpdateTime(new Date());
+        return userMapper.updateByPrimaryKeySelective(user);
+    }
+
+    @Override
+    public Integer updateLastLoginIp(Long userId, String ipAddress) {
+        User user = new User();
+        user.setId(userId);
+        user.setLastLoginIp(ipAddress);
+        user.setLastUpdateTime(new Date());
         return userMapper.updateByPrimaryKeySelective(user);
     }
 
@@ -92,13 +120,25 @@ public class UserServiceImpl implements UserService {
         criteria.andUserTypeEqualTo(loginType);
         List<User> users = userMapper.selectByExample(example);
         if (PublicUtils.isEmpty(users)) {
-            throw new GlobalException(ErrorCodeEnum.U5009001);
+            // throw new GlobalException(ErrorCodeEnum.U5009001);
+            return null;
         }
         User user = users.get(0);
         LoginUserVo vo = new LoginUserVo();
-        vo.setId(user.getId());
-        vo.setLoginName(user.getLoginname());
+        BeanUtils.copyProperties(user, vo);
+        /*vo.setId(user.getId());
+        vo.setLoginname(user.getLoginname());
         vo.setPassword(user.getPassword());
+        vo.setEmail(user.getEmail());
+        vo.setPhone(user.getPhone());
+        vo.setPwdErrorCount(user.getPwdErrorCount());
+        vo.setIsLocked(user.getIsLocked());
+        vo.setUserType(user.getUserType());*/
         return vo;
+    }
+
+    @Override
+    public List<String> getRolesByUserId(Long userId) {
+        return null;
     }
 }

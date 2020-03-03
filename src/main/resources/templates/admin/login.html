@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>newbee-mall管理系统 | Log in</title>
+    <title>登录</title>
     <!-- Tell the browser to be responsive to screen width -->
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="shortcut icon" th:href="@{/admin/dist/img/favicon.png}"/>
@@ -33,20 +33,18 @@
 </div>
 <div class="login-box">
     <div class="login-logo" style="color: #1baeae;">
-        <img th:src="@{/mall/image/new-bee-logo-3.png}" style="    height: 58px;float: left;margin-left: 10px;">
-        <h1>管理系统登陆</h1>
+        <h1>登陆</h1>
     </div>
     <!-- /.login-logo -->
     <div class="card">
         <div class="card-body login-card-body">
-            <p class="login-box-msg"> NewBee MALL , Let's Go !</p>
-            <form th:action="@{/admin/login}" method="post">
+            <form th:action="@{/admin/login/login}" method="post">
                 <div th:if="${not #strings.isEmpty(session.errorMsg)}" class="form-group">
                     <div class="alert alert-danger" th:text="${session.errorMsg}"></div>
                 </div>
                 <div class="form-group has-feedback">
                     <span class="fa fa-user form-control-feedback"></span>
-                    <input type="text" id="userName" name="userName" class="form-control" placeholder="请输入账号"
+                    <input type="text" id="userName" name="loginName" class="form-control" placeholder="请输入账号"
                            required="true">
                 </div>
                 <div class="form-group has-feedback">
@@ -56,11 +54,11 @@
                 </div>
                 <div class="row">
                     <div class="col-6">
-                        <input type="text" class="form-control" name="verifyCode" placeholder="请输入验证码" required="true">
+                        <input type="text" class="form-control" name="captcha" placeholder="请输入验证码" required="true">
                     </div>
                     <div class="col-6">
-                        <img alt="单击图片刷新！" class="pointer" th:src="@{/common/kaptcha}"
-                             onclick="this.src='/common/kaptcha?d='+new Date()*1">
+                        <img alt="单击图片刷新！" class="pointer" th:src="@{/common/captcha/showPic}"
+                             onclick="this.src='/common/captcha/showPic?d='+new Date()*1">
                     </div>
                 </div>
                 <div class="form-group has-feedback"></div>

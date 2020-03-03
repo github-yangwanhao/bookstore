@@ -16,8 +16,18 @@ public class LoginUserVo {
 
     private Long id;
 
-    private String loginName;
+    private String loginname;
 
     private String password;
+
+    private String phone;
+
+    private String email;
+
+    private Integer pwdErrorCount;
+
+    private Integer isLocked;
+
+    private Integer userType;
 
 }

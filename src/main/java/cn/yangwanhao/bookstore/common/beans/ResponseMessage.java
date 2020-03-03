@@ -1,5 +1,6 @@
 package cn.yangwanhao.bookstore.common.beans;
 
+import cn.yangwanhao.bookstore.common.enums.ErrorCodeEnum;
 import cn.yangwanhao.bookstore.common.util.PublicUtils;
 import lombok.Data;
 
@@ -61,6 +62,10 @@ public class ResponseMessage<E> implements Serializable {
 
     public static <E>ResponseMessage<E> error(E result) {
         return setMessage(ERROR_CODE, ERROR_MESSAGE, result);
+    }
+
+    public static <E>ResponseMessage<E> error(ErrorCodeEnum e) {
+        return setMessage(e.getCode(), e.getMsg(), null);
     }
 
     private static <E> ResponseMessage<E> setMessage(Integer code, String message) {

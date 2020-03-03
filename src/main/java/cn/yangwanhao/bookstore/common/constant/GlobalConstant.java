@@ -49,25 +49,51 @@ public final class GlobalConstant {
         public static final String DICTIONARY_PREFIX = "dictionary:";
     }
 
-    @NoArgsConstructor(access = AccessLevel.PRIVATE)
-    public static final class Uri {
-
-        // 登录提交的地址
-        public static final String LOGIN = "/f/login";
-        // 生成验证码
-        public static final String GENERATOR_CAPTCHA = "/f/captcha";
-        // 登录页面的地址
-        public static final String LOGIN_PAGE = "/page/login";
-        // JS文件地址
-        public static final String STATIC_JS_URI = "/js/**";
-        // 其他所有可匿名访问的地址
-        public static final String FREE_URIS = "/free/**";
+    public static final class Captcha {
+        /**
+         * 验证码图片宽度
+         */
+        public static final int WIDTH = 160;
 
         /**
-         * 可匿名访问的URL
+         * 验证码图片高度
          */
-        public static final String [] FREE_URLS = {LOGIN_PAGE, GENERATOR_CAPTCHA, STATIC_JS_URI, FREE_URIS};
+        public static final int HEIGHT = 40;
 
+        /**
+         * 验证码干扰线数
+         */
+        public static final int LINE_COUNT = 20;
+
+        /**
+         * 验证码位数
+         */
+        public static final int CAPTCHA_SIZE = 4;
+
+        /**
+         * 验证码有效次数
+         */
+        public static final int CAPTCHA_VALID_CHANCES = 5;
+
+        /**
+         * 验证码有效时间(单位：分钟)
+         */
+        public static final int CAPTCHA_VALID_TIME = 5;
+
+        /**
+         * Redis中验证码前缀
+         */
+        public static final String CAPTCHA_PREFIX = "captcha:";
+
+        /**
+         * 存放验证码uuid key 值的cookie名字
+         */
+        public static final String CAPTCHA_COOKIE_NAME = "captcha";
+
+        /**
+         * 生成验证码的源
+         */
+        public static final char [] CAPTCHA_SOURCE = NUMBER_SOURCE;
     }
 
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
