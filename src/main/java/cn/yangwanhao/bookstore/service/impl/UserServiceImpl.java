@@ -126,14 +126,6 @@ public class UserServiceImpl implements UserService {
         User user = users.get(0);
         LoginUserVo vo = new LoginUserVo();
         BeanUtils.copyProperties(user, vo);
-        /*vo.setId(user.getId());
-        vo.setLoginname(user.getLoginname());
-        vo.setPassword(user.getPassword());
-        vo.setEmail(user.getEmail());
-        vo.setPhone(user.getPhone());
-        vo.setPwdErrorCount(user.getPwdErrorCount());
-        vo.setIsLocked(user.getIsLocked());
-        vo.setUserType(user.getUserType());*/
         return vo;
     }
 

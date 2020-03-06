@@ -6,7 +6,7 @@
         <img th:src="@{/admin/dist/img/new-bee-logo-1.png}" alt="ssm-cluster Logo"
              class="brand-image img-circle elevation-3"
              style="opacity: .8">
-        <span class="brand-text font-weight-light">NEWBEE商城</span>
+        <span class="brand-text font-weight-light">bookstore-admin</span>
     </a>
     <!-- Sidebar -->
     <div class="sidebar">
@@ -16,8 +16,8 @@
                 data-accordion="false">
                 <!-- Add icons to the links using the .nav-icon class
                      with font-awesome or any other icon font library -->
-                <li class="nav-header">Dashboard</li>
-                <li class="nav-item">
+                <!--<li class="nav-header">Dashboard</li>-->
+                <!--<li class="nav-item">
                     <a th:href="@{/admin/index}" th:class="${path}=='index'?'nav-link active':'nav-link'">
                         <i class="nav-icon fa fa-dashboard"></i>
                         <p>
@@ -32,8 +32,8 @@
                             商品信息
                         </p>
                     </a>
-                </li>
-                <li class="nav-header">首页配置</li>
+                </li>-->
+                <!--<li class="nav-header">首页配置</li>
                 <li class="nav-item">
                     <a th:href="@{/admin/carousels}"
                        th:class="${path}=='newbee_mall_carousel'?'nav-link active':'nav-link'">
@@ -69,10 +69,10 @@
                             为你推荐配置
                         </p>
                     </a>
-                </li>
+                </li>-->
                 <li class="nav-header">管理模块</li>
                 <li class="nav-item">
-                    <a th:href="@{/admin/categories?parentId=0&categoryLevel=1&backParentId=0}"
+                    <a th:href="@{/admin/page/category?parentId=0}"
                        th:class="${path}=='newbee_mall_category'?'nav-link active':'nav-link'">
                         <i class="fa fa-list-alt nav-icon" aria-hidden="true"></i>
                         <p>

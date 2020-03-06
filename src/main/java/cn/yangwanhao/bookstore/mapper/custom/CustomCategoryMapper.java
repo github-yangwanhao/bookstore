@@ -1,10 +1,12 @@
 package cn.yangwanhao.bookstore.mapper.custom;
 
 import cn.yangwanhao.bookstore.entity.Category;
+import cn.yangwanhao.bookstore.vo.GoodsCategoryTreeVo;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -35,5 +37,14 @@ public interface CustomCategoryMapper {
      * @createDate 2019/11/27 20:18
      */
     Integer deleteCategoryByIds(@Param("set") Set<Integer> set);
+
+    /**
+     * Description: 根据pid查找
+     * @param pid pid
+     * @return
+     * @author 杨万浩
+     * @date 2020/3/6 9:58
+     */
+    List<GoodsCategoryTreeVo> listCategories(Integer pid);
 
 }

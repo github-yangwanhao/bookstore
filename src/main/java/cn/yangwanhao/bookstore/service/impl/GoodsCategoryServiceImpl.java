@@ -10,6 +10,8 @@ import cn.yangwanhao.bookstore.mapper.custom.CustomCategoryMapper;
 import cn.yangwanhao.bookstore.service.GoodsCategoryService;
 import cn.yangwanhao.bookstore.service.GoodsService;
 import cn.yangwanhao.bookstore.vo.GoodsCategoryTreeVo;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -97,6 +99,15 @@ public class GoodsCategoryServiceImpl implements GoodsCategoryService {
     }
 
     @Override
+    public Integer removeCategories(Integer[] categoryIds) {
+        int count = 0;
+        for(Integer id : categoryIds) {
+            count += removeCategory(id);
+        }
+        return count;
+    }
+
+    @Override
     public Integer modifyCategory(Integer id, String name) {
         Category category = new Category();
         category.setId(id);
@@ -105,21 +116,15 @@ public class GoodsCategoryServiceImpl implements GoodsCategoryService {
     }
 
     @Override
-    public List<GoodsCategoryTreeVo> listCategoryTree(Integer pid) {
-        CategoryExample example = new CategoryExample();
-        example.createCriteria().andParentIdEqualTo(pid);
-        List<Category> parentCategoryList = categoryMapper.selectByExample(example);
-        List<GoodsCategoryTreeVo> list = new ArrayList<>();
-        for (Category category : parentCategoryList) {
-            GoodsCategoryTreeVo vo = new GoodsCategoryTreeVo();
-            vo.setId(category.getId());
-            vo.setName(category.getName());
-            vo.setParentId(category.getParentId());
-            vo.setIsParent(category.getIsParent() == GlobalConstant.YES);
-            vo.setSort(category.getSort());
-            list.add(vo);
-        }
-        return list;
+    public PageInfo<GoodsCategoryTreeVo> listCategoryTree(Integer pid, Integer pageNum, Integer pageSize) {
+        PageHelper.startPage(pageNum, pageSize);
+        List<GoodsCategoryTreeVo> list = customCategoryMapper.listCategories(pid);
+        return new PageInfo<>(list);
+    }
+
+    @Override
+    public Category getById(Integer id) {
+        return categoryMapper.selectByPrimaryKey(id);
     }
 
     /**

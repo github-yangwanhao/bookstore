@@ -26,6 +26,8 @@ public class WebConfig extends WebMvcConfigurationSupport {
                 .addPathPatterns("/admin/**")
                 .excludePathPatterns("/admin/page/login")
                 .excludePathPatterns("/admin/login/login")
+                .excludePathPatterns("/admin/dist/**")
+                .excludePathPatterns("/admin/plugins/**")
         ;
     }
 }

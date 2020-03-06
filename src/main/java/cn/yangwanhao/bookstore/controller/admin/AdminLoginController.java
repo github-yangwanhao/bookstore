@@ -1,4 +1,4 @@
-package cn.yangwanhao.bookstore.controller.manage;
+package cn.yangwanhao.bookstore.controller.admin;
 
 import cn.yangwanhao.bookstore.common.beans.Captcha;
 import cn.yangwanhao.bookstore.common.constant.GlobalConstant;

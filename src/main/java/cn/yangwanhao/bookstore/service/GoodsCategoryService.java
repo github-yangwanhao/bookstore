@@ -1,7 +1,9 @@
 package cn.yangwanhao.bookstore.service;
 
 
+import cn.yangwanhao.bookstore.entity.Category;
 import cn.yangwanhao.bookstore.vo.GoodsCategoryTreeVo;
+import com.github.pagehelper.PageInfo;
 
 import java.util.List;
 
@@ -35,6 +37,15 @@ public interface GoodsCategoryService {
     Integer removeCategory(Integer categoryId);
 
     /**
+     * Description: 删除多个分类
+     * @param categoryIds ids
+     * @return
+     * @author 杨万浩
+     * @date 2020/3/6 15:25
+     */
+    Integer removeCategories(Integer[] categoryIds);
+
+    /**
      * Description: 修改一个分类
      * @param id 分类id
      * @param name 分类描述
@@ -46,10 +57,22 @@ public interface GoodsCategoryService {
 
     /**
      * Description: 查看分类的树状节点
+     * @param pid pid
+     * @param pageNum 页码
+     * @param pageSize 页面大小
      * @return 树状节点json
      * @author 杨万浩
      * @createDate 2019/11/28 16:40
      */
-    List<GoodsCategoryTreeVo> listCategoryTree(Integer pid);
+    PageInfo<GoodsCategoryTreeVo> listCategoryTree(Integer pid, Integer pageNum, Integer pageSize);
+
+    /**
+     * Description: 通过id拿到数据
+     * @param id id
+     * @return
+     * @author 杨万浩
+     * @date 2020/3/6 15:49
+     */
+    Category getById(Integer id);
 
 }

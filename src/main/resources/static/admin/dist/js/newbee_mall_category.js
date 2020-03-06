@@ -1,15 +1,15 @@
 $(function () {
-    var categoryLevel = $("#categoryLevel").val();
     var parentId = $("#parentId").val();
 
     $("#jqGrid").jqGrid({
-        url: '/admin/categories/list?categoryLevel=' + categoryLevel + '&parentId=' + parentId,
+        url: '/admin/category/list/categories/' + parentId,
         datatype: "json",
         colModel: [
-            {label: 'id', name: 'categoryId', index: 'categoryId', width: 50, key: true, hidden: true},
-            {label: '分类名称', name: 'categoryName', index: 'categoryName', width: 240},
-            {label: '排序值', name: 'categoryRank', index: 'categoryRank', width: 120},
-            {label: '添加时间', name: 'createTime', index: 'createTime', width: 120}
+            {label: 'id', name: 'id', index: 'id', width: 50, key: true, hidden: true},
+            {label: '分类名称', name: 'name', index: 'name', width: 240},
+            {label: '是否有父分类', name: 'hasParent', index: 'hasParent', width: 120},
+            {label: '是否有子分类', name: 'hasChildren', index: 'hasChildren', width: 120},
+            {label: '排序值', name: 'sort', index: 'sort', width: 120}
         ],
         height: 560,
         rowNum: 10,
@@ -23,14 +23,13 @@ $(function () {
         pager: "#jqGridPager",
         jsonReader: {
             root: "data.list",
-            page: "data.currPage",
-            total: "data.totalPage",
-            records: "data.totalCount"
+            page: "data.pageNum",
+            total: "data.pages",
+            records: "data.total"
         },
         prmNames: {
             page: "page",
             rows: "limit",
-            order: "order",
         },
         gridComplete: function () {
             //隐藏grid底部滚动条
@@ -63,31 +62,39 @@ function categoryAdd() {
  * 管理下级分类
  */
 function categoryManage() {
-    var categoryLevel = parseInt($("#categoryLevel").val());
-    var parentId = $("#parentId").val();
     var id = getSelectedRow();
-    if (id == undefined || id < 0) {
+    if (id === undefined || id < 0) {
         return false;
     }
-    if (categoryLevel == 1 || categoryLevel == 2) {
-        categoryLevel = categoryLevel + 1;
-        window.location.href = '/admin/categories?categoryLevel=' + categoryLevel + '&parentId=' + id + '&backParentId=' + parentId;
-    } else {
-        swal("无下级分类", {
-            icon: "warning",
-        });
-    }
+    window.location.href = '/admin/page/category?parentId=' + id;
 }
 
 /**
  * 返回上一层级
  */
 function categoryBack() {
-    var categoryLevel = parseInt($("#categoryLevel").val());
-    var backParentId = $("#backParentId").val();
-    if (categoryLevel == 2 || categoryLevel == 3) {
-        categoryLevel = categoryLevel - 1;
-        window.location.href = '/admin/categories?categoryLevel=' + categoryLevel + '&parentId=' + backParentId + '&backParentId=0';
+    var parentId = $("#parentId").val();
+    if (parentId !== 0) {
+        $.ajax({
+            type: 'POST',//方法类型
+            url: '/admin/category/get/category/' + parentId,
+            contentType: 'application/json',
+            success: function (result) {
+                if (result.code === 200) {
+                    window.location.href = '/admin/page/category?parentId=' + result.data.parentId;
+                } else {
+                    swal("查询失败", {
+                        icon: "error",
+                    });
+                }
+                ;
+            },
+            error: function () {
+                swal("查询失败", {
+                    icon: "error",
+                });
+            }
+        });
     } else {
         swal("无上级分类", {
             icon: "warning",
@@ -98,29 +105,22 @@ function categoryBack() {
 //绑定modal上的保存按钮
 $('#saveButton').click(function () {
     var categoryName = $("#categoryName").val();
-    var categoryLevel = $("#categoryLevel").val();
     var parentId = $("#parentId").val();
-    var categoryRank = $("#categoryRank").val();
     if (!validCN_ENString2_18(categoryName)) {
         $('#edit-error-msg').css("display", "block");
         $('#edit-error-msg').html("请输入符合规范的分类名称！");
     } else {
         var data = {
-            "categoryName": categoryName,
-            "categoryLevel": categoryLevel,
+            "name": categoryName,
             "parentId": parentId,
-            "categoryRank": categoryRank
         };
-        var url = '/admin/categories/save';
+        var url = '/admin/category/save/category';
         var id = getSelectedRowWithoutAlert();
         if (id != null) {
-            url = '/admin/categories/update';
+            url = '/admin/category/update/category';
             data = {
-                "categoryId": id,
-                "categoryName": categoryName,
-                "categoryLevel": categoryLevel,
-                "parentId": parentId,
-                "categoryRank": categoryRank
+                "id": id,
+                "name": categoryName,
             };
         }
         $.ajax({
@@ -129,7 +129,7 @@ $('#saveButton').click(function () {
             contentType: 'application/json',
             data: JSON.stringify(data),
             success: function (result) {
-                if (result.resultCode == 200) {
+                if (result.code == 200) {
                     $('#categoryModal').modal('hide');
                     swal("保存成功", {
                         icon: "success",
@@ -166,16 +166,7 @@ function categoryEdit() {
     $("#categoryRank").val(rowData.categoryRank);
 }
 
-/**
- * 分类的删除会牵涉到多级分类的修改和商品数据的修改，因此暂时就不开放删除功能了，
- * 如果在商城页面不想显示相关分类可以通过调整rank值来调整显示顺序，
- * 不过代码我也写了一部分，如果想保留删除功能的话可以在此代码的基础上进行修改。
- */
 function deleteCagegory() {
-    swal("未开放", {
-        icon: "warning",
-    });
-    return;
     var ids = getSelectedRows();
     if (ids == null) {
         return;
@@ -190,11 +181,11 @@ function deleteCagegory() {
             if (flag) {
                 $.ajax({
                     type: "POST",
-                    url: "/admin/categories/delete",
+                    url: "/admin/category/delete/categories",
                     contentType: "application/json",
                     data: JSON.stringify(ids),
                     success: function (r) {
-                        if (r.resultCode == 200) {
+                        if (r.code === 200) {
                             swal("删除成功", {
                                 icon: "success",
                             });

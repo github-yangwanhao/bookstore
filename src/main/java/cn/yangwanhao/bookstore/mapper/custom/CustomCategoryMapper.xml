@@ -24,10 +24,17 @@
   <delete id="deleteCategoryByIds">
     DELETE
     FROM category
-    WHERE id IN 
+    WHERE id IN
     <foreach collection="set" item="set" open="(" close=")" separator=",">
       #{set}
     </foreach>
   </delete>
-  
+
+  <select id="listCategories" resultType="cn.yangwanhao.bookstore.vo.GoodsCategoryTreeVo">
+    SELECT
+    id, name, parent_id AS parentId, IF(parent_id=0,'否','是') AS hasParent, IF(is_parent=0,'否', '是') AS hasChildren, `sort`
+    FROM category
+    WHERE parent_id=#{pid}
+  </select>
+
 </mapper>

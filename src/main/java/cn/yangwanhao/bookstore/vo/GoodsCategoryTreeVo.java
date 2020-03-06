@@ -27,7 +27,9 @@ public class GoodsCategoryTreeVo implements Serializable {
 
     private Integer parentId;
 
-    private Boolean isParent;
+    private String hasParent;
+
+    private String hasChildren;
 
     private Integer sort;
 
