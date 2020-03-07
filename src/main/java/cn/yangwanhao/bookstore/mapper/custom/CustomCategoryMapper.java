@@ -1,7 +1,7 @@
 package cn.yangwanhao.bookstore.mapper.custom;
 
 import cn.yangwanhao.bookstore.entity.Category;
-import cn.yangwanhao.bookstore.vo.GoodsCategoryTreeVo;
+import cn.yangwanhao.bookstore.vo.CategoryListVo;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
@@ -45,6 +45,6 @@ public interface CustomCategoryMapper {
      * @author 杨万浩
      * @date 2020/3/6 9:58
      */
-    List<GoodsCategoryTreeVo> listCategories(Integer pid);
+    List<CategoryListVo> listCategories(Integer pid);
 
 }

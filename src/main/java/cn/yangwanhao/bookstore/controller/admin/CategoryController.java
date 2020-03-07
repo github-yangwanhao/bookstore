@@ -4,7 +4,7 @@ import cn.yangwanhao.bookstore.common.beans.ResponseMessage;
 import cn.yangwanhao.bookstore.common.support.BaseController;
 import cn.yangwanhao.bookstore.entity.Category;
 import cn.yangwanhao.bookstore.service.GoodsCategoryService;
-import cn.yangwanhao.bookstore.vo.GoodsCategoryTreeVo;
+import cn.yangwanhao.bookstore.vo.CategoryListVo;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -31,8 +31,8 @@ public class CategoryController extends BaseController {
      */
     @RequestMapping("/list/categories/{pid}")
     @ResponseBody
-    public ResponseMessage<PageInfo<GoodsCategoryTreeVo>> listCategories(@PathVariable("pid") Integer pid, @RequestParam("page") Integer pageNum, @RequestParam("limit") Integer pageSize) {
-        return ResponseMessage.handleResult(goodsCategoryService.listCategoryTree(pid, pageNum, pageSize));
+    public ResponseMessage<PageInfo<CategoryListVo>> listCategories(@PathVariable("pid") Integer pid, @RequestParam("page") Integer pageNum, @RequestParam("limit") Integer pageSize) {
+        return ResponseMessage.handleResult(goodsCategoryService.listCategory(pid, pageNum, pageSize));
     }
 
     @RequestMapping("/save/category")

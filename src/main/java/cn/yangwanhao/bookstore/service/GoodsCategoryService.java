@@ -2,9 +2,12 @@ package cn.yangwanhao.bookstore.service;
 
 
 import cn.yangwanhao.bookstore.entity.Category;
-import cn.yangwanhao.bookstore.vo.GoodsCategoryTreeVo;
+import cn.yangwanhao.bookstore.vo.CategoryListVo;
+import cn.yangwanhao.bookstore.vo.CategoryTreeVo;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.pagehelper.PageInfo;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -64,7 +67,7 @@ public interface GoodsCategoryService {
      * @author 杨万浩
      * @createDate 2019/11/28 16:40
      */
-    PageInfo<GoodsCategoryTreeVo> listCategoryTree(Integer pid, Integer pageNum, Integer pageSize);
+    PageInfo<CategoryListVo> listCategory(Integer pid, Integer pageNum, Integer pageSize);
 
     /**
      * Description: 通过id拿到数据
@@ -74,5 +77,13 @@ public interface GoodsCategoryService {
      * @date 2020/3/6 15:49
      */
     Category getById(Integer id);
+
+    /**
+     * Description: 树状结构
+     * @return
+     * @author 杨万浩
+     * @date 2020/3/6 16:38
+     */
+    List<CategoryTreeVo> listCategoryTree() throws IOException;
 
 }

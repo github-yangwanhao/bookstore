@@ -9,18 +9,23 @@ import cn.yangwanhao.bookstore.mapper.CategoryMapper;
 import cn.yangwanhao.bookstore.mapper.custom.CustomCategoryMapper;
 import cn.yangwanhao.bookstore.service.GoodsCategoryService;
 import cn.yangwanhao.bookstore.service.GoodsService;
-import cn.yangwanhao.bookstore.vo.GoodsCategoryTreeVo;
+import cn.yangwanhao.bookstore.vo.CategoryListVo;
+import cn.yangwanhao.bookstore.vo.CategoryTreeVo;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
+import java.io.IOException;
+import java.util.*;
 
 /**
  * description
@@ -30,6 +35,7 @@ import java.util.TreeSet;
  * @date 2019/11/27 18:07
  */
 
+@Slf4j
 @Service
 @Transactional(rollbackFor = Exception.class)
 public class GoodsCategoryServiceImpl implements GoodsCategoryService {
@@ -40,6 +46,10 @@ public class GoodsCategoryServiceImpl implements GoodsCategoryService {
     private CategoryMapper categoryMapper;
     @Autowired
     private GoodsService goodsService;
+    @Autowired
+    private StringRedisTemplate stringRedisTemplate;
+    @Resource
+    private ObjectMapper objectMapper;
 
     @Override
     public Integer addCategory(String name, Integer parentId) {
@@ -58,7 +68,13 @@ public class GoodsCategoryServiceImpl implements GoodsCategoryService {
                 categoryMapper.updateByPrimaryKeySelective(parentCategory);
             }
         }
-        return categoryMapper.insertSelective(category);
+        int result = categoryMapper.insertSelective(category);
+        if (result == 1) {
+            // 删除redis
+            stringRedisTemplate.delete(GlobalConstant.RedisPrefixKey.CATEGORY_TREE);
+            log.info("从redis中删除分类树缓存");
+        }
+        return result;
     }
 
     @Override
@@ -104,6 +120,11 @@ public class GoodsCategoryServiceImpl implements GoodsCategoryService {
         for(Integer id : categoryIds) {
             count += removeCategory(id);
         }
+        if (count >= 1) {
+            // 删除redis
+            stringRedisTemplate.delete(GlobalConstant.RedisPrefixKey.CATEGORY_TREE);
+            log.info("从redis中删除分类树缓存");
+        }
         return count;
     }
 
@@ -112,19 +133,80 @@ public class GoodsCategoryServiceImpl implements GoodsCategoryService {
         Category category = new Category();
         category.setId(id);
         category.setName(name);
-        return categoryMapper.updateByPrimaryKeySelective(category);
+        int result = categoryMapper.updateByPrimaryKeySelective(category);
+        if (result >= 1) {
+            // 删除redis
+            stringRedisTemplate.delete(GlobalConstant.RedisPrefixKey.CATEGORY_TREE);
+            log.info("从redis中删除分类树缓存");
+        }
+        return result;
     }
 
     @Override
-    public PageInfo<GoodsCategoryTreeVo> listCategoryTree(Integer pid, Integer pageNum, Integer pageSize) {
+    public PageInfo<CategoryListVo> listCategory(Integer pid, Integer pageNum, Integer pageSize) {
         PageHelper.startPage(pageNum, pageSize);
-        List<GoodsCategoryTreeVo> list = customCategoryMapper.listCategories(pid);
+        List<CategoryListVo> list = customCategoryMapper.listCategories(pid);
         return new PageInfo<>(list);
     }
 
     @Override
     public Category getById(Integer id) {
         return categoryMapper.selectByPrimaryKey(id);
+    }
+
+    @Override
+    public List<CategoryTreeVo> listCategoryTree() throws IOException {
+        // redis缓存 ①查询缓存 有则返回 无则进行下一步
+        String value = stringRedisTemplate.opsForValue().get(GlobalConstant.RedisPrefixKey.CATEGORY_TREE);
+        if (StringUtils.isNotBlank(value)) {
+            List<CategoryTreeVo> result = result = objectMapper.readValue(value, new TypeReference<List<CategoryTreeVo>>() {
+            });
+            log.info("从缓存中查询得到分类树");
+            return result;
+        }
+        final String prefix = "├─";
+        CategoryExample example = new CategoryExample();
+        CategoryExample.Criteria criteria = example.createCriteria();
+        criteria.andParentIdEqualTo(0);
+        List<Category> rootCategories = categoryMapper.selectByExample(example);
+        List<Category> allCategories = categoryMapper.selectByExample(new CategoryExample());
+        List<CategoryTreeVo> resultVoList = new ArrayList<>();
+        setNameList(allCategories, rootCategories, prefix, resultVoList);
+        // 查询完成 添加缓存
+        String json = json = objectMapper.writeValueAsString(resultVoList);;
+        stringRedisTemplate.opsForValue().set(GlobalConstant.RedisPrefixKey.CATEGORY_TREE, json);
+        log.info("向缓存中加入分类树");
+        return resultVoList;
+    }
+
+    private void setNameList(List<Category> allData, List<Category> rootList, String prefix, List<CategoryTreeVo> result) {
+        // 半角空格
+        final String blankSpaceStr = "　";
+        for (Category root : rootList) {
+            CategoryTreeVo vo = new CategoryTreeVo();
+            vo.setId(root.getId());
+            vo.setName(prefix + root.getName());
+            result.add(vo);
+            setNameList(allData, getChildren(allData, root), blankSpaceStr + prefix, result);
+        }
+    }
+
+    /**
+     * Description: 通过一个节点查找它的所有子孙节点并形成树状结构
+     * @param allData 总的集合
+     * @param parentCategory 父节点
+     * @return
+     * @author 杨万浩
+     * @createDate 2019/11/28 19:23
+     */
+    private List<Category> getChildren(List<Category> allData, Category parentCategory) {
+        List<Category> resultList = new ArrayList<>();
+        for (Category category : allData) {
+            if (category.getParentId().equals(parentCategory.getId())) {
+                resultList.add(category);
+            }
+        }
+        return resultList;
     }
 
     /**
@@ -146,25 +228,4 @@ public class GoodsCategoryServiceImpl implements GoodsCategoryService {
         return set;
     }
 
-    /**
-     * Description: 通过一个节点查找它的所有子孙节点并形成树状结构
-     * @param categoryList 总的集合
-     * @param parentCategory 父节点
-     * @return
-     * @author 杨万浩
-     * @createDate 2019/11/28 19:23
-     */
-    /*private List<GoodsCategoryTreeVo> getChildren(List<Category> categoryList, Category parentCategory) {
-        List<GoodsCategoryTreeVo> resultList = new ArrayList<>();
-        for (Category category : categoryList) {
-            if (category.getParentId().equals(parentCategory.getId())) {
-                GoodsCategoryTreeVo vo = new GoodsCategoryTreeVo();
-                vo.setId(category.getId());
-                vo.setText(category.getName());
-                vo.setChildren(getChildren(categoryList, category));
-                resultList.add(vo);
-            }
-        }
-        return resultList;
-    }*/
 }

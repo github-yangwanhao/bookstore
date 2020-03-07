@@ -17,7 +17,7 @@ import java.io.Serializable;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class GoodsCategoryTreeVo implements Serializable {
+public class CategoryListVo implements Serializable {
 
     private static final long serialVersionUID = 4004820354997596163L;
 

@@ -47,6 +47,8 @@ public final class GlobalConstant {
         public static final String CAPTCHA_PREFIX = "captcha:";
         // redis中字典表缓存key值前缀
         public static final String DICTIONARY_PREFIX = "dictionary:";
+        // redis中商品分类树缓存key值前缀
+        public static final String CATEGORY_TREE = "goods:category:tree";
     }
 
     public static final class Captcha {
