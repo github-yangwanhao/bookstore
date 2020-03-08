@@ -107,4 +107,16 @@
         </foreach>
     </update>
 
+    <select id="searchGoods" resultType="cn.yangwanhao.bookstore.vo.GoodsSearchListVo">
+        SELECT
+        gb.id AS id, gb.price AS price,
+        gi.title AS title, gi.imgs AS image
+        FROM goods_base gb
+        LEFT JOIN goods_info gi ON gi.id=gb.id
+        LEFT JOIN category c ON gb.category=c.id
+        WHERE
+        gb.goods_status=1
+        AND gb.stock>0
+        AND CONCAT(c.name, " ", gi.title, " ", gi.tags) LIKE CONCAT("%", #{q}, "%")
+    </select>
 </mapper>

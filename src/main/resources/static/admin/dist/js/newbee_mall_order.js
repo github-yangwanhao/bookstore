@@ -118,7 +118,7 @@ function openOrderItems(orderId) {
         url: '/admin/order-items/' + orderId,
         contentType: 'application/json',
         success: function (result) {
-            if (result.resultCode == 200) {
+            if (result.code == 200) {
                 $('#orderItemModal').modal('show');
                 var itemString = '';
                 for (i = 0; i < result.data.length; i++) {
@@ -190,7 +190,7 @@ $('#saveButton').click(function () {
         contentType: 'application/json',
         data: JSON.stringify(data),
         success: function (result) {
-            if (result.resultCode == 200) {
+            if (result.code == 200) {
                 $('#orderInfoModal').modal('hide');
                 swal("保存成功", {
                     icon: "success",
@@ -253,7 +253,7 @@ function orderCheckDone() {
                     contentType: "application/json",
                     data: JSON.stringify(ids),
                     success: function (r) {
-                        if (r.resultCode == 200) {
+                        if (r.code == 200) {
                             swal("配货完成", {
                                 icon: "success",
                             });
@@ -312,7 +312,7 @@ function orderCheckOut() {
                     contentType: "application/json",
                     data: JSON.stringify(ids),
                     success: function (r) {
-                        if (r.resultCode == 200) {
+                        if (r.code == 200) {
                             swal("出库成功", {
                                 icon: "success",
                             });
@@ -349,7 +349,7 @@ function closeOrder() {
                     contentType: "application/json",
                     data: JSON.stringify(ids),
                     success: function (r) {
-                        if (r.resultCode == 200) {
+                        if (r.code == 200) {
                             swal("关闭成功", {
                                 icon: "success",
                             });

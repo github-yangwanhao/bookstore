@@ -41,17 +41,17 @@
                 <div class="dropdown-divider"></div>
                 <a href="#" class="dropdown-item">
                     <i></i> 姓名
-                    <span class="float-right text-muted text-sm" th:text="${session.loginUser.getLoginname()}"></span>
+                    <span class="float-right text-muted text-sm" th:text="${session.adminLoginUser.getLoginname()}"></span>
                 </a>
                 <div class="dropdown-divider"></div>
                 <a href="#" class="dropdown-item">
                     <i></i> 手机号
-                    <span class="float-right text-muted text-sm" th:text="${session.loginUser.getPhone()}"></span>
+                    <span class="float-right text-muted text-sm" th:text="${session.adminLoginUser.getPhone()}"></span>
                 </a>
                 <div class="dropdown-divider"></div>
                 <a href="#" class="dropdown-item">
                     <i></i> 邮箱
-                    <span class="float-right text-muted text-sm" th:text="${session.loginUser.getEmail()}"></span>
+                    <span class="float-right text-muted text-sm" th:text="${session.adminLoginUser.getEmail()}"></span>
                 </a>
             </div>
         </li>

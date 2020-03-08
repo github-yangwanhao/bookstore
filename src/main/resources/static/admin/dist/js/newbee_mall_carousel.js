@@ -56,7 +56,7 @@ $(function () {
             }
         },
         onComplete: function (file, r) {
-            if (r != null && r.resultCode == 200) {
+            if (r != null && r.code == 200) {
                 $("#carouselImg").attr("src", r.data);
                 $("#carouselImg").attr("style", "width: 128px;height: 128px;display:block;");
                 return false;
@@ -110,7 +110,7 @@ $('#saveButton').click(function () {
         contentType: 'application/json',
         data: JSON.stringify(data),
         success: function (result) {
-            if (result.resultCode == 200) {
+            if (result.code == 200) {
                 $('#carouselModal').modal('hide');
                 swal("保存成功", {
                     icon: "success",
@@ -140,7 +140,7 @@ function carouselEdit() {
     }
     //请求数据
     $.get("/admin/carousels/info/" + id, function (r) {
-        if (r.resultCode == 200 && r.data != null) {
+        if (r.code == 200 && r.data != null) {
             //填充数据至modal
             $("#carouselImg").attr("src", r.data.carouselUrl);
             $("#carouselImg").attr("style", "height: 64px;width: 64px;display:block;");
@@ -171,7 +171,7 @@ function deleteCarousel() {
                     contentType: "application/json",
                     data: JSON.stringify(ids),
                     success: function (r) {
-                        if (r.resultCode == 200) {
+                        if (r.code == 200) {
                             swal("删除成功", {
                                 icon: "success",
                             });

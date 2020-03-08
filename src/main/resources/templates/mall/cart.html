@@ -147,7 +147,7 @@
             contentType: 'application/json',
             data: JSON.stringify(data),
             success: function (result) {
-                if (result.resultCode == 200) {
+                if (result.code == 200) {
                     window.location.reload();
                 } else {
                     swal("操作失败", {
@@ -180,7 +180,7 @@
                         type: 'DELETE',
                         url: '/shop-cart/' + id,
                         success: function (result) {
-                            if (result.resultCode == 200) {
+                            if (result.code == 200) {
                                 window.location.reload();
                             } else {
                                 swal("操作失败", {

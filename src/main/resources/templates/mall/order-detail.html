@@ -230,7 +230,7 @@
                         type: 'PUT',
                         url: '/orders/' + orderNo + '/cancel',
                         success: function (result) {
-                            if (result.resultCode == 200) {
+                            if (result.code == 200) {
                                 window.location.reload();
                             } else {
                                 swal(result.message, {
@@ -261,7 +261,7 @@
             type: 'PUT',
             url: '/orders/' + orderNo + '/finish',
             success: function (result) {
-                if (result.resultCode == 200) {
+                if (result.code == 200) {
                     window.location.reload();
                 } else {
                     swal(result.message, {

@@ -78,7 +78,7 @@
             type: 'GET',
             url: '/paySuccess?payType=2&orderNo=' + orderNo,
             success: function (result) {
-                if (result.resultCode == 200) {
+                if (result.code == 200) {
                     window.location.href = '/orders/' + orderNo;
                 } else {
                     alert(result.message);

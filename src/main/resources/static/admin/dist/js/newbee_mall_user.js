@@ -93,7 +93,7 @@ function lockUser(lockStatus) {
                     contentType: "application/json",
                     data: JSON.stringify(ids),
                     success: function (r) {
-                        if (r.resultCode == 200) {
+                        if (r.code == 200) {
                             swal("操作成功", {
                                 icon: "success",
                             });

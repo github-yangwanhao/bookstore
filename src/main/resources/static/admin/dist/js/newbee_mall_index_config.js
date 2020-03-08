@@ -97,7 +97,7 @@ $('#saveButton').click(function () {
             contentType: 'application/json',
             data: JSON.stringify(data),
             success: function (result) {
-                if (result.resultCode == 200) {
+                if (result.code == 200) {
                     $('#indexConfigModal').modal('hide');
                     swal("保存成功", {
                         icon: "success",
@@ -155,7 +155,7 @@ function deleteConfig () {
                     contentType: "application/json",
                     data: JSON.stringify(ids),
                     success: function (r) {
-                        if (r.resultCode == 200) {
+                        if (r.code == 200) {
                             swal("删除成功", {
                                 icon: "success",
                             });

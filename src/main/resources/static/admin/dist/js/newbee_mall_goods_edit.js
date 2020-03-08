@@ -213,7 +213,7 @@ $('#cancelButton').click(function () {
         url: '/admin/categories/listForSelect?categoryId=' + $(this).val(),
         type: 'GET',
         success: function (result) {
-            if (result.resultCode == 200) {
+            if (result.code == 200) {
                 var levelTwoSelect = '';
                 var secondLevelCategories = result.data.secondLevelCategories;
                 var length2 = secondLevelCategories.length;
@@ -248,7 +248,7 @@ $('#cancelButton').click(function () {
         url: '/admin/categories/listForSelect?categoryId=' + $(this).val(),
         type: 'GET',
         success: function (result) {
-            if (result.resultCode == 200) {
+            if (result.code == 200) {
                 var levelThreeSelect = '';
                 var thirdLevelCategories = result.data.thirdLevelCategories;
                 var length = thirdLevelCategories.length;

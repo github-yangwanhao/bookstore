@@ -21,7 +21,10 @@ public class BaseController {
 
     protected LoginUserVo getLoginUser(HttpServletRequest request) {
         logger.info("获取登录用户信息");
-        LoginUserVo vo = (LoginUserVo) request.getSession().getAttribute("loginUser");
+        LoginUserVo vo = (LoginUserVo) request.getSession().getAttribute("adminLoginUser");
+        if (vo == null) {
+            vo = (LoginUserVo) request.getSession().getAttribute("portalLoginUser");
+        }
         return vo;
     }
 

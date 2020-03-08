@@ -7,6 +7,7 @@ import cn.yangwanhao.bookstore.common.util.IdUtils;
 import cn.yangwanhao.bookstore.common.util.PicNameUtils;
 import cn.yangwanhao.bookstore.dto.GoodsBooksDto;
 import cn.yangwanhao.bookstore.dto.GoodsListDto;
+import cn.yangwanhao.bookstore.dto.GoodsSearchDto;
 import cn.yangwanhao.bookstore.entity.*;
 import cn.yangwanhao.bookstore.mapper.GoodsBaseMapper;
 import cn.yangwanhao.bookstore.mapper.GoodsBooksMapper;
@@ -15,6 +16,7 @@ import cn.yangwanhao.bookstore.mapper.custom.CustomGoodsMapper;
 import cn.yangwanhao.bookstore.service.CartService;
 import cn.yangwanhao.bookstore.service.GoodsService;
 import cn.yangwanhao.bookstore.vo.GoodsListVo;
+import cn.yangwanhao.bookstore.vo.GoodsSearchListVo;
 import cn.yangwanhao.bookstore.vo.GoodsVo;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.pagehelper.PageHelper;
@@ -56,8 +58,8 @@ public class GoodsServiceImpl implements GoodsService {
     @Resource
     private StringRedisTemplate stringRedisTemplate;
 
-    /*@Value("${pic.host}")
-    private String picHost;*/
+    @Value("${pic.host}")
+    private String picHost;
 
     @Override
     public GoodsVo getGoodsInfo(Long goodsId) {
@@ -212,5 +214,19 @@ public class GoodsServiceImpl implements GoodsService {
     public Boolean categoryHasGoods(Integer categoryId) {
         GoodsBase goodsBase = customGoodsMapper.selectOneGoodsByCategory(categoryId);
         return goodsBase != null;
+    }
+
+    @Override
+    public PageInfo<GoodsSearchListVo> searchGoods(GoodsSearchDto dto) {
+        PageHelper.startPage(dto.getPageNum(), dto.getPageSize());
+        List<GoodsSearchListVo> list = customGoodsMapper.searchGoods(dto);
+        list.forEach(vo-> {
+            vo.setImage(picHost + vo.getImage());
+            vo.setPriceDouble(BigDecimalUtils.movePointLeft(String.valueOf(vo.getPrice()), 2).doubleValue());
+            if (vo.getTitle().length() > 28) {
+                vo.setTitle(vo.getTitle().substring(0,28) + "...");
+            }
+        });
+        return new PageInfo<>(list);
     }
 }

@@ -131,7 +131,7 @@
             contentType: 'application/json',
             data: JSON.stringify(data),
             success: function (result) {
-                if (result.resultCode == 200) {
+                if (result.code == 200) {
                     $('#personalInfoModal').modal('hide');
                     window.location.reload();
                 } else {

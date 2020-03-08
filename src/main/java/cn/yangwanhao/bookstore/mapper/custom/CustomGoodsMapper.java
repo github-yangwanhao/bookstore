@@ -1,8 +1,10 @@
 package cn.yangwanhao.bookstore.mapper.custom;
 
 import cn.yangwanhao.bookstore.dto.GoodsListDto;
+import cn.yangwanhao.bookstore.dto.GoodsSearchDto;
 import cn.yangwanhao.bookstore.entity.GoodsBase;
 import cn.yangwanhao.bookstore.vo.GoodsListVo;
+import cn.yangwanhao.bookstore.vo.GoodsSearchListVo;
 import cn.yangwanhao.bookstore.vo.GoodsVo;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -77,5 +79,14 @@ public interface CustomGoodsMapper {
      * @date 2020/3/8 13:48
      */
     Integer offShelves(@Param("ids") Long[] ids, @Param("loginUserId") Long loginUserId);
+
+    /**
+     * Description: 搜索商品
+     * @param dto dto
+     * @return
+     * @author 杨万浩
+     * @date 2020/3/8 16:17
+     */
+    List<GoodsSearchListVo> searchGoods(GoodsSearchDto dto);
 
 }

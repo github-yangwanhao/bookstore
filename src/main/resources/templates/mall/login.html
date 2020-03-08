@@ -85,7 +85,7 @@
             url: url,
             data: params,
             success: function (result) {
-                if (result.resultCode == 200) {
+                if (result.code == 200) {
                     window.location.href = '/index';
                 } else {
                     swal(result.message, {

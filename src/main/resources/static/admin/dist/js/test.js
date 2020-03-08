@@ -11,7 +11,7 @@ $(function () {
             }
         },
         onComplete: function (file, r) {
-            if (r != null && r.resultCode == 200) {
+            if (r != null && r.code == 200) {
                 console.log(r.data);
                 $("#img").attr("src", r.data);
                 $("#img").attr("style", "width: 100px;display:block;");

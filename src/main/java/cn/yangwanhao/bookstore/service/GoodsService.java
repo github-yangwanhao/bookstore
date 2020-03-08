@@ -2,7 +2,9 @@ package cn.yangwanhao.bookstore.service;
 
 import cn.yangwanhao.bookstore.dto.GoodsBooksDto;
 import cn.yangwanhao.bookstore.dto.GoodsListDto;
+import cn.yangwanhao.bookstore.dto.GoodsSearchDto;
 import cn.yangwanhao.bookstore.vo.GoodsListVo;
+import cn.yangwanhao.bookstore.vo.GoodsSearchListVo;
 import cn.yangwanhao.bookstore.vo.GoodsVo;
 import com.github.pagehelper.PageInfo;
 
@@ -103,5 +105,14 @@ public interface GoodsService {
      * @date 2020/2/26 17:50
      */
     Boolean categoryHasGoods(Integer categoryId);
+
+    /**
+     * Description: 商品搜索
+     * @param dto dto
+     * @return
+     * @author 杨万浩
+     * @date 2020/3/8 16:15
+     */
+    PageInfo<GoodsSearchListVo> searchGoods(GoodsSearchDto dto);
 
 }
