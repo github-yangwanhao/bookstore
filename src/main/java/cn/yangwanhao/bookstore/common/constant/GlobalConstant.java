@@ -3,6 +3,9 @@ package cn.yangwanhao.bookstore.common.constant;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
  *
  * 系统常量类
@@ -39,6 +42,8 @@ public final class GlobalConstant {
     public static final char [] LETTER_SOURCE = {'0','1','2','3','4','5','6','7','8','9','a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z'};
 
     public static final String INIT_LOGIN_IP = "0.0.0.0";
+
+    public static final List<String> PIC_EXTENSION = Arrays.asList("jpg", "png", "jpeg");
 
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static final class RedisPrefixKey {

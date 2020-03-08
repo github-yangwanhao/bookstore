@@ -58,23 +58,23 @@ public interface GoodsService {
 
     /**
      * Description: 上架商品
-     * @param goodsId 商品id
+     * @param goodsIds 商品id数组
      * @param loginUserId 当前登录用户id
      * @return
      * @author 杨万浩
      * @createDate 2019/12/11 17:42
      */
-    Integer onShelfGoods(Long goodsId, Long loginUserId);
+    Integer onShelfGoods(Long[] goodsIds, Long loginUserId);
 
     /**
      * Description: 下架商品
-     * @param goodsId 商品id
+     * @param goodsIds 商品id数组
      * @param loginUserId 当前登录用户id
      * @return
      * @author 杨万浩
      * @createDate 2019/12/11 17:42
      */
-    Integer offShelfGoods(Long goodsId, Long loginUserId);
+    Integer offShelfGoods(Long[] goodsIds, Long loginUserId);
 
     /**
      * Description: 删除商品

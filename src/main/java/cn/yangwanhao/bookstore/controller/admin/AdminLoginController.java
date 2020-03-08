@@ -79,7 +79,7 @@ public class AdminLoginController extends BaseController {
         // 设置用户信息session
         request.getSession().setAttribute("loginUser", vo);
         HttpSession session = request.getSession();
-        session.setMaxInactiveInterval(10 * 60);
+        session.setMaxInactiveInterval(30 * 60);
         // 删除错误信息session
         request.getSession().removeAttribute("errorMsg");
         return loginSuccess(request, vo);

@@ -25,7 +25,9 @@ public class GoodsListVo implements Serializable {
 
     private Long goodsId;
 
-    private Integer goodsStatus;
+    private Long goodsIdString;
+
+    private String title;
 
     private Long price;
 
@@ -37,19 +39,15 @@ public class GoodsListVo implements Serializable {
 
     private String categoryString;
 
-    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
-    private Date createTime;
-
-    private Long goodsBuyVersion;
-
-    private String title;
-
     private String imgs;
 
-    private String tags;
+    private Integer goodsStatus;
 
-    private String author;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    private Date createTime;
 
-    private String publisher;
+    public String getGoodsIdString() {
+        return String.valueOf(this.goodsId);
+    }
 
 }

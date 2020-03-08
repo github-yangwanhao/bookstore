@@ -3,23 +3,37 @@
 <mapper namespace="cn.yangwanhao.bookstore.mapper.custom.CustomGoodsMapper" >
 
   <resultMap id="goodsVoResultMap" type="cn.yangwanhao.bookstore.vo.GoodsVo">
-    <result column="id" property="goodsId" jdbcType="BIGINT" />
+    <result column="id" property="id" jdbcType="BIGINT" />
+    <result column="price" property="price" jdbcType="BIGINT" />
+    <result column="stock" property="stock" jdbcType="INTEGER" />
+    <result column="category" property="category" jdbcType="INTEGER" />
+    <result column="title" property="title" jdbcType="VARCHAR" />
+    <result column="imgs" property="images" jdbcType="VARCHAR" />
+    <result column="tags" property="tags" jdbcType="VARCHAR" />
+    <result column="detail" property="detail" jdbcType="VARCHAR" />
+    <result column="author" property="author" jdbcType="VARCHAR" />
+    <result column="publisher" property="publisher" jdbcType="VARCHAR" />
+    <result column="isbn" property="isbn" jdbcType="VARCHAR" />
     <result column="goods_version" property="goodsVersion" jdbcType="BIGINT" />
   </resultMap>
 
     <select id="selectGoods" resultMap="goodsVoResultMap">
     SELECT
-    gb.id, gb.goods_version
+    gb.id, gb.price, gb.stock, gb.category, gb.goods_version,
+    gi.title, gi.imgs, gi.tags, gi.detail,
+    gbk.author, gbk.publisher, gbk.isbn
     FROM goods_base gb
-    WGERE gb.id=#{goodsId}
+    LEFT JOIN goods_info gi ON gi.id= gb.id
+    LEFT JOIN goods_books gbk ON gbk.goods_id=gb.id
+    WHERE gb.id=#{goodsId}
   </select>
 
   <insert id="insertGoodsBaseGenerateId" useGeneratedKeys="true" keyProperty="id">
-      insert into goods_base (goods_status, price,
+      insert into goods_base (id, goods_status, price,
       stock, category, goods_version,
       goods_buy_version, create_time, create_user_id,
       update_time, update_user_id)
-      values (#{goodsStatus,jdbcType=INTEGER}, #{price,jdbcType=BIGINT},
+      values (#{id,jdbcType=BIGINT}, #{goodsStatus,jdbcType=INTEGER}, #{price,jdbcType=BIGINT},
         #{stock,jdbcType=INTEGER}, #{category,jdbcType=INTEGER}, #{goodsVersion,jdbcType=BIGINT},
         #{goodsBuyVersion,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, #{createUserId,jdbcType=BIGINT},
         #{updateTime,jdbcType=TIMESTAMP}, #{updateUserId,jdbcType=BIGINT})
@@ -27,27 +41,24 @@
 
     <resultMap id="goodsListVoResultMap" type="cn.yangwanhao.bookstore.vo.GoodsListVo">
         <result column="id" property="goodsId" jdbcType="BIGINT" />
-        <result column="goods_status" property="goodsStatus" jdbcType="INTEGER" />
+        <result column="title" property="title" jdbcType="VARCHAR" />
         <result column="price" property="price" jdbcType="BIGINT" />
         <result column="stock" property="stock" jdbcType="INTEGER" />
         <result column="category" property="category" jdbcType="INTEGER" />
-        <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
-        <result column="goods_buy_version" property="goodsBuyVersion" jdbcType="BIGINT" />
-        <result column="title" property="title" jdbcType="VARCHAR" />
         <result column="imgs" property="imgs" jdbcType="VARCHAR" />
-        <result column="tags" property="tags" jdbcType="VARCHAR" />
-        <result column="author" property="author" jdbcType="VARCHAR" />
-        <result column="publisher" property="publisher" jdbcType="VARCHAR" />
+        <result column="goods_status" property="goodsStatus" jdbcType="INTEGER" />
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+        <result column="name" property="categoryString" jdbcType="VARCHAR" />
     </resultMap>
 
     <select id="selectGoodsList" parameterType="cn.yangwanhao.bookstore.dto.GoodsListDto" resultMap="goodsListVoResultMap">
         SELECT
-        gb.id, gb.goods_status, gb.price, gb.stock, gb.category, gb.create_time, gb.goods_buy_version,
-        gi.title, gi.imgs, gi.tags,
-        book.author, book.publisher
+        gb.id, gb.price, gb.stock, gb.category, gb.goods_status, gb.create_time,
+        gi.title, gi.imgs,
+        c.name
         FROM goods_base gb
         LEFT JOIN goods_info gi ON gi.id=gb.id
-        LEFT JOIN goods_books book ON book.goods_id=gb.id
+        LEFT JOIN category c ON gb.category=c.id
         <where>
             <if test="title != null and title != ''">
                 gi.title LIKE CONCAT('%', #{title}, '%')
@@ -77,4 +88,23 @@
         WHERE category=#{categoryId}
         LIMIT 1
     </select>
+
+    <update id="onShelves">
+        UPDATE goods_base
+        SET goods_status=1, update_time=now(), update_user_id=#{loginUserId}
+        WHERE id IN
+        <foreach collection="ids" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </update>
+
+    <update id="offShelves">
+        UPDATE goods_base
+        SET goods_status=0, update_time=now(), update_user_id=#{loginUserId}
+        WHERE id IN
+        <foreach collection="ids" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </update>
+
 </mapper>

@@ -61,7 +61,7 @@ public class OrderServiceImpl implements OrderService {
         Long[] goodsPrices = new Long[goodsIds.length];
         for (int i=0; i<goodsIds.length; i++) {
             GoodsVo goodsVo = goodsService.getGoodsInfo(goodsIds[i]);
-            goodsPrices[i] = goodsVo.getPriceLong();
+            goodsPrices[i] = goodsVo.getPrice();
         }
 
         // 计算订单总价格

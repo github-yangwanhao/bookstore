@@ -41,21 +41,21 @@ public interface CustomCartMapper {
 
     /**
      * Description: 管理员上架某商品,购物车中即将商品表为已上架
-     * @param goodsId 商品id
+     * @param ids 商品ids
      * @return
      * @author 杨万浩
      * @createDate 2019/12/10 13:40
      */
-    Integer onShelfGoods(Long goodsId);
+    Integer onShelfGoods(@Param("ids") Long[] ids);
 
     /**
      * Description: 管理员下架某商品,购物车中将商品标为已下架
-     * @param goodsId 商品id
+     * @param ids 商品ids
      * @return
      * @author 杨万浩
      * @createDate 2019/12/10 13:40
      */
-    Integer offShelfGoods(Long goodsId);
+    Integer offShelfGoods(@Param("ids") Long[] ids);
 
     /**
      * Description: 管理员删除了某个商品,购物车中将商品标记为已删除

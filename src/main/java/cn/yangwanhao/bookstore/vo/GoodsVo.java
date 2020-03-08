@@ -1,5 +1,6 @@
 package cn.yangwanhao.bookstore.vo;
 
+import cn.yangwanhao.bookstore.common.util.BigDecimalUtils;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,12 +20,59 @@ import java.io.Serializable;
 @AllArgsConstructor
 public class GoodsVo implements Serializable {
 
-    private Long goodsId;
+    private Long id;
 
-    private Long goodsVersion;
-
-    private Long priceLong;
+    private Long price;
 
     private Double priceDouble;
+
+    /**
+     * 库存
+     */
+    private Integer stock;
+
+    /**
+     * 分类
+     */
+    private Integer category;
+
+    /**
+     * 名称
+     */
+    private String title;
+
+    /**
+     * 主图
+     */
+    private String images;
+
+    private String thumbnailImage;
+
+    /**
+     * 标签
+     */
+    private String tags;
+
+    /**
+     * 详情
+     */
+    private String detail;
+
+    /**
+     * 作者
+     */
+    private String author;
+
+    /**
+     * 出版社
+     */
+    private String publisher;
+
+    /**
+     * ISBN
+     */
+    private String isbn;
+
+    private Long goodsVersion;
 
 }

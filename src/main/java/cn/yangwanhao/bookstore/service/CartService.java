@@ -58,21 +58,21 @@ public interface CartService {
 
     /**
      * Description: 管理员上架某商品,购物车中即将商品表为已上架
-     * @param goodsId 商品id
+     * @param goodsIds 商品ids
      * @return
      * @author 杨万浩
      * @createDate 2019/12/10 10:25
      */
-    Integer onShelfGoods(Long goodsId);
+    Integer onShelfGoods(Long[] goodsIds);
 
     /**
      * Description: 管理员下架某商品,购物车中将商品标为已下架
-     * @param goodsId 商品id
+     * @param goodsIds 商品ids
      * @return
      * @author 杨万浩
      * @createDate 2019/12/10 10:25
      */
-    Integer offShelfGoods(Long goodsId);
+    Integer offShelfGoods(Long[] goodsIds);
 
     /**
      * Description: 管理员删除了某个商品,购物车中将商品标记为已删除

@@ -103,13 +103,13 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public Integer onShelfGoods(Long goodsId) {
-        return customCartMapper.onShelfGoods(goodsId);
+    public Integer onShelfGoods(Long[] goodsIds) {
+        return customCartMapper.onShelfGoods(goodsIds);
     }
 
     @Override
-    public Integer offShelfGoods(Long goodsId) {
-        return customCartMapper.offShelfGoods(goodsId);
+    public Integer offShelfGoods(Long[] goodsIds) {
+        return customCartMapper.offShelfGoods(goodsIds);
     }
 
     @Override

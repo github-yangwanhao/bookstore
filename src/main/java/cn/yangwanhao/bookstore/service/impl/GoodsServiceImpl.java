@@ -3,6 +3,8 @@ package cn.yangwanhao.bookstore.service.impl;
 import cn.yangwanhao.bookstore.common.constant.GlobalConstant;
 import cn.yangwanhao.bookstore.common.enums.GoodsStatusEnum;
 import cn.yangwanhao.bookstore.common.util.BigDecimalUtils;
+import cn.yangwanhao.bookstore.common.util.IdUtils;
+import cn.yangwanhao.bookstore.common.util.PicNameUtils;
 import cn.yangwanhao.bookstore.dto.GoodsBooksDto;
 import cn.yangwanhao.bookstore.dto.GoodsListDto;
 import cn.yangwanhao.bookstore.entity.*;
@@ -19,6 +21,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -53,9 +56,16 @@ public class GoodsServiceImpl implements GoodsService {
     @Resource
     private StringRedisTemplate stringRedisTemplate;
 
+    /*@Value("${pic.host}")
+    private String picHost;*/
+
     @Override
     public GoodsVo getGoodsInfo(Long goodsId) {
-        return customGoodsMapper.selectGoods(goodsId);
+        GoodsVo vo = customGoodsMapper.selectGoods(goodsId);
+        vo.setPriceDouble(BigDecimalUtils.movePointLeft(String.valueOf(vo.getPrice()), 2).doubleValue());
+        // 缩略图
+        vo.setThumbnailImage(PicNameUtils.getThumbnailName(vo.getImages()));
+        return vo;
     }
 
     @Override
@@ -63,7 +73,8 @@ public class GoodsServiceImpl implements GoodsService {
         int result = 0;
         // 插入goods_base(需要返回生成的id)
         GoodsBase goodsBase = new GoodsBase();
-        // goodsBase.setId(); id是自动生成
+        // id是生成的
+        goodsBase.setId(IdUtils.getSnowFlakeId());
         goodsBase.setGoodsStatus(GoodsStatusEnum.NORMAL.getValue());
         goodsBase.setPrice(dto.getPrice());
         goodsBase.setStock(dto.getStock());
@@ -93,8 +104,6 @@ public class GoodsServiceImpl implements GoodsService {
         goodsBooks.setPublisher(dto.getPublisher());
         goodsBooks.setIsbn(dto.getIsbn());
         result += goodsBooksMapper.insertSelective(goodsBooks);
-        // TODO 异步生成静态HTML
-        // TODO 添加ES索引
         return result == 3 ? 1:0;
     }
 
@@ -132,8 +141,6 @@ public class GoodsServiceImpl implements GoodsService {
         goodsBooks.setPublisher(dto.getPublisher());
         goodsBooks.setIsbn(dto.getIsbn());
         result += goodsBooksMapper.updateByExampleSelective(goodsBooks, example);
-        // TODO 异步生成静态HTML
-        // TODO 删除图片
         return result == 3 ? 1:0;
     }
 
@@ -148,29 +155,17 @@ public class GoodsServiceImpl implements GoodsService {
     }
 
     @Override
-    public Integer onShelfGoods(Long goodsId, Long loginUserId) {
-        GoodsBase goodsBase = new GoodsBase();
-        goodsBase.setId(goodsId);
-        goodsBase.setGoodsStatus(GoodsStatusEnum.NORMAL.getValue());
-        goodsBase.setUpdateTime(new Date());
-        goodsBase.setUpdateUserId(loginUserId);
+    public Integer onShelfGoods(Long[] goodsIds, Long loginUserId) {
         // 购物车上架商品
-        cartService.onShelfGoods(goodsId);
-        // TODO 加入搜索项(添加ES索引)
-        return goodsBaseMapper.updateByPrimaryKeySelective(goodsBase);
+        cartService.onShelfGoods(goodsIds);
+        return customGoodsMapper.onShelves(goodsIds, loginUserId);
     }
 
     @Override
-    public Integer offShelfGoods(Long goodsId, Long loginUserId) {
-        GoodsBase goodsBase = new GoodsBase();
-        goodsBase.setId(goodsId);
-        goodsBase.setGoodsStatus(GoodsStatusEnum.OFF_THE_SHELF.getValue());
-        goodsBase.setUpdateTime(new Date());
-        goodsBase.setUpdateUserId(loginUserId);
+    public Integer offShelfGoods(Long[] goodsIds, Long loginUserId) {
         // 购物车下架商品
-        cartService.offShelfGoods(goodsId);
-        // TODO 删除搜索项(删除ES索引)
-        return goodsBaseMapper.updateByPrimaryKeySelective(goodsBase);
+        cartService.offShelfGoods(goodsIds);
+        return customGoodsMapper.offShelves(goodsIds, loginUserId);
     }
 
     @Override
@@ -187,9 +182,6 @@ public class GoodsServiceImpl implements GoodsService {
         result += goodsBooksMapper.deleteByExample(example);
         // 购物车删除商品
         cartService.removeCartGoods(goodsId, loginUserId);
-        // TODO 删除图片
-        // TODO 删除HTML
-        // TODO 删除ES索引
         return result == 3 ? 1:0;
     }
 
@@ -202,15 +194,16 @@ public class GoodsServiceImpl implements GoodsService {
             // 设置价格
             vo.setPriceDouble(BigDecimalUtils.movePointLeft(vo.getPrice().toString(), 2).doubleValue());
             // 设置图片
-            vo.setImgs(StringUtils.isBlank(vo.getImgs()) ? null:vo.getImgs().split(",")[0]);
-            String json = stringRedisTemplate.opsForValue().get(GlobalConstant.RedisPrefixKey.DICTIONARY_PREFIX+vo.getCategory());
+            // vo.setImgs(StringUtils.isBlank(vo.getImgs()) ? null:vo.getImgs().split(",")[0]);
+            vo.setImgs(StringUtils.isBlank(vo.getImgs()) ? null: PicNameUtils.getThumbnailName(vo.getImgs()));
+            /*String json = stringRedisTemplate.opsForValue().get(GlobalConstant.RedisPrefixKey.DICTIONARY_PREFIX+vo.getCategory());
             Category category = null;
             try {
                 category = objectMapper.readValue(json, Category.class);
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            vo.setCategoryString(category.getName());
+            vo.setCategoryString(category.getName());*/
         });
         return new PageInfo<>(goodsListVos);
     }

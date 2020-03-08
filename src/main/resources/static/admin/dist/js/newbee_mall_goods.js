@@ -3,20 +3,14 @@ $(function () {
         url: '/admin/goods/list',
         datatype: "json",
         colModel: [
-            {label: '商品编号', name: 'goodsId', index: 'goodsId', width: 60, key: true},
-            {label: '商品名', name: 'goodsName', index: 'goodsName', width: 120},
-            {label: '商品简介', name: 'goodsIntro', index: 'goodsIntro', width: 120},
-            {label: '商品图片', name: 'goodsCoverImg', index: 'goodsCoverImg', width: 120, formatter: coverImageFormatter},
-            {label: '商品库存', name: 'stockNum', index: 'stockNum', width: 60},
-            {label: '商品售价', name: 'sellingPrice', index: 'sellingPrice', width: 60},
-            {
-                label: '上架状态',
-                name: 'goodsSellStatus',
-                index: 'goodsSellStatus',
-                width: 80,
-                formatter: goodsSellStatusFormatter
-            },
-            {label: '创建时间', name: 'createTime', index: 'createTime', width: 60}
+            {label: '商品编号', name: 'goodsIdString', index: 'goodsIdString', width: 60, key: true},
+            {label: '商品名字', name: 'title', index: 'title', width: 120},
+            {label: '商品售价', name: 'priceDouble', index: 'priceDouble', width: 60},
+            {label: '商品库存', name: 'stock', index: 'stock', width: 60},
+            {label: '商品分类', name: 'categoryString', index: 'categoryString', width: 60},
+            {label: '商品图片', name: 'imgs', index: 'imgs', width: 120, formatter: coverImageFormatter},
+            {label: '商品状态', name: 'goodsStatus', index: 'goodsStatus', width: 80, formatter: goodsSellStatusFormatter},
+            {label: '创建时间', name: 'createTime', index: 'createTime', width: 80}
         ],
         height: 760,
         rowNum: 20,
@@ -30,14 +24,13 @@ $(function () {
         pager: "#jqGridPager",
         jsonReader: {
             root: "data.list",
-            page: "data.currPage",
-            total: "data.totalPage",
-            records: "data.totalCount"
+            page: "data.pageNum",
+            total: "data.pages",
+            records: "data.total"
         },
         prmNames: {
             page: "page",
             rows: "limit",
-            order: "order",
         },
         gridComplete: function () {
             //隐藏grid底部滚动条
@@ -51,16 +44,16 @@ $(function () {
 
     function goodsSellStatusFormatter(cellvalue) {
         //商品上架状态 0-上架 1-下架
-        if (cellvalue == 0) {
+        if (cellvalue == 1) {
             return "<button type=\"button\" class=\"btn btn-block btn-success btn-sm\" style=\"width: 80%;\">销售中</button>";
         }
-        if (cellvalue == 1) {
+        if (cellvalue == 0) {
             return "<button type=\"button\" class=\"btn btn-block btn-secondary btn-sm\" style=\"width: 80%;\">已下架</button>";
         }
     }
 
     function coverImageFormatter(cellvalue) {
-        return "<img src='" + cellvalue + "' height=\"80\" width=\"80\" alt='商品主图'/>";
+        return "<img src='http://121.36.150.173:8888/" + cellvalue + "' height=\"80\" width=\"80\" alt='商品主图'/>";
     }
 
 });
@@ -80,7 +73,7 @@ function reload() {
  * 添加商品
  */
 function addGoods() {
-    window.location.href = "/admin/goods/edit";
+    window.location.href = "/admin/page/goods-edit";
 }
 
 /**
@@ -91,7 +84,7 @@ function editGoods() {
     if (id == null) {
         return;
     }
-    window.location.href = "/admin/goods/edit/" + id;
+    window.location.href = "/admin/page/goods-edit/" + id;
 }
 
 /**
@@ -112,11 +105,11 @@ function putUpGoods() {
             if (flag) {
                 $.ajax({
                     type: "PUT",
-                    url: "/admin/goods/status/0",
+                    url: "/admin/goods/status/1",
                     contentType: "application/json",
                     data: JSON.stringify(ids),
                     success: function (r) {
-                        if (r.resultCode == 200) {
+                        if (r.code === 200) {
                             swal("上架成功", {
                                 icon: "success",
                             });
@@ -152,11 +145,11 @@ function putDownGoods() {
             if (flag) {
                 $.ajax({
                     type: "PUT",
-                    url: "/admin/goods/status/1",
+                    url: "/admin/goods/status/0",
                     contentType: "application/json",
                     data: JSON.stringify(ids),
                     success: function (r) {
-                        if (r.resultCode == 200) {
+                        if (r.code === 200) {
                             swal("下架成功", {
                                 icon: "success",
                             });

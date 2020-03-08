@@ -17,10 +17,19 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class GoodsBooksDto extends GoodsDto {
 
+    /**
+     * 作者
+     */
     private String author;
 
+    /**
+     * 出版社
+     */
     private String publisher;
 
+    /**
+     * ISBN
+     */
     private String isbn;
 
 }

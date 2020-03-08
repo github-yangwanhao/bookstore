@@ -58,4 +58,24 @@ public interface CustomGoodsMapper {
      */
     GoodsBase selectOneGoodsByCategory(@Param("categoryId") Integer categoryId);
 
+    /**
+     * Description: 商品上架
+     * @param ids ids
+     * @param loginUserId 当前登录用户id
+     * @return
+     * @author 杨万浩
+     * @date 2020/3/8 13:47
+     */
+    Integer onShelves(@Param("ids") Long[] ids, @Param("loginUserId") Long loginUserId);
+
+    /**
+     * Description: 商品下架
+     * @param ids ids
+     * @param loginUserId 当前登录用户id
+     * @return
+     * @author 杨万浩
+     * @date 2020/3/8 13:48
+     */
+    Integer offShelves(@Param("ids") Long[] ids, @Param("loginUserId") Long loginUserId);
+
 }

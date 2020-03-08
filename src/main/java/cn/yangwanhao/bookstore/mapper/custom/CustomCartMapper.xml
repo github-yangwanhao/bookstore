@@ -48,13 +48,21 @@
   <update id="onShelfGoods">
     UPDATE cart
     SET goods_is_off_the_shelves=0
-    WHERE goods_id=#{goodsId} AND goods_is_off_the_shelves=1
+    WHERE goods_id IN
+    <foreach collection="ids" item="id" open="(" close=")" separator=",">
+      #{id}
+    </foreach>
+    AND goods_is_off_the_shelves=1
   </update>
 
   <update id="offShelfGoods">
     UPDATE cart
     SET goods_is_off_the_shelves=1
-    WHERE goods_id=#{goodsId} AND goods_is_off_the_shelves=0
+    WHERE goods_id IN
+    <foreach collection="ids" item="id" open="(" close=")" separator=",">
+      #{id}
+    </foreach>
+    AND goods_is_off_the_shelves=0
   </update>
 
   <update id="manageDeleteGoods">

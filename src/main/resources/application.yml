@@ -28,3 +28,21 @@ logging:
     org.springframework.data.mongodb.core.MongoTemplate: DEBUG
     cn.yangwanhao.bookstore.mapper: DEBUG
     web: DEBUG
+fdfs:
+  # 读取时间
+  soTimeout: 1501
+  # 连接超时时间
+  connectTimeout: 601
+  # 编码默认UTF-8，charset属性不能自定义
+  # charset: UTF-8
+  # 缩略图
+  thumbImage:
+    # 宽
+    width: 80
+    # 高
+    height: 80
+  # tracker列表
+  trackerList:
+    - 121.36.150.173:22122
+pic:
+  host: http://121.36.150.173:8888/

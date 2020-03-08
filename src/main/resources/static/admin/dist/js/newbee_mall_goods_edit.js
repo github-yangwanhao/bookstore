@@ -13,12 +13,12 @@ $(function () {
             'italic', 'underline', 'strikethrough', 'lineheight', 'removeformat', '|', 'multiimage',
             'table', 'hr', 'emoticons', 'baidumap', 'pagebreak',
             'anchor', 'link', 'unlink'],
-        uploadJson: '/admin/upload/file',
+        uploadJson: '/admin/pic/upload',
         filePostName: 'file'
     });
 
     new AjaxUpload('#uploadGoodsCoverImg', {
-        action: '/admin/upload/file',
+        action: '/admin/pic/upload',
         name: 'file',
         autoSubmit: true,
         responseType: "json",
@@ -29,9 +29,10 @@ $(function () {
             }
         },
         onComplete: function (file, r) {
-            if (r != null && r.resultCode == 200) {
-                $("#goodsCoverImg").attr("src", r.data);
-                $("#goodsCoverImg").attr("style", "width: 128px;height: 128px;display:block;");
+            if (r != null && r.code == 200) {
+                $("#picName").val(r.data.originalImg);
+                $("#goodsCoverImg").attr("src", 'http://121.36.150.173:8888/'+r.data.thumbnailImg);
+                $("#goodsCoverImg").attr("style", "width: 128px;height: 128px;displ4ay:block;");
                 return false;
             } else {
                 alert("error");
@@ -40,157 +41,143 @@ $(function () {
     });
 });
 
-$('#confirmButton').click(function () {
-    var goodsName = $('#goodsName').val();
-    var tag = $('#tag').val();
-    var originalPrice = $('#originalPrice').val();
-    var sellingPrice = $('#sellingPrice').val();
-    var stockNum = $('#stockNum').val();
-    var goodsIntro = $('#goodsIntro').val();
-    var goodsCategoryId = $('#levelThree option:selected').val();
-    var goodsSellStatus = $("input[name='goodsSellStatus']:checked").val();
-    var goodsDetailContent = editor.html();
-    if (isNull(goodsCategoryId)) {
+function confirmData () {
+    var category = $('#category option:selected').val();
+    var title = $('#title').val();
+    var priceDouble = $('#priceDouble').val();
+    var stock = $('#stock').val();
+    var tags = $('#tags').val();
+    var author = $('#author').val();
+    var publisher = $('#publisher').val();
+    var isbn = $('#isbn').val();
+    var images = $('#picName').val();
+    var detail = editor.html();
+    if (isNull(category)) {
         swal("请选择分类", {
             icon: "error",
         });
         return;
     }
-    if (isNull(goodsName)) {
+    if (isNull(title)) {
         swal("请输入商品名称", {
             icon: "error",
         });
         return;
     }
-    if (!validLength(goodsName, 100)) {
+    if (!validLength(title, 100)) {
         swal("请输入商品名称", {
             icon: "error",
         });
         return;
     }
-    if (isNull(tag)) {
+    if (isNull(tags)) {
         swal("请输入商品小标签", {
             icon: "error",
         });
         return;
     }
-    if (!validLength(tag, 100)) {
+    if (!validLength(tags, 100)) {
         swal("标签过长", {
             icon: "error",
         });
         return;
     }
-    if (isNull(goodsIntro)) {
-        swal("请输入商品简介", {
+    if (isNull(priceDouble) || priceDouble < 0) {
+        swal("请输入正确的商品价格", {
             icon: "error",
         });
         return;
     }
-    if (!validLength(goodsIntro, 100)) {
-        swal("简介过长", {
-            icon: "error",
-        });
-        return;
-    }
-    if (isNull(originalPrice) || originalPrice < 1) {
-        swal("请输入商品价格", {
-            icon: "error",
-        });
-        return;
-    }
-    if (isNull(sellingPrice) || sellingPrice < 1) {
-        swal("请输入商品售卖价", {
-            icon: "error",
-        });
-        return;
-    }
-    if (isNull(stockNum) || sellingPrice < 0) {
+    if (isNull(stock) || stock < 0) {
         swal("请输入商品库存数", {
             icon: "error",
         });
         return;
     }
-    if (isNull(goodsSellStatus)) {
-        swal("请选择上架状态", {
-            icon: "error",
-        });
-        return;
-    }
-    if (isNull(goodsDetailContent)) {
+    if (isNull(detail)) {
         swal("请输入商品介绍", {
             icon: "error",
         });
         return;
     }
-    if (!validLength(goodsDetailContent, 50000)) {
-        swal("商品介绍内容过长", {
+    if (isNull(author)) {
+        swal("请输入书籍作者", {
             icon: "error",
         });
         return;
     }
-    $('#goodsModal').modal('show');
-});
+    if (isNull(publisher)) {
+        swal("请输入出版社名称", {
+            icon: "error",
+        });
+        return;
+    }
+    if (isNull(isbn)) {
+        swal("请输入书籍ISBN", {
+            icon: "error",
+        });
+        return;
+    }
+    if (isNull(images)) {
+        swal("请上传商品主图", {
+            icon: "error",
+        });
+        return;
+    }
+}
 
 $('#saveButton').click(function () {
-    var goodsId = $('#goodsId').val();
-    var goodsCategoryId = $('#levelThree option:selected').val();
-    var goodsName = $('#goodsName').val();
-    var tag = $('#tag').val();
-    var originalPrice = $('#originalPrice').val();
-    var sellingPrice = $('#sellingPrice').val();
-    var goodsIntro = $('#goodsIntro').val();
-    var stockNum = $('#stockNum').val();
-    var goodsSellStatus = $("input[name='goodsSellStatus']:checked").val();
-    var goodsDetailContent = editor.html();
-    var goodsCoverImg = $('#goodsCoverImg')[0].src;
-    if (isNull(goodsCoverImg) || goodsCoverImg.indexOf('img-upload') != -1) {
-        swal("封面图片不能为空", {
-            icon: "error",
-        });
-        return;
-    }
+    confirmData();
+    var id = $('#id').val();
+    var category = $('#category option:selected').val();
+    var title = $('#title').val();
+    var priceDouble = $('#priceDouble').val();
+    var stock = $('#stock').val();
+    var tags = $('#tags').val();
+    var author = $('#author').val();
+    var publisher = $('#publisher').val();
+    var isbn = $('#isbn').val();
+    var images = $('#picName').val();
+    var detail = editor.html();
     var url = '/admin/goods/save';
     var swlMessage = '保存成功';
     var data = {
-        "goodsName": goodsName,
-        "goodsIntro": goodsIntro,
-        "goodsCategoryId": goodsCategoryId,
-        "tag": tag,
-        "originalPrice": originalPrice,
-        "sellingPrice": sellingPrice,
-        "stockNum": stockNum,
-        "goodsDetailContent": goodsDetailContent,
-        "goodsCoverImg": goodsCoverImg,
-        "goodsCarousel": goodsCoverImg,
-        "goodsSellStatus": goodsSellStatus
+        "priceDouble": priceDouble,
+        "stock": stock,
+        "category": category,
+        "title": title,
+        "images": images,
+        "tags": tags,
+        "detail": detail,
+        "author": author,
+        "publisher": publisher,
+        "isbn": isbn,
     };
-    if (goodsId > 0) {
+    if (id > 0) {
         url = '/admin/goods/update';
         swlMessage = '修改成功';
         data = {
-            "goodsId": goodsId,
-            "goodsName": goodsName,
-            "goodsIntro": goodsIntro,
-            "goodsCategoryId": goodsCategoryId,
-            "tag": tag,
-            "originalPrice": originalPrice,
-            "sellingPrice": sellingPrice,
-            "stockNum": stockNum,
-            "goodsDetailContent": goodsDetailContent,
-            "goodsCoverImg": goodsCoverImg,
-            "goodsCarousel": goodsCoverImg,
-            "goodsSellStatus": goodsSellStatus
+            "id": id,
+            "priceDouble": priceDouble,
+            "stock": stock,
+            "category": category,
+            "title": title,
+            "images": images,
+            "tags": tags,
+            "detail": detail,
+            "author": author,
+            "publisher": publisher,
+            "isbn": isbn,
         };
     }
     console.log(data);
     $.ajax({
-        type: 'POST',//方法类型
+        type: 'POST',
         url: url,
         contentType: 'application/json',
         data: JSON.stringify(data),
         success: function (result) {
-            if (result.resultCode == 200) {
-                $('#goodsModal').modal('hide');
+            if (result.code == 200) {
                 swal({
                     title: swlMessage,
                     type: 'success',
@@ -200,10 +187,9 @@ $('#saveButton').click(function () {
                     confirmButtonClass: 'btn btn-success',
                     buttonsStyling: false
                 }).then(function () {
-                    window.location.href = "/admin/goods";
+                    window.location.href = "/admin/page/goods";
                 })
             } else {
-                $('#goodsModal').modal('hide');
                 swal(result.message, {
                     icon: "error",
                 });
@@ -219,10 +205,10 @@ $('#saveButton').click(function () {
 });
 
 $('#cancelButton').click(function () {
-    window.location.href = "/admin/goods";
+    window.location.href = "/admin/page/goods";
 });
 
-$('#levelOne').on('change', function () {
+/*$('#levelOne').on('change', function () {
     $.ajax({
         url: '/admin/categories/listForSelect?categoryId=' + $(this).val(),
         type: 'GET',
@@ -255,9 +241,9 @@ $('#levelOne').on('change', function () {
             });
         }
     });
-});
+});*/
 
-$('#levelTwo').on('change', function () {
+/*$('#levelTwo').on('change', function () {
     $.ajax({
         url: '/admin/categories/listForSelect?categoryId=' + $(this).val(),
         type: 'GET',
@@ -283,4 +269,4 @@ $('#levelTwo').on('change', function () {
             });
         }
     });
-});
+});*/
