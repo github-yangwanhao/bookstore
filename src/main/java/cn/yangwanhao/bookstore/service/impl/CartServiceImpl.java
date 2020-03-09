@@ -59,6 +59,19 @@ public class CartServiceImpl implements CartService {
     @Override
     public Integer addCartGoods(Long goodsId, Integer goodsNum, Long loginUserId) {
         Cart cart = new Cart();
+        // 先查询购物车中是否有这个商品
+        CartExample example = new CartExample();
+        CartExample.Criteria criteria = example.createCriteria();
+        criteria.andUserIdEqualTo(loginUserId);
+        criteria.andGoodsIdEqualTo(goodsId);
+        List<Cart> carts = cartMapper.selectByExample(example);
+        // 如果有 商品数量++
+        if (carts.size() == 1) {
+            cart.setId(carts.get(0).getId());
+            cart.setGoodsNum(goodsNum + carts.get(0).getGoodsNum());
+            return cartMapper.updateByPrimaryKeySelective(cart);
+        }
+        // 如果没有 则插入
         cart.setUserId(loginUserId);
         cart.setGoodsId(goodsId);
         cart.setGoodsNum(goodsNum);

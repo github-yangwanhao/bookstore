@@ -7,6 +7,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.File;
@@ -23,6 +24,9 @@ public class BookstoreApplicationTests {
     @Autowired
     private ThumbImageConfig thumbImageConfig;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     @Test
     public void testFastDFSUpload() throws FileNotFoundException {
         File file = new File("D:\\壁纸\\龙猫1.jpg");
@@ -36,6 +40,12 @@ public class BookstoreApplicationTests {
         // 获取缩略图路径
         String path = thumbImageConfig.getThumbImagePath(storePath.getPath());
         System.out.println(path);
+    }
+
+    @Test
+    public void generatePassword() {
+        String password = "test";
+        System.out.println(passwordEncoder.encode(password));
     }
 
 }

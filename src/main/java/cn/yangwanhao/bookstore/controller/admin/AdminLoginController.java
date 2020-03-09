@@ -77,7 +77,7 @@ public class AdminLoginController extends BaseController {
         userService.resetPwdErrorCount(vo.getId());
         userService.updateLastLoginIp(vo.getId(), HttpUtils.getIpAddr(request));
         // 设置用户信息session
-        request.getSession().setAttribute("adminLoginUser", vo);
+        request.getSession().setAttribute(GlobalConstant.ADMIN_LOGIN_SESSION_KEY, vo);
         HttpSession session = request.getSession();
         session.setMaxInactiveInterval(30 * 60);
         // 删除错误信息session
@@ -104,7 +104,7 @@ public class AdminLoginController extends BaseController {
 
     @RequestMapping("/logout")
     public String logout(HttpServletRequest request) {
-        request.getSession().removeAttribute("adminLoginUser");
+        request.getSession().removeAttribute(GlobalConstant.ADMIN_LOGIN_SESSION_KEY);
         return "redirect:/admin/page/login";
     }
 

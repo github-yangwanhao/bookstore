@@ -1,5 +1,6 @@
 package cn.yangwanhao.bookstore.common.support;
 
+import cn.yangwanhao.bookstore.common.constant.GlobalConstant;
 import cn.yangwanhao.bookstore.vo.LoginUserVo;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
@@ -21,7 +22,7 @@ public class BaseController {
 
     protected LoginUserVo getLoginUser(HttpServletRequest request) {
         logger.info("获取登录用户信息");
-        LoginUserVo vo = (LoginUserVo) request.getSession().getAttribute("adminLoginUser");
+        LoginUserVo vo = (LoginUserVo) request.getSession().getAttribute(GlobalConstant.ADMIN_LOGIN_SESSION_KEY);
         if (vo == null) {
             vo = (LoginUserVo) request.getSession().getAttribute("portalLoginUser");
         }

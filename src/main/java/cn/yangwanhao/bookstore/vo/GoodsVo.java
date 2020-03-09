@@ -22,6 +22,8 @@ public class GoodsVo implements Serializable {
 
     private Long id;
 
+    /*private String idStr;*/
+
     private Long price;
 
     private Double priceDouble;
@@ -74,5 +76,9 @@ public class GoodsVo implements Serializable {
     private String isbn;
 
     private Long goodsVersion;
+
+   /* public String getIdStr() {
+        return String.valueOf(this.id);
+    }*/
 
 }

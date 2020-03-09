@@ -41,8 +41,9 @@
             </div>
 
             <div class="order">
-                <input class="car" type="button" th:onclick="'saveAndGoCart('+${vo.id}+')'" value="立即选购"/>
-                <input class="car" type="button" th:onclick="'saveToCart('+${vo.id}+')'" value="加入购物车"/>
+                <input type="hidden" id="goodsId" name="goodsId" th:value="${vo.id}" />
+                <input class="car" type="button" th:onclick="'saveAndGoCart()'" value="立即选购"/>
+                <input class="car" type="button" th:onclick="'saveToCart()'" value="加入购物车"/>
             </div>
             <div class="tb-extra ml20" id="J_tbExtra">
                 <dl>
@@ -91,15 +92,19 @@
     /**
      * 添加到购物车
      */
-    function saveToCart(id) {
-        var goodsCount = 1;
+    function saveToCart() {
+        var id = $("#goodsId").val();
+        var goodsNum = 1;
+        alert(id);
         var data = {
             "goodsId": id,
-            "goodsCount": goodsCount
+            "goodsNum": goodsNum
         };
+        alert(JSON.stringify(data));
+        var url = "/store/cart/addGoods";
         $.ajax({
             type: 'POST',
-            url: '/shop-cart',
+            url: url,
             contentType: 'application/json',
             data: JSON.stringify(data),
             success: function (result) {
@@ -120,10 +125,20 @@
                     });
                 }
             },
-            error: function () {
+            error: function (result) {
+                /*if (result.status == 401) {
+                    window.location.href = "/store/page/login?history=" + result.responseText;
+                }*/
                 swal("操作失败", {
                     icon: "error",
                 });
+            },
+            complete: function (xhr, status) {
+                var SESSION_STATUS = xhr.getResponseHeader("SESSIONSTATUS");
+                var LOCATION_HREF = xhr.getResponseHeader("CONTEXTPATH");
+                if (SESSION_STATUS == "TIMEOUT") {
+                    window.location.href = LOCATION_HREF;
+                }
             }
         });
     }
@@ -131,11 +146,12 @@
     /**
      * 添加到购物车并跳转至购物车页面
      */
-    function saveAndGoCart(id) {
-        var goodsCount = 1;
+    function saveAndGoCart() {
+        var id = $("#goodsId").val();
+        var goodsNum = 1;
         var data = {
             "goodsId": id,
-            "goodsCount": goodsCount
+            "goodsNum": goodsNum
         };
         $.ajax({
             type: 'POST',

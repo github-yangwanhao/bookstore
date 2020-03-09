@@ -45,6 +45,10 @@ public final class GlobalConstant {
 
     public static final List<String> PIC_EXTENSION = Arrays.asList("jpg", "png", "jpeg");
 
+    public static final String ADMIN_LOGIN_SESSION_KEY = "adminLoginUser";
+
+    public static final String PORTAL_LOGIN_SESSION_KEY = "portalLoginUser";
+
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static final class RedisPrefixKey {
 

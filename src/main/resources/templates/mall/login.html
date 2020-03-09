@@ -2,18 +2,18 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>NewBee商城-登录</title>
-    <link rel="stylesheet" th:href="@{mall/css/common.css}">
-    <link rel="stylesheet" th:href="@{mall/styles/login.css}">
-    <link rel="stylesheet" th:href="@{mall/styles/header.css}">
+    <title>图书商城-登录</title>
+    <link rel="stylesheet" th:href="@{/mall/css/common.css}">
+    <link rel="stylesheet" th:href="@{/mall/styles/login.css}">
+    <link rel="stylesheet" th:href="@{/mall/styles/header.css}">
     <link rel="stylesheet" th:href="@{/admin/plugins/sweetalert/sweetalert.css}"/>
 </head>
 <body>
-<div class="top center">
+<!--<div class="top center">
     <div class="logo center">
         <a href="./index.html" target="_blank"><img src="mall/image/login-logo-2.png" alt=""></a>
     </div>
-</div>
+</div>-->
 <div class="form center">
     <div class="login">
         <div class="login_center">
@@ -25,22 +25,20 @@
             </div>
             <form id="loginForm" onsubmit="return false;" action="##">
                 <div class="login_main center">
-                    <div class="login-info">手机号:&nbsp;<input class="login-info-input" type="text" name="loginName"
-                                                             id="loginName"
-                                                             placeholder="请输入你的手机号"/>
+                    <div class="login-info">手机号:&nbsp;
+                        <input type="hidden" id="history" name="history" th:value="${history!=null}?${history}: '/index'">
+                        <input class="login-info-input" type="text" name="loginname" id="loginname" placeholder="请输入你的登录名"/>
                     </div>
-                    <div class="login-info">密&nbsp;&nbsp;&nbsp;&nbsp;码:&nbsp;<input class="login-info-input"
-                                                                                    id="password"
-                                                                                    type="password"
-                                                                                    name="password"
-                                                                                    placeholder="请输入你的密码"/></div>
-                    <div class="login-info">
+                    <div class="login-info">密&nbsp;&nbsp;&nbsp;&nbsp;码:&nbsp;
+                        <input class="login-info-input" id="password" type="password" name="password" placeholder="请输入你的密码"/>
+                    </div>
+                    <!--<div class="login-info">
                         验证码:&nbsp;
                         <input class="login-info-input verify-code" type="text" name="verifyCode"
                                placeholder="请输入验证码" id="verifyCode"/>
                         <img alt="单击图片刷新！" style="top: 14px;position: relative;" th:src="@{/common/mall/kaptcha}"
                              onclick="this.src='/common/mall/kaptcha?d='+new Date()*1">
-                    </div>
+                    </div>-->
                 </div>
                 <div class="login_submit">
                     <input class="submit" type="submit" onclick="login()" value="立即登录">
@@ -56,8 +54,14 @@
 <script th:src="@{/admin/plugins/sweetalert/sweetalert.min.js}"></script>
 <script type="text/javascript">
     function login() {
-        var loginName = $("#loginName").val();
-        if (!validPhoneNumber(loginName)) {
+        var loginName = $("#loginname").val();
+        var password = $("#password").val();
+        var redirectUrl = $("#history").val();
+        var data = {
+            "username": loginName,
+            "password": password
+        }
+        /*if (!validPhoneNumber(loginName)) {
             swal('请输入正确的登录名(即手机号)', {
                 icon: "error",
             });
@@ -69,24 +73,26 @@
                 icon: "error",
             });
             return false;
-        }
-        var verifyCode = $("#verifyCode").val();
+        }*/
+        /*var verifyCode = $("#verifyCode").val();
         if (!validLength(verifyCode, 7)) {
             swal('请输入正确的验证码', {
                 icon: "error",
             });
             return false;
-        }
+        }*/
         //验证
-        var params = $("#loginForm").serialize();
-        var url = '/login';
+        // var params = $("#loginForm").serialize();
+        var url = '/store/login/login';
         $.ajax({
             type: 'POST',//方法类型
+            dataType: "json",
+            contentType:"application/json",
             url: url,
-            data: params,
+            data: JSON.stringify(data),
             success: function (result) {
                 if (result.code == 200) {
-                    window.location.href = '/index';
+                    window.location.href = '/store/login/success?uri=' + redirectUrl;
                 } else {
                     swal(result.message, {
                         icon: "error",
@@ -94,8 +100,8 @@
                 }
                 ;
             },
-            error: function () {
-                swal("操作失败", {
+            error: function (result) {
+                swal(result.responseJSON.message, {
                     icon: "error",
                 });
             }
