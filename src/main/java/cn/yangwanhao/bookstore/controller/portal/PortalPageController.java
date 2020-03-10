@@ -1,12 +1,22 @@
 package cn.yangwanhao.bookstore.controller.portal;
 
+import cn.yangwanhao.bookstore.common.enums.GoodsStatusEnum;
+import cn.yangwanhao.bookstore.common.support.BaseController;
+import cn.yangwanhao.bookstore.common.util.BigDecimalUtils;
+import cn.yangwanhao.bookstore.service.CartService;
+import cn.yangwanhao.bookstore.vo.CartGoodsListVo;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author 杨万浩
@@ -16,7 +26,10 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 @RequestMapping("/store/page")
 @Slf4j
-public class PortalPageController {
+public class PortalPageController extends BaseController {
+
+    @Autowired
+    private CartService cartService;
 
     @RequestMapping("/login")
     public ModelAndView toLogin(@RequestParam(value = "history", required = false) String history) {
@@ -32,6 +45,36 @@ public class PortalPageController {
     @RequestMapping("/register")
     public String toRegister() {
         return "/mall/register";
+    }
+
+    @RequestMapping("/cart")
+    public String toCart(HttpServletRequest request, Model model) {
+        List<CartGoodsListVo> vos = cartService.getCart(super.getLoginUserId(request));
+        // 购物车中商品总数量
+        // 购物车中商品总价格
+        Integer cartTotalGoodsNum = 0;
+        Double cartTotalPrice = 0D;
+        List<CartGoodsListVo> effective = new ArrayList<>();
+        List<CartGoodsListVo> expired = new ArrayList<>();
+        for (CartGoodsListVo vo: vos) {
+            if (vo.getGoodsStatus().equals(GoodsStatusEnum.NORMAL.getValue())) {
+                effective.add(vo);
+                cartTotalGoodsNum += vo.getGoodsNum();
+                cartTotalPrice = BigDecimalUtils.add(String.valueOf(cartTotalPrice), String.valueOf(vo.getGoodsTotalPrice())).doubleValue();
+            } else {
+                expired.add(vo);
+            }
+        }
+        model.addAttribute("effective", effective);
+        model.addAttribute("expired", expired);
+        model.addAttribute("cartTotalGoodsNum", cartTotalGoodsNum);
+        model.addAttribute("cartTotalPrice", cartTotalPrice);
+        return "/mall/cart";
+    }
+
+    @RequestMapping("/order-settle")
+    public String toOrderSettle(Model model, HttpServletRequest request) {
+        return "/mall/order-settle";
     }
 
 }

@@ -2,36 +2,29 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>NewBee商城-购物车</title>
-    <link rel="stylesheet" th:href="@{mall/css/iconfont.css}">
-    <link rel="stylesheet" th:href="@{mall/css/common.css}">
-    <link rel="stylesheet" th:href="@{mall/styles/header.css}">
-    <link rel="stylesheet" th:href="@{mall/styles/cart.css}">
+    <title>图书商城-购物车</title>
+    <link rel="stylesheet" th:href="@{/mall/css/iconfont.css}">
+    <link rel="stylesheet" th:href="@{/mall/css/common.css}">
+    <link rel="stylesheet" th:href="@{/mall/styles/header.css}">
+    <link rel="stylesheet" th:href="@{/mall/styles/cart.css}">
     <link rel="stylesheet" th:href="@{/admin/plugins/sweetalert/sweetalert.css}"/>
 </head>
 <body>
 
 <div id="cart">
     <div class="banner_x center">
-        <a th:href="@{/index}" target="_blank">
-            <div class="logo fl">
-                <img src="mall/image/new-bee-logo-3.png"/>
-            </div>
-        </a>
-
         <div class="wdgwc fl ml20">购物车</div>
         <div class="wxts fl ml20">温馨提示：产品是否购买成功，以最终下单为准哦，请尽快结算</div>
         <div class="clear"></div>
     </div>
     <div class="cart_line"></div>
     <div class="cart_bg">
-        <th:block th:if="${#lists.isEmpty(myShoppingCartItems)}">
+        <th:block th:if="${#lists.isEmpty(effective) and #lists.isEmpty(expired)}">
             <div class="list center">
-                <!-- todo 无购物项时 换背景图 -->
-                无数据
+                购物车是空的
             </div>
         </th:block>
-        <th:block th:unless="${#lists.isEmpty(myShoppingCartItems)}">
+        <th:block th:unless="${#lists.isEmpty(effective)}">
             <div class="list center">
                 <div class="top2 center">
                     <div class="sub_top fl">
@@ -43,21 +36,46 @@
                     <div class="sub_top fr">操作</div>
                     <div class="clear"></div>
                 </div>
-                <th:block th:each="item : ${myShoppingCartItems}">
+                <th:block th:each="item : ${effective}">
                     <div class="content2 center">
                         <div class="sub_content fl ">
                         </div>
-                        <div class="sub_content cover fl"><img th:src="@{${item.goodsCoverImg}}"></div>
-                        <div class="sub_content fl ft20" th:text="${item.goodsName}">商品名称</div>
-                        <div class="sub_content fl" th:text="${item.sellingPrice+'元'}">1299元</div>
+                        <div class="sub_content cover fl"><img th:src="@{${item.goodsCoverImageUrl}}"></div>
+                        <div class="sub_content fl ft20" th:text="${item.goodsTitle}"></div>
+                        <div class="sub_content fl" th:text="${item.priceDouble+'元'}"></div>
                         <div class="sub_content fl">
-                            <input class="goods_count" th:id="${'goodsCount'+item.cartItemId}" type="number"
-                                   th:onblur="'updateItem('+${item.cartItemId}+')'"
-                                   th:value="${item.goodsCount}" step="1" min="1"
-                                   max="5">
+                            <input class="goods_count" th:id="${'goodsCount'+item.cartId}" type="number"
+                                   th:onblur="'updateItem('+${item.cartId}+','+${item.goodsNum}+')'"
+                                   th:value="${item.goodsNum}" step="1" min="1">
                         </div>
-                        <div class="sub_content fl" th:text="${item.goodsCount*item.sellingPrice+'元'}">1299元</div>
-                        <div class="sub_content fl"><a href="##" th:onclick="'deleteItem('+${item.cartItemId}+')'">×</a>
+                        <div class="sub_content fl" th:text="${item.goodsTotalPrice+'元'}"></div>
+                        <div class="sub_content fl"><a href="##" th:onclick="'deleteItem('+${item.cartId}+')'">×</a>
+                        </div>
+                        <div class="clear"></div>
+                    </div>
+                </th:block>
+                <th:block th:each="item : ${expired}">
+                    <hr color="red" />
+                    <div class="content2 center">
+                        <div class="sub_content fl ">
+                        </div>
+                        <div class="sub_content cover fl">
+                            <img th:src="@{${item.goodsCoverImageUrl}}">
+                        </div>
+                        <div class="sub_content fl ft20" >
+                           <font color="#808080" th:text="${item.goodsTitle}+'(商品已经失效)'"></font>
+                        </div>
+                        <div class="sub_content fl" >
+                            <font color="#808080" th:text="${item.priceDouble+'元'}"></font>
+                        </div>
+                        <div class="sub_content fl">
+                            <input class="goods_count" th:value="${item.goodsNum}" disabled="disabled">
+                        </div>
+                        <div class="sub_content fl" >
+                            <font color="#808080" th:text="${item.goodsTotalPrice+'元'}"></font>
+                        </div>
+                        <div class="sub_content fl">
+                            <a href="##" th:onclick="'deleteItem('+${item.cartId}+')'">×</a>
                         </div>
                         <div class="clear"></div>
                     </div>
@@ -69,19 +87,19 @@
                 <ul>
                     <li><a th:href="@{/index}">继续购物</a></li>
                     <li>|</li>
-                    <li>共<span th:text="${itemsTotal}">13</span>件商品</li>
+                    <li>共<span th:text="${cartTotalGoodsNum}"></span>件商品</li>
                     <div class="clear"></div>
                 </ul>
             </div>
             <div class="order_div fr">
-                <div class="order_total fl">合计（不含运费）：<span th:text="${priceTotal}+'.00元'">1299.00元</span></div>
+                <div class="order_total fl">合计（不含运费）：<span th:text="${cartTotalPrice+'元'}"></span></div>
                 <div class="order_button fr">
-                    <th:block th:if="${itemsTotal == 0}">
+                    <th:block th:if="${cartTotalPrice == 0}">
                         <input class="order_button_c" type="button" name="tip"
                                onclick="tip()"
                                value="去结算"/>
                     </th:block>
-                    <th:block th:unless="${itemsTotal == 0}">
+                    <th:block th:unless="${cartTotalPrice == 0}">
                         <input class="order_button_d" type="button" name="settle"
                                onclick="settle()"
                                value="去结算"/>
@@ -122,13 +140,10 @@
      *
      * todo 判断是否与原值相同
      */
-    function updateItem(id) {
+    function updateItem(id, oldNum) {
         var domId = 'goodsCount' + id;
         var goodsCount = $("#" + domId).val();
-        if (goodsCount > 5) {
-            swal("单个商品最多可购买5个", {
-                icon: "error",
-            });
+        if (goodsCount == oldNum) {
             return;
         }
         if (goodsCount < 1) {
@@ -138,14 +153,15 @@
             return;
         }
         var data = {
-            "cartItemId": id,
-            "goodsCount": goodsCount
+            "cartId": id,
+            "num": goodsCount
         };
         $.ajax({
-            type: 'PUT',
-            url: '/shop-cart',
-            contentType: 'application/json',
-            data: JSON.stringify(data),
+            type: 'POST',
+            url: '/store/cart/update/goodsNum',
+            // contentType: 'application/json',
+            // data: JSON.stringify(data),
+            data: data,
             success: function (result) {
                 if (result.code == 200) {
                     window.location.reload();
@@ -155,8 +171,8 @@
                     });
                 }
             },
-            error: function () {
-                swal("操作失败", {
+            error: function (result) {
+                swal(result.responseJson.message, {
                     icon: "error",
                 });
             }
@@ -178,7 +194,7 @@
                 if (flag) {
                     $.ajax({
                         type: 'DELETE',
-                        url: '/shop-cart/' + id,
+                        url: '/store/cart/delete/' + id,
                         success: function (result) {
                             if (result.code == 200) {
                                 window.location.reload();

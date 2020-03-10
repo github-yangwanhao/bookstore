@@ -37,24 +37,24 @@ public interface CartService {
 
     /**
      * Description: 购物车删除一件商品
-     * @param goodsId 商品id
+     * @param cartId 购物车id
      * @param loginUserId 当前登录人id
      * @return
      * @author 杨万浩
      * @createDate 2019/12/9 18:23
      */
-    Integer removeCartGoods(Long goodsId, Long loginUserId);
+    Integer removeCartGoods(Long cartId, Long loginUserId);
 
     /**
      * Description: 购物车某件商品数量+1/-1
-     * @param goodsId 商品id
-     * @param operate 1:+1/2:-1
+     * @param cartId 购物车id
+     * @param num num
      * @param loginUserId 当前登录用户id
      * @return
      * @author 杨万浩
      * @createDate 2019/12/9 20:45
      */
-    Integer modifyCartGoods(Long goodsId, Integer operate, Long loginUserId);
+    Integer modifyCartGoods(Long cartId, Integer num, Long loginUserId);
 
     /**
      * Description: 管理员上架某商品,购物车中即将商品表为已上架

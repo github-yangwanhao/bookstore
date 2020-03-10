@@ -6,9 +6,7 @@ import cn.yangwanhao.bookstore.dto.CartGoodsDto;
 import cn.yangwanhao.bookstore.service.CartService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -28,6 +26,19 @@ public class PortalCartController extends BaseController {
     @ResponseBody
     public ResponseMessage<Integer> addGoodsToCart(@RequestBody CartGoodsDto dto, HttpServletRequest request) {
         return ResponseMessage.handleResult(cartService.addCartGoods(dto.getGoodsId(), dto.getGoodsNum(), super.getLoginUserId(request)));
+    }
+
+    @RequestMapping("/delete/{cartId}")
+    @ResponseBody
+    public ResponseMessage<Integer> deleteCartGoods(@PathVariable("cartId") Long cartId, HttpServletRequest request) {
+        return ResponseMessage.handleResult(cartService.removeCartGoods(cartId, super.getLoginUserId(request)));
+    }
+
+    @RequestMapping("/update/goodsNum")
+    @ResponseBody
+    public ResponseMessage<Integer> updateGoodsNum(@RequestParam("cartId") Long cartId, @RequestParam("num") Integer num,
+                                                   HttpServletRequest request) {
+        return ResponseMessage.handleResult(cartService.modifyCartGoods(cartId ,num, super.getLoginUserId(request)));
     }
 
 }

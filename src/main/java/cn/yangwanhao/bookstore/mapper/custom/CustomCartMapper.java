@@ -30,14 +30,14 @@ public interface CustomCartMapper {
 
     /**
      * Description: 购物车某件商品数量+1/-1
-     * @param goodsId 商品id
-     * @param operate 1:+1/2:-1
+     * @param cartId 购物车id
+     * @param num num
      * @param loginUserId 当前登录用户id
      * @return
      * @author 杨万浩
      * @createDate 2019/12/10 9:47
      */
-    Integer updateCartGoodsNum(@Param("goodsId") Long goodsId, @Param("operate") Integer operate, @Param("loginUserId") Long loginUserId);
+    Integer updateCartGoodsNum(@Param("cartId") Long cartId, @Param("num") Integer num, @Param("loginUserId") Long loginUserId);
 
     /**
      * Description: 管理员上架某商品,购物车中即将商品表为已上架

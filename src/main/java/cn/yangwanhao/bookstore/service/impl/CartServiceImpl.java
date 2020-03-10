@@ -5,6 +5,7 @@ import cn.yangwanhao.bookstore.common.enums.ErrorCodeEnum;
 import cn.yangwanhao.bookstore.common.enums.GoodsStatusEnum;
 import cn.yangwanhao.bookstore.common.exception.GlobalException;
 import cn.yangwanhao.bookstore.common.util.BigDecimalUtils;
+import cn.yangwanhao.bookstore.common.util.PicNameUtils;
 import cn.yangwanhao.bookstore.entity.Cart;
 import cn.yangwanhao.bookstore.entity.CartExample;
 import cn.yangwanhao.bookstore.mapper.CartMapper;
@@ -14,6 +15,7 @@ import cn.yangwanhao.bookstore.service.GoodsService;
 import cn.yangwanhao.bookstore.vo.CartGoodsListVo;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,20 +40,34 @@ public class CartServiceImpl implements CartService {
     private CustomCartMapper customCartMapper;
     @Resource
     private CartMapper cartMapper;
-
+    @Value("${pic.host}")
+    private String picHost;
 
     @Override
     public List<CartGoodsListVo> getCart(Long loginUserId) {
         List<CartGoodsListVo> vos = customCartMapper.selectCart(loginUserId);
         vos.forEach(vo ->{
-            // 设置封面
-            vo.setGoodsCoverImageUrl(StringUtils.isBlank(vo.getGoodsCoverImageUrl()) ? "":vo.getGoodsCoverImageUrl().split(GlobalConstant.Symbol.COMMA)[0]);
             // 设置价格
             vo.setPriceDouble(BigDecimalUtils.movePointLeft(vo.getPrice().toString(), 2).doubleValue());
+            // 设置商品标题
+            if (vo.getGoodsStatus().equals(GoodsStatusEnum.NORMAL.getValue())) {
+                if (vo.getGoodsTitle().length() > 28) {
+                    vo.setGoodsTitle(vo.getGoodsTitle().substring(0,28) + "...");
+                }
+            } else {
+                if (vo.getGoodsTitle().length() > 20) {
+                    vo.setGoodsTitle(vo.getGoodsTitle().substring(0,20) + "...");
+                }
+            }
+            // 设置封面
+            vo.setGoodsCoverImageUrl(picHost + (StringUtils.isBlank(vo.getGoodsCoverImageUrl()) ? "": PicNameUtils.getThumbnailName(vo.getGoodsCoverImageUrl())));
             // 设置是否删除
             vo.setGoodsIsDeleted(vo.getGoodsStatus().equals(GoodsStatusEnum.DELETED.getValue()) ? 1:0);
             // 设置是否下架
             vo.setGoodsIsOffTheShelves(vo.getGoodsStatus().equals(GoodsStatusEnum.OFF_THE_SHELF.getValue()) ? 1:0);
+            // 设置商品单品总价格
+            vo.setGoodsTotalPrice(BigDecimalUtils.mul(String.valueOf(vo.getPriceDouble()),
+                    String.valueOf(vo.getGoodsNum())).doubleValue());
         });
         return vos;
     }
@@ -82,37 +98,25 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public Integer removeCartGoods(Long goodsId, Long loginUserId) {
+    public Integer removeCartGoods(Long cartId, Long loginUserId) {
         CartExample cartExample = new CartExample();
         CartExample.Criteria criteria = cartExample.createCriteria();
         criteria.andUserIdEqualTo(loginUserId);
-        criteria.andGoodsIdEqualTo(goodsId);
+        criteria.andIdEqualTo(cartId);
         return cartMapper.deleteByExample(cartExample);
     }
 
     @Override
-    public Integer modifyCartGoods(Long goodsId, Integer operate, Long loginUserId) {
+    public Integer modifyCartGoods(Long cartId, Integer num, Long loginUserId) {
         CartExample cartExample = new CartExample();
         CartExample.Criteria criteria = cartExample.createCriteria();
         criteria.andUserIdEqualTo(loginUserId);
-        criteria.andGoodsIdEqualTo(goodsId);
+        criteria.andIdEqualTo(cartId);
         List<Cart> carts = cartMapper.selectByExample(cartExample);
-        if (operate == 1) {
-            // +1操作,如果不存在则执行新增操作
-            if (carts == null || carts.size() == 0) {
-                return addCartGoods(goodsId, 1, loginUserId);
-            }
-        } else {
-            if (carts == null || carts.size() == 0) {
-                // -1操作,如果不存在抛出异常
-                throw new GlobalException(ErrorCodeEnum.C5003003);
-            } else if (carts.get(0).getGoodsNum() == 1) {
-                // -1操作,如果当前值为1则抛出异常
-                throw new GlobalException(ErrorCodeEnum.C5009007);
-            }
+        if (carts == null || carts.size() == 0) {
+            throw new GlobalException(ErrorCodeEnum.C5003003);
         }
-        // 执行+1或者-1操作
-        return customCartMapper.updateCartGoodsNum(goodsId, operate, loginUserId);
+        return customCartMapper.updateCartGoodsNum(cartId, num, loginUserId);
     }
 
     @Override

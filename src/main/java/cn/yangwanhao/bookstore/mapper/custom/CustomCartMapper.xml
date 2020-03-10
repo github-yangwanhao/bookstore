@@ -12,7 +12,8 @@
   </resultMap>
 
   <resultMap id="cartGoodsListVoResultMap" type="cn.yangwanhao.bookstore.vo.CartGoodsListVo">
-    <result column="id" property="goodsId" jdbcType="BIGINT" />
+    <result column="id" property="cartId" jdbcType="BIGINT" />
+    <result column="goods_id" property="goodsId" jdbcType="BIGINT" />
     <result column="title" property="goodsTitle" jdbcType="VARCHAR" />
     <result column="imgs" property="goodsCoverImageUrl" jdbcType="VARCHAR" />
     <result column="goods_num" property="goodsNum" jdbcType="INTEGER" />
@@ -22,27 +23,19 @@
 
   <select id="selectCart" resultMap="cartGoodsListVoResultMap">
     SELECT
-    ca.goods_num,
-    gb.id, gb.goods_status, gb.price,
+    ca.goods_num, ca.id,
+    gb.id AS goods_id, gb.goods_status, gb.price,
     gi.title, gi.imgs
     FROM cart ca
     LEFT JOIN goods_base gb ON gb.id=ca.goods_id
     LEFT JOIN goods_info gi ON gi.id=ca.goods_id
-    WHERE c.user_id=#{loginUserId}
+    WHERE ca.user_id=#{loginUserId}
   </select>
 
   <update id="updateCartGoodsNum">
     UPDATE cart
-    SET
-    <choose>
-      <when test="operate == 1">
-        goods_num=goods_num+1
-      </when>
-      <otherwise>
-        goods_num=goods_num-1
-      </otherwise>
-    </choose>
-    WHERE user_id=#{loginUserId} AND goods_id=#{goodsId}
+    SET goods_num=#{num}
+    WHERE id=#{cartId} AND user_id=#{loginUserId}
   </update>
 
   <update id="onShelfGoods">

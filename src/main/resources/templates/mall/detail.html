@@ -95,12 +95,10 @@
     function saveToCart() {
         var id = $("#goodsId").val();
         var goodsNum = 1;
-        alert(id);
         var data = {
             "goodsId": id,
             "goodsNum": goodsNum
         };
-        alert(JSON.stringify(data));
         var url = "/store/cart/addGoods";
         $.ajax({
             type: 'POST',
@@ -155,7 +153,7 @@
         };
         $.ajax({
             type: 'POST',
-            url: '/shop-cart',
+            url: '/store/cart/addGoods',
             contentType: 'application/json',
             data: JSON.stringify(data),
             success: function (result) {
@@ -170,7 +168,7 @@
                         dangerMode: false,
                     }).then((flag) => {
                             if (flag) {
-                                window.location.href = '/shop-cart';
+                                window.location.href = '/store/page/cart';
                             }
                         }
                     );

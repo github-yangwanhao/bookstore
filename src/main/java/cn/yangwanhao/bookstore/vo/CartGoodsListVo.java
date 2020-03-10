@@ -21,6 +21,8 @@ public class CartGoodsListVo implements Serializable {
 
     private static final long serialVersionUID = -8604916878822792581L;
 
+    private Long cartId;
+
     private Long goodsId;
 
     private String goodsTitle;
@@ -32,6 +34,8 @@ public class CartGoodsListVo implements Serializable {
     private Long price;
 
     private Double priceDouble;
+
+    private Double goodsTotalPrice;
 
     private Integer goodsIsDeleted;
 
