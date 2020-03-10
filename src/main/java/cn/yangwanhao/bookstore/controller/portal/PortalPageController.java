@@ -20,13 +20,18 @@ public class PortalPageController {
 
     @RequestMapping("/login")
     public ModelAndView toLogin(@RequestParam(value = "history", required = false) String history) {
-        if (StringUtils.isBlank(history)) {
+        if (StringUtils.isBlank(history) || "/store/page/login".equals(history)) {
             history = "/index";
         }
         ModelAndView modelAndView = new ModelAndView("mall/login");
         modelAndView.addObject("history", history);
         log.info("history: " + history);
         return modelAndView;
+    }
+
+    @RequestMapping("/register")
+    public String toRegister() {
+        return "/mall/register";
     }
 
 }

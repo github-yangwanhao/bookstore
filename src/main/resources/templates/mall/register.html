@@ -3,44 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <title>NewBee商城-注册</title>
-    <link rel="stylesheet" th:href="@{mall/css/common.css}">
-    <link rel="stylesheet" th:href="@{mall/styles/login.css}">
-    <link rel="stylesheet" th:href="@{mall/styles/header.css}">
+    <link rel="stylesheet" th:href="@{/mall/css/common.css}">
+    <link rel="stylesheet" th:href="@{/mall/styles/login.css}">
+    <link rel="stylesheet" th:href="@{/mall/styles/header.css}">
     <link rel="stylesheet" th:href="@{/admin/plugins/sweetalert/sweetalert.css}"/>
 </head>
 <body>
-<div class="top center">
-    <div class="logo center">
-        <a href="./index.html" target="_blank"><img src="mall/image/login-logo-2.png" alt=""></a>
-    </div>
-</div>
-
 <div class="form center">
     <div class="login">
         <div class="login_center">
             <div class="login_top">
                 <div class="left fl">会员注册</div>
-                <div class="right fr">您已有账号？<a href="login.html" target="_self">请登录</a></div>
+                <div class="right fr">您已有账号？<a href="/store/page/login" target="_self">请登录</a></div>
                 <div class="clear"></div>
                 <div class="under-line center"></div>
             </div>
             <form id="registerForm" onsubmit="return false;" action="##">
                 <div class="login_main center">
-                    <div class="login-info">手机号:&nbsp;<input class="login-info-input" type="text" name="loginName"
-                                                             placeholder="请输入你的手机号" id="loginName"/>
+                    <div class="login-info">手机号:&nbsp;
+                        <input class="login-info-input" type="text" name="phone" placeholder="请输入你的手机号"
+                               id="phone" required/>
                     </div>
-                    <div class="login-info">密&nbsp;&nbsp;&nbsp;&nbsp;码:&nbsp;<input class="login-info-input"
-                                                                                    type="password"
-                                                                                    name="password"
-                                                                                    id="password"
-                                                                                    placeholder="请输入你的密码"/>
+                    <div class="login-info">登录名:&nbsp;
+                        <input class="login-info-input" type="text" name="loginname" placeholder="请输入你的登录名"
+                               id="loginname" required/>
                     </div>
-                    <div class="login-info">
-                        验证码:&nbsp;
-                        <input class="login-info-input verify-code" type="text" name="verifyCode" id="verifyCode"
-                               placeholder="请输入验证码"/>
-                        <img alt="单击图片刷新！" style="top: 14px;position: relative;" th:src="@{/common/mall/kaptcha}"
-                             onclick="this.src='/common/mall/kaptcha?d='+new Date()*1">
+                    <!--<div class="login-info">真实姓名:&nbsp;
+                        <input class="login-info-input" type="text" name="realname" placeholder="请输入你的真实姓名" id="realname"/>
+                    </div>-->
+                    <div class="login-info">密&nbsp;&nbsp;&nbsp;&nbsp;码:&nbsp;
+                        <input class="login-info-input" type="password" name="password" id="password"
+                               placeholder="请输入你的密码" />
+                    </div>
+                    <div class="login-info">重复密码:
+                        <input class="login-info-input" type="password" name="rePassword" id="rePassword"
+                               placeholder="请重复你的密码"/>
                     </div>
                 </div>
                 <div class="login_submit">
@@ -57,43 +54,51 @@
 <script th:src="@{/admin/plugins/sweetalert/sweetalert.min.js}"></script>
 <script type="text/javascript">
 
-    //部署时未开发注册方法
-    function register2() {
-        swal('未开放，请联系作者获得测试账号', {
-            icon: "error",
-        });
-    }
-
     //注册按钮onclick事件改为register()即可
     function register() {
-        var loginName = $("#loginName").val();
-        if (!validPhoneNumber(loginName)) {
-            swal('请输入正确的登录名(即手机号)', {
+        var loginName = $("#loginname").val();
+        var password = $("#password").val();
+        var rePassword = $("#rePassword").val();
+        var phone = $("#phone").val();
+        if (password != rePassword) {
+            swal('两次输入的密码不一致', {
                 icon: "error",
             });
             return false;
         }
-        var password = $("#password").val();
-        if (!validPassword(password)) {
+        if (!validPhoneNumber(phone)) {
+            swal('请输入正确的手机号', {
+                icon: "error",
+            });
+            return false;
+        }
+        /*if (!validPassword(password)) {
             swal('请输入正确的密码格式(6-20位字符和数字组合)', {
                 icon: "error",
             });
             return false;
-        }
-        var verifyCode = $("#verifyCode").val();
+        }*/
+        /*var verifyCode = $("#verifyCode").val();
         if (!validLength(verifyCode, 7)) {
             swal('请输入正确的验证码', {
                 icon: "error",
             });
             return false;
-        }
+        }*/
         //验证
-        var params = $("#registerForm").serialize();
-        var url = '/register';
+        var url = '/store/user/register';
+        var data = {
+            "loginname": loginName,
+            "password": password,
+            "rePassword": rePassword,
+            "phone": phone
+        }
         $.ajax({
-            type: 'POST',//方法类型
+            type: 'POST',
+            dataType: 'json',
+            contentType: 'application/json',
             url: url,
-            data: params,
+            data: JSON.stringify(data),
             success: function (result) {
                 if (result.code == 200) {
                     swal({
@@ -104,7 +109,7 @@
                         dangerMode: true,
                     }).then((flag) => {
                             if (flag) {
-                                window.location.href = '/login';
+                                window.location.href = '/store/page/login';
                             }
                         }
                     )
@@ -116,8 +121,8 @@
                 }
                 ;
             },
-            error: function () {
-                swal("操作失败", {
+            error: function (result) {
+                swal(result.responseJSON.message, {
                     icon: "error",
                 });
             }

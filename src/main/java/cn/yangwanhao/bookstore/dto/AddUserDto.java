@@ -22,6 +22,8 @@ public class AddUserDto implements Serializable {
 
     private String password;
 
+    private String rePassword;
+
     private String realname;
 
     private Integer sex;

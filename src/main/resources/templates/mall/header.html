@@ -33,7 +33,7 @@
         <ul class="fl">
         </ul>
         <div class="fr">
-            <th:block th:unless="${session.newBeeMallUser==null}">
+            <th:block th:unless="${session.portalLoginUser==null}">
                 <div class="user">
                     <ul class="selector">
                         <li>
@@ -47,27 +47,27 @@
                             </a>
                         </li>
                         <li>
-                            <a th:href="@{/logout}">
+                            <a th:href="@{/store/login/logout}">
                                 退出登录
                             </a>
                         </li>
                     </ul>
                     <a href="##" class="username">
-                        <th:block th:text="${session.newBeeMallUser.nickName}"></th:block>
+                        <th:block th:text="${session.portalLoginUser.loginname}"></th:block>
                         <i class="iconfont icon-down"></i>
                     </a>
                 </div>
                 <div class="shopcart">
                     <a th:href="@{/shop-cart}" style="color: white;"><i class="iconfont icon-cart"></i>
                         购物车(
-                        <th:block th:text="${session.newBeeMallUser.shopCartItemCount}"></th:block>
+                        <!--<th:block th:text="${session.portalLoginUser.shopCartItemCount}"></th:block>-->
                         )</a>
                 </div>
             </th:block>
-            <th:block th:if="${session.newBeeMallUser==null}">
+            <th:block th:if="${session.portalLoginUser==null}">
                 <ul class="login">
-                    <li><a th:href="@{/login}">登录</a></li>
-                    <li><a th:href="@{/register}">注册</a></li>
+                    <li><a th:href="@{/store/page/login}">登录</a></li>
+                    <li><a th:href="@{/store/page/register}">注册</a></li>
                 </ul>
                 <div class="shopcart">
                     <a href="##" style="color: white;"><i class="iconfont icon-cart"></i>

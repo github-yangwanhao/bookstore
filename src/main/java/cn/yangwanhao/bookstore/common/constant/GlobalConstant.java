@@ -1,9 +1,12 @@
 package cn.yangwanhao.bookstore.common.constant;
 
+import cn.yangwanhao.bookstore.common.enums.GenderEnum;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -42,6 +45,14 @@ public final class GlobalConstant {
     public static final char [] LETTER_SOURCE = {'0','1','2','3','4','5','6','7','8','9','a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z'};
 
     public static final String INIT_LOGIN_IP = "0.0.0.0";
+
+    public static final String INIT_REALNAME = "DEFAULT_REALNAME";
+
+    public static final String INIT_EMAIL = "DEFAULT_EMAIL";
+
+    public static final GenderEnum INIT_SEX = GenderEnum.MAN;
+
+    public static final String INIT_BIRTHDAY = "0000-00-00";
 
     public static final List<String> PIC_EXTENSION = Arrays.asList("jpg", "png", "jpeg");
 

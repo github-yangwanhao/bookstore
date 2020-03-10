@@ -74,4 +74,10 @@ public class PortalLoginController {
         return "redirect:" + uri;
     }
 
+    @RequestMapping("/logout")
+    public String logout(HttpServletRequest request) {
+        request.getSession().removeAttribute(GlobalConstant.PORTAL_LOGIN_SESSION_KEY);
+        return "redirect:/";
+    }
+
 }
