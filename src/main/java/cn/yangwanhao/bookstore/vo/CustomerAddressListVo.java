@@ -32,4 +32,16 @@ public class CustomerAddressListVo implements Serializable {
     private String receiverAddress;
 
     private Integer isDefault;
+
+    private String addressStr;
+
+    public String getAddressStr() {
+        StringBuffer sb = new StringBuffer();
+        sb.append(this.receiverName)
+                .append("-")
+                .append(this.receiverPhone)
+                .append("-")
+                .append(this.receiverAddress);
+        return sb.toString();
+    }
 }

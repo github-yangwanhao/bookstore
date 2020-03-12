@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="mall/header::head-fragment('NewBee商城-订单结算','order-detail')">
+<head th:replace="mall/header::head-fragment('图书商城-订单结算','order-detail')">
 </head>
 <link th:href="@{/mall/css/bootstrap-modal.css}" rel="stylesheet">
 <body>
@@ -59,12 +59,12 @@
                                 <table class="order-items-table">
                                     <tbody>
 
-                                    <th:block th:each="item : ${myShoppingCartItems}">
+                                    <th:block th:each="item : ${cartGoodsList}">
                                         <tr>
                                             <td class="col col-thumb">
                                                 <div class="figure figure-thumb">
                                                     <a target="_blank" th:href="@{'/goods/detail/'+${item.goodsId}}">
-                                                        <img th:src="@{${item.goodsCoverImg}}"
+                                                        <img th:src="@{${item.goodsCoverImageUrl}}"
                                                              width="80" height="80" alt="">
                                                     </a>
                                                 </div>
@@ -72,12 +72,14 @@
                                             <td class="col col-name">
                                                 <p class="name">
                                                     <a target="_blank" th:href="@{'/goods/detail/'+${item.goodsId}}"
-                                                       th:text="${item.goodsName}">newbee</a>
+                                                       th:text="${item.goodsTitle}"></a>
                                                 </p>
                                             </td>
-                                            <td class="col col-price"><p class="price"
-                                                                         th:text="${item.sellingPrice+'元 x '+item.goodsCount}">
-                                                1299元 × 1</p></td>
+                                            <td class="col col-price">
+                                                <p class="price"
+                                                   th:text="${item.priceDouble+'元 x '+item.goodsNum+' = '+item.goodsTotalPrice + '元'}">
+                                                </p>
+                                            </td>
                                             <td class="col col-actions">
                                             </td>
                                         </tr>
@@ -85,24 +87,29 @@
                                     </tbody>
                                 </table>
                             </div>
-                            <div id="editAddr" class="order-detail-info">
-                                <h3>收货信息</h3>
-                                <table class="info-table">
-                                    <tbody>
-                                    <tr>
-                                        <th>收货地址：</th>
-                                        <td class="user_address_label"
-                                            th:text="${session.newBeeMallUser.address==''?'无':session.newBeeMallUser.address}">
-                                            newbee
-                                        </td>
-                                    </tr>
-                                    </tbody>
-                                </table>
-                                <div class="actions">
-                                    <a class="btn btn-small btn-line-gray J_editAddr"
-                                       href="javascript:openUpdateModal();">修改</a>
+                            <form>
+                                <div id="editAddr" class="order-detail-info">
+                                    <h3>收货信息</h3>
+                                    <table class="info-table">
+                                        <tbody>
+                                        <tr>
+                                            <th>收货地址：</th>
+                                            <td class="user_address_label">
+                                                <select class="form-control col-sm-3" id="addressId" name="addressId" data-placeholder="请选择收货地址...">
+                                                    <th:block th:unless="${null == addressList}">
+                                                        <th:block th:each="c : ${addressList}">
+                                                            <option th:value="${c.id}" th:text="${c.addressStr}"
+                                                                    th:selected="${c.isDefault==1} ? true:false"
+                                                            ></option>
+                                                        </th:block>
+                                                    </th:block>
+                                                </select>&nbsp;
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
                                 </div>
-                            </div>
+                            </form>
                             <div id="editTime" class="order-detail-info">
                                 <h3>支付方式</h3>
                                 <table class="info-table">
@@ -121,7 +128,7 @@
                                     <tbody>
                                     <tr>
                                         <th>商品总价：</th>
-                                        <td><span class="num" th:text="${priceTotal+'.00'}">1299.00</span>元</td>
+                                        <td><span class="num" th:text="${cartTotalPrice}"></span>元</td>
                                     </tr>
                                     <tr>
                                         <th>运费：</th>
@@ -129,40 +136,13 @@
                                     </tr>
                                     <tr>
                                         <th class="total">应付金额：</th>
-                                        <td class="total"><span class="num" th:text="${priceTotal+'.00'}">1299.00</span>元
+                                        <td class="total"><span class="num" th:text="${cartTotalPrice}"></span>元
                                         </td>
                                     </tr>
                                     </tbody>
                                 </table>
                             </div>
                         </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="modal fade" id="personalInfoModal" tabindex="-1" role="dialog"
-             aria-labelledby="personalInfoModalLabel">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                                aria-hidden="true">&times;</span></button>
-                        <h6 class="modal-title" id="personalInfoModalLabel">地址修改</h6>
-                    </div>
-                    <div class="modal-body">
-                        <form id="personalInfoForm">
-                            <div class="form-group">
-                                <input type="hidden" id="userId" th:value="${session.newBeeMallUser.userId}">
-                                <label for="address" class="control-label">收货地址:</label>
-                                <input type="text" class="form-control" id="address" name="address"
-                                       placeholder="请输入收货地址" th:value="${session.newBeeMallUser.address}"
-                                       required="true">
-                            </div>
-                        </form>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-                        <button type="button" class="btn btn-primary" id="saveButton">确认</button>
                     </div>
                 </div>
             </div>
@@ -181,58 +161,10 @@
 <script th:src="@{/mall/js/bootstrap3.js}"></script>
 <script type="text/javascript">
     $('#saveOrder').click(function () {
-        var userAddress = $(".user_address_label").html();
-        if (userAddress == '' || userAddress == '无') {
-            swal("请填写收货信息", {
-                icon: "error",
-            });
-            return;
-        }
-        if (userAddress.trim().length < 10) {
-            swal("请输入正确的收货信息", {
-                icon: "error",
-            });
-            return;
-        }
-        window.location.href = '../saveOrder';
+        var addressId = $('#addressId option:selected').val();
+        window.location.href = '/store/order/save/'+addressId;
     });
 
-    function openUpdateModal() {
-        $('#personalInfoModal').modal('show');
-    }
-
-    //绑定modal上的保存按钮
-    $('#saveButton').click(function () {
-        var address = $("#address").val();
-        var userId = $("#userId").val();
-        var data = {
-            "userId": userId,
-            "address": address
-        };
-        $.ajax({
-            type: 'POST',//方法类型
-            url: '/personal/updateInfo',
-            contentType: 'application/json',
-            data: JSON.stringify(data),
-            success: function (result) {
-                if (result.code == 200) {
-                    $('#personalInfoModal').modal('hide');
-                    window.location.reload();
-                } else {
-                    $('#personalInfoModal').modal('hide');
-                    swal(result.message, {
-                        icon: "error",
-                    });
-                }
-                ;
-            },
-            error: function () {
-                swal('操作失败', {
-                    icon: "error",
-                });
-            }
-        });
-    });
 </script>
 </body>
 </html>

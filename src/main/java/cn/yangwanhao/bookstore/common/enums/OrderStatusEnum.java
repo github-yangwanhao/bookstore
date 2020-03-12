@@ -53,6 +53,15 @@ public enum  OrderStatusEnum {
     @Getter
     private String desc;
 
+    public static OrderStatusEnum getByStatus(Integer status) {
+        for (OrderStatusEnum e : values()) {
+            if (e.getStatus().equals(status)) {
+                return e;
+            }
+        }
+        return null;
+    }
+
     OrderStatusEnum(Integer status, String desc) {
         this.status = status;
         this.desc = desc;

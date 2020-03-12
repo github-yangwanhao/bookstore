@@ -7,6 +7,7 @@ import cn.yangwanhao.bookstore.common.enums.OrderStatusEnum;
 import cn.yangwanhao.bookstore.common.exception.GlobalException;
 import cn.yangwanhao.bookstore.common.util.BigDecimalUtils;
 import cn.yangwanhao.bookstore.common.util.IdUtils;
+import cn.yangwanhao.bookstore.common.util.PicNameUtils;
 import cn.yangwanhao.bookstore.common.util.PubUtils;
 import cn.yangwanhao.bookstore.dto.OrderDto;
 import cn.yangwanhao.bookstore.entity.Order;
@@ -18,6 +19,8 @@ import cn.yangwanhao.bookstore.mapper.custom.CustomOrderMapper;
 import cn.yangwanhao.bookstore.service.GoodsService;
 import cn.yangwanhao.bookstore.service.OrderService;
 import cn.yangwanhao.bookstore.vo.GoodsVo;
+import cn.yangwanhao.bookstore.vo.OrderVo;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -46,9 +49,11 @@ public class OrderServiceImpl implements OrderService {
     private CustomOrderGoodsMapper customOrderGoodsMapper;
     @Resource
     private GoodsService goodsService;
+    @Value("${pic.host}")
+    private String picHost;
 
     @Override
-    public Integer createOrder(OrderDto orderDto) {
+    public String createOrder(OrderDto orderDto) {
         int result = 0;
         Long[] goodsIds = PubUtils.convertStringToLong(orderDto.getGoodsId().split(","));
         Integer[] goodsNums = PubUtils.convertStringToInteger(orderDto.getGoodsNum().split(","));
@@ -74,14 +79,17 @@ public class OrderServiceImpl implements OrderService {
         if (totalPrice != orderDto.getTotalPrice()) {
             throw new GlobalException(ErrorCodeEnum.O5009008);
         }
+        // TODO 判断库存
 
         // 插入order表
         Order order = new Order();
+        String orderNo = IdUtils.getSnowFlakeId().toString();
         // 雪花算法自增
-        order.setOrderNo(IdUtils.getSnowFlakeId().toString());
+        order.setOrderNo(orderNo);
         order.setUserId(orderDto.getUserId());
         order.setTotalPrice(totalPrice);
         order.setOrderStatus(OrderStatusEnum.WAIT_TO_PAY.getStatus());
+        order.setAddressId(orderDto.getAddressId());
         order.setIsDeleted(GlobalConstant.NO);
         order.setCreateTime(new Date());
         // 插入Order表，返回生成的id
@@ -101,6 +109,30 @@ public class OrderServiceImpl implements OrderService {
         }
         // 批量插入订单商品表
         result += customOrderGoodsMapper.insertBatchOrderGoods(orderGoodsList);
-        return result;
+        // TODO 减少库存
+        // TODO 删除购物车
+        if (result > 1) {
+            return orderNo;
+        }
+        return null;
+    }
+
+    @Override
+    public OrderVo getOrderDetail(String orderNo, Long loginUserId) {
+        OrderVo vo = customOrderMapper.getOrderDetail(orderNo, loginUserId);
+        if (vo == null) {
+            throw new GlobalException(ErrorCodeEnum.O5003004);
+        }
+        vo.setTotalPriceDouble(BigDecimalUtils.movePointLeft(String.valueOf(vo.getTotalPrice()), 2).doubleValue());
+        vo.setOrderStatusString(OrderStatusEnum.getByStatus(vo.getOrderStatus()).getDesc());
+        vo.getGoodsList().forEach(goods->{
+            goods.setPriceDouble(BigDecimalUtils.movePointLeft(String.valueOf(goods.getPrice()), 2).doubleValue());
+            goods.setGoodsTotalPrice(BigDecimalUtils.mul(String.valueOf(goods.getPriceDouble()), String.valueOf(goods.getGoodsNum())).doubleValue());
+            goods.setImg(PicNameUtils.getThumbnailName(picHost + goods.getImg()));
+            if (goods.getGoodsTitle().length() > 25) {
+                goods.setGoodsTitle(goods.getGoodsTitle().substring(0,25));
+            }
+        });
+        return vo;
     }
 }

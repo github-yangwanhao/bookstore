@@ -2,6 +2,7 @@ package cn.yangwanhao.bookstore.service;
 
 
 import cn.yangwanhao.bookstore.dto.OrderDto;
+import cn.yangwanhao.bookstore.vo.OrderVo;
 
 /**
  * description
@@ -20,6 +21,16 @@ public interface OrderService {
      * @author 杨万浩
      * @createDate 2019/12/24 17:19
      */
-    Integer createOrder(OrderDto orderDto);
+    String createOrder(OrderDto orderDto);
+
+    /**
+     * Description: 获取订单详情
+     * @param orderNo no
+     * @param loginUserId loginUserId
+     * @return
+     * @author 杨万浩
+     * @date 2020/3/12 14:31
+     */
+    OrderVo getOrderDetail(String orderNo, Long loginUserId);
 
 }

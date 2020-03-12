@@ -176,7 +176,7 @@ public class UserServiceImpl implements UserService {
     public String getPasswordById(Long id) {
         User user = userMapper.selectByPrimaryKey(id);
         if (user == null) {
-            throw new GlobalException(ErrorCodeEnum.U5003003);
+            throw new GlobalException(ErrorCodeEnum.U5003004);
         }
         return user.getPassword();
     }

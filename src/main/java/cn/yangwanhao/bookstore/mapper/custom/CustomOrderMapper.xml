@@ -17,9 +17,43 @@
 
   <insert id="insertOrderBaseGenerateId" useGeneratedKeys="true" keyProperty="id">
     INSERT INTO `order`
-    (order_no, user_id, total_price, order_status, is_deleted, create_time, )
+    (order_no, user_id, total_price, order_status, is_deleted, create_time)
     VALUES
-    (orderNo, userId, totalPrice, orderStatus, isDeleted, createTime)
+    (#{orderNo}, #{userId}, #{totalPrice}, #{orderStatus}, #{isDeleted}, #{createTime})
   </insert>
+
+  <resultMap id="orderVoResultMap" type="cn.yangwanhao.bookstore.vo.OrderVo">
+    <result column="id" property="orderId" jdbcType="BIGINT" />
+    <result column="order_no" property="orderNo" jdbcType="VARCHAR" />
+    <result column="order_status" property="orderStatus" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="total_price" property="totalPrice" jdbcType="BIGINT" />
+    <association property="address" javaType="cn.yangwanhao.bookstore.vo.CustomerAddressListVo">
+      <result column="addressId" property="id" jdbcType="BIGINT" />
+      <result column="customerId" property="customerId" jdbcType="BIGINT" />
+      <result column="receiverName" property="receiverName" jdbcType="BIGINT" />
+      <result column="receiverPhone" property="receiverPhone" jdbcType="BIGINT" />
+      <result column="receiverAddress" property="receiverAddress" jdbcType="BIGINT" />
+    </association>
+    <collection property="goodsList" ofType="cn.yangwanhao.bookstore.vo.OrderGoodsListVo">
+      <result column="goodsId" property="goodsId" jdbcType="BIGINT" />
+      <result column="img" property="img" jdbcType="VARCHAR" />
+      <result column="goodsTitle" property="goodsTitle" jdbcType="VARCHAR" />
+      <result column="price" property="price" jdbcType="BIGINT" />
+      <result column="goodsNum" property="goodsNum" jdbcType="INTEGER" />
+    </collection>
+  </resultMap>
+  <select id="getOrderDetail" resultMap="orderVoResultMap">
+    SELECT
+    o.id AS id, o.order_no AS order_no, o.order_status AS order_status, o.create_time AS create_time, o.address_id AS addressId, o.total_price AS total_price,
+    ca.customer_id AS customerId, ca.receiver_name AS receiverName, ca.receiver_phone AS receiverPhone, ca.receiver_address AS receiverAddress,
+    og.goods_id AS goodsId, og.goods_num, og.goods_price AS price, og.goods_num AS goodsNum,
+    gi.imgs AS img, gi.title AS goodsTitle
+    FROM `order` o
+    LEFT JOIN order_goods og ON og.order_id=o.id
+    LEFT JOIN goods_info gi ON og.goods_id=gi.id
+    LEFT JOIN customer_address ca ON ca.id=o.address_id
+    WHERE o.order_no=#{orderNo} AND o.user_id=#{loginUserId}
+  </select>
 
 </mapper>

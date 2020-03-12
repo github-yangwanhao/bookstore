@@ -36,4 +36,6 @@ public class OrderDto implements Serializable {
      */
     private Long userId;
 
+    private Long addressId;
+
 }

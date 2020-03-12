@@ -42,7 +42,7 @@ public class PortalPageController extends BaseController {
 
     @RequestMapping("/login")
     public ModelAndView toLogin(@RequestParam(value = "history", required = false) String history) {
-        if (StringUtils.isBlank(history) || "/store/page/login".equals(history)) {
+        if (StringUtils.isBlank(history) || "/store/page/login".equals(history) || "/store/login/logout".equals(history)) {
             history = "/index";
         }
         ModelAndView modelAndView = new ModelAndView("mall/login");
@@ -83,6 +83,25 @@ public class PortalPageController extends BaseController {
 
     @RequestMapping("/order-settle")
     public String toOrderSettle(Model model, HttpServletRequest request) {
+        Long loginUserId = super.getLoginUserId(request);
+        // 获取收货地址列表
+        List<CustomerAddressListVo> addressList = customerAddressService.listUserAddresses(loginUserId);
+        // 获取购物车商品列表
+        List<CartGoodsListVo> cartGoodsList = cartService.getCart(loginUserId);
+        Integer cartTotalGoodsNum = 0;
+        Double cartTotalPrice = 0D;
+        List<CartGoodsListVo> effective = new ArrayList<>();
+        for (CartGoodsListVo vo: cartGoodsList) {
+            if (vo.getGoodsStatus().equals(GoodsStatusEnum.NORMAL.getValue())) {
+                effective.add(vo);
+                cartTotalGoodsNum += vo.getGoodsNum();
+                cartTotalPrice = BigDecimalUtils.add(String.valueOf(cartTotalPrice), String.valueOf(vo.getGoodsTotalPrice())).doubleValue();
+            }
+        }
+        model.addAttribute("addressList", addressList);
+        model.addAttribute("cartGoodsList", effective);
+        model.addAttribute("cartTotalGoodsNum", cartTotalGoodsNum);
+        model.addAttribute("cartTotalPrice", cartTotalPrice);
         return "mall/order-settle";
     }
 
