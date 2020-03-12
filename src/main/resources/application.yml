@@ -12,8 +12,8 @@ spring:
   redis:
     database: 0
     host: 121.36.150.173
-    port: 6380
-    password: '******'
+    port: 6480
+    password: huaweiyun_yangwanhao
   data:
     mongodb:
       uri: mongodb://root:******@121.36.150.173:27017/?authSource=admin

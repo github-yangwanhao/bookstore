@@ -52,7 +52,7 @@ public final class GlobalConstant {
 
     public static final GenderEnum INIT_SEX = GenderEnum.MAN;
 
-    public static final String INIT_BIRTHDAY = "0000-00-00";
+    public static final String INIT_BIRTHDAY = "0002-11-30";
 
     public static final List<String> PIC_EXTENSION = Arrays.asList("jpg", "png", "jpeg");
 

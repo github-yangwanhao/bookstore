@@ -4,7 +4,11 @@ import cn.yangwanhao.bookstore.common.enums.GoodsStatusEnum;
 import cn.yangwanhao.bookstore.common.support.BaseController;
 import cn.yangwanhao.bookstore.common.util.BigDecimalUtils;
 import cn.yangwanhao.bookstore.service.CartService;
+import cn.yangwanhao.bookstore.service.CustomerAddressService;
+import cn.yangwanhao.bookstore.service.UserService;
 import cn.yangwanhao.bookstore.vo.CartGoodsListVo;
+import cn.yangwanhao.bookstore.vo.CustomerAddressListVo;
+import cn.yangwanhao.bookstore.vo.UserInfoVo;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,6 +35,10 @@ public class PortalPageController extends BaseController {
 
     @Autowired
     private CartService cartService;
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private CustomerAddressService customerAddressService;
 
     @RequestMapping("/login")
     public ModelAndView toLogin(@RequestParam(value = "history", required = false) String history) {
@@ -44,7 +53,7 @@ public class PortalPageController extends BaseController {
 
     @RequestMapping("/register")
     public String toRegister() {
-        return "/mall/register";
+        return "mall/register";
     }
 
     @RequestMapping("/cart")
@@ -69,12 +78,23 @@ public class PortalPageController extends BaseController {
         model.addAttribute("expired", expired);
         model.addAttribute("cartTotalGoodsNum", cartTotalGoodsNum);
         model.addAttribute("cartTotalPrice", cartTotalPrice);
-        return "/mall/cart";
+        return "mall/cart";
     }
 
     @RequestMapping("/order-settle")
     public String toOrderSettle(Model model, HttpServletRequest request) {
-        return "/mall/order-settle";
+        return "mall/order-settle";
+    }
+
+    @RequestMapping("/personal")
+    public String toPersonal(Model model, HttpServletRequest request) throws ParseException {
+        Long loginUserId = super.getLoginUserId(request);
+        UserInfoVo vo = userService.getUserInfoById(loginUserId);
+        List<CustomerAddressListVo> vos = customerAddressService.listUserAddresses(loginUserId);
+        model.addAttribute("path", "personal");
+        model.addAttribute("vo", vo);
+        model.addAttribute("vos", vos);
+        return "mall/personal";
     }
 
 }

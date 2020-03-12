@@ -6,6 +6,8 @@ import cn.yangwanhao.bookstore.vo.CustomerAddressListVo;
 import cn.yangwanhao.bookstore.vo.CustomerAddressVo;
 import com.github.pagehelper.PageInfo;
 
+import java.util.List;
+
 /**
  * description
  *
@@ -35,6 +37,15 @@ public interface CustomerAddressService {
      * @createDate 2019/12/7 14:22
      */
     PageInfo<CustomerAddressListVo> listUserAddresses(BasePageDto dto, Long loginUserId);
+
+    /**
+     * Description: 通过userID获取所有的收货地址
+     * @param loginUserId id
+     * @return
+     * @author 杨万浩
+     * @date 2020/3/11 8:15
+     */
+    List<CustomerAddressListVo> listUserAddresses(Long loginUserId);
 
     /**
      * Description: 删除用户的一个收货地址

@@ -63,16 +63,16 @@
                             <img th:src="@{${item.goodsCoverImageUrl}}">
                         </div>
                         <div class="sub_content fl ft20" >
-                           <font color="#808080" th:text="${item.goodsTitle}+'(商品已经失效)'"></font>
+                           <span style="color: grey;text-decoration: line-through" th:text="${item.goodsTitle}+'(商品已经失效)'"></span>
                         </div>
                         <div class="sub_content fl" >
-                            <font color="#808080" th:text="${item.priceDouble+'元'}"></font>
+                            <span style="color: grey;text-decoration: line-through" th:text="${item.priceDouble+'元'}"></span>
                         </div>
                         <div class="sub_content fl">
                             <input class="goods_count" th:value="${item.goodsNum}" disabled="disabled">
                         </div>
                         <div class="sub_content fl" >
-                            <font color="#808080" th:text="${item.goodsTotalPrice+'元'}"></font>
+                            <span style="color: grey;text-decoration: line-through" th:text="${item.goodsTotalPrice+'元'}"></span>
                         </div>
                         <div class="sub_content fl">
                             <a href="##" th:onclick="'deleteItem('+${item.cartId}+')'">×</a>

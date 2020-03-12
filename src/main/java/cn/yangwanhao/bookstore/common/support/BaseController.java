@@ -21,11 +21,14 @@ public class BaseController {
     protected final Logger logger = log;
 
     protected LoginUserVo getLoginUser(HttpServletRequest request) {
-        logger.info("获取登录用户信息");
-        LoginUserVo vo = (LoginUserVo) request.getSession().getAttribute(GlobalConstant.ADMIN_LOGIN_SESSION_KEY);
-        if (vo == null) {
-            vo = (LoginUserVo) request.getSession().getAttribute("portalLoginUser");
+        String uri = request.getRequestURI();
+        LoginUserVo vo = null;
+        if (uri.startsWith("/store")) {
+            vo = (LoginUserVo) request.getSession().getAttribute(GlobalConstant.PORTAL_LOGIN_SESSION_KEY);
+        } else if (uri.startsWith("/admin")) {
+            vo = (LoginUserVo) request.getSession().getAttribute(GlobalConstant.ADMIN_LOGIN_SESSION_KEY);
         }
+        logger.info("获取登录用户信息");
         return vo;
     }
 

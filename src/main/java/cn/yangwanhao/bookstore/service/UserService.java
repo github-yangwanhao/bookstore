@@ -2,8 +2,13 @@ package cn.yangwanhao.bookstore.service;
 
 
 import cn.yangwanhao.bookstore.dto.AddUserDto;
+import cn.yangwanhao.bookstore.dto.ResetPasswordDto;
+import cn.yangwanhao.bookstore.dto.UserInfoDto;
+import cn.yangwanhao.bookstore.entity.User;
 import cn.yangwanhao.bookstore.vo.LoginUserVo;
+import cn.yangwanhao.bookstore.vo.UserInfoVo;
 
+import java.text.ParseException;
 import java.util.List;
 
 /**
@@ -98,5 +103,42 @@ public interface UserService {
      * @date 2020/3/3 14:49
      */
     List<String> getRolesByUserId(Long userId);
+
+    /**
+     * Description: 通过id获取密码
+     * @param id id
+     * @return
+     * @author 杨万浩
+     * @date 2020/3/10 19:55
+     */
+    String getPasswordById(Long id);
+
+    /**
+     * Description: 修改密码
+     * @param dto dto
+     * @param loginUserId id
+     * @return
+     * @author 杨万浩
+     * @date 2020/3/10 20:03
+     */
+    Integer resetPassword(ResetPasswordDto dto, Long loginUserId);
+
+    /**
+     * Description: 获取用户信息
+     * @param loginUserId loginUserId
+     * @return
+     * @author 杨万浩
+     * @date 2020/3/11 8:06
+     */
+    UserInfoVo getUserInfoById(Long loginUserId) throws ParseException;
+
+    /**
+     * Description: 修改个人信息DTO
+     * @param dto dto
+     * @return
+     * @author 杨万浩
+     * @date 2020/3/12 9:08
+     */
+    Integer updateUserInfo(UserInfoDto dto);
 
 }

@@ -67,6 +67,23 @@ public class CustomerAddressServiceImpl implements CustomerAddressService {
     }
 
     @Override
+    public List<CustomerAddressListVo> listUserAddresses(Long loginUserId) {
+        CustomerAddressExample example = new CustomerAddressExample();
+        // 默认地址在最上边,其他的按照id排序
+        example.setOrderByClause("is_default DESC, id ASC");
+        CustomerAddressExample.Criteria criteria = example.createCriteria();
+        criteria.andCustomerIdEqualTo(loginUserId);
+        List<CustomerAddress> customerAddressList = customerAddressMapper.selectByExample(example);
+        List<CustomerAddressListVo> vos = new ArrayList<>(customerAddressList.size());
+        for (CustomerAddress customerAddress : customerAddressList) {
+            CustomerAddressListVo vo = new CustomerAddressListVo();
+            BeanUtils.copyProperties(customerAddress, vo);
+            vos.add(vo);
+        }
+        return vos;
+    }
+
+    @Override
     public Integer removeAddress(Long addressId, Long userId) {
         CustomerAddressExample example = new CustomerAddressExample();
         CustomerAddressExample.Criteria criteria = example.createCriteria();

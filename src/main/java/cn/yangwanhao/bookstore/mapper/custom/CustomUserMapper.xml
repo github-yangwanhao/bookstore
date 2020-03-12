@@ -31,4 +31,11 @@
     SET pwd_error_count=pwd_error_count+1
     WHERE id=#{userId}
   </update>
+
+  <select id="getUserInfoById" resultType="cn.yangwanhao.bookstore.vo.UserInfoVo">
+    SELECT
+    id AS userId, realname, loginname, phone, email, sex, birthday
+    FROM user
+    where id=#{loginUserId}
+  </select>
 </mapper>

@@ -38,12 +38,12 @@ public class PicServiceImpl implements PicService {
         String extension = StringUtils.substringAfterLast(file.getOriginalFilename(), ".");
         if (!GlobalConstant.PIC_EXTENSION.contains(extension)) {
             log.info("上传失败，文件内容不符合要求");
-            throw new GlobalException(ErrorCodeEnum.U5009010);
+            throw new GlobalException(ErrorCodeEnum.I5009010);
         }
         BufferedImage image = ImageIO.read(file.getInputStream());
         if (image == null) {
             log.info("上传失败，文件内容不符合要求");
-            throw new GlobalException(ErrorCodeEnum.U5009010);
+            throw new GlobalException(ErrorCodeEnum.I5009010);
         }
         // 上传文件
         StorePath storePath = this.storageClient.uploadImageAndCrtThumbImage(file.getInputStream(), file.getSize(), extension, null);

@@ -1,5 +1,6 @@
 package cn.yangwanhao.bookstore.mapper.custom;
 
+import cn.yangwanhao.bookstore.vo.UserInfoVo;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
@@ -25,5 +26,14 @@ public interface CustomUserMapper {
      * @date 2020/3/3 21:53
      */
     Integer addPwdErrorCount(@Param("userId") Long userId);
+
+    /**
+     * Description: 通过当前登录用户获取userId
+     * @param loginUserId loginUserId
+     * @return
+     * @author 杨万浩
+     * @date 2020/3/11 8:07
+     */
+    UserInfoVo getUserInfoById(@Param("loginUserId") Long loginUserId);
 
 }
