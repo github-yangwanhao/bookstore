@@ -38,4 +38,11 @@ public class GlobalException extends RuntimeException {
         this.message = e.getMsg();
         log.error("<== "+this.getClass().getName()+", code:" + this.code + ", message:" + this.getMessage());
     }
+
+    public GlobalException(ErrorCodeEnum e, Object... args) {
+        super(String.format(e.getMsg(), args));
+        this.code = e.getCode();
+        this.message = String.format(e.getMsg(), args);
+        log.error("<== "+this.getClass().getName()+", code:" + this.code + ", message:" + this.getMessage());
+    }
 }

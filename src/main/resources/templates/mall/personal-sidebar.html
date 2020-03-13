@@ -5,7 +5,7 @@
     <div class="title_list">
         <ul>
             <li><a th:href="@{'/store/page/personal'}" th:class="${path=='personal'?'active':''}">个人信息</a></li>
-            <li><a th:href="@{'/orders'}" th:class="${path=='orders'?'active':''}">我的订单</a></li>
+            <li><a th:href="@{'/store/order/list'}" th:class="${path=='orders'?'active':''}">我的订单</a></li>
             <li><a th:href="@{'/store/login/logout'}">退出登录</a></li>
         </ul>
     </div>

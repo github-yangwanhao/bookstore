@@ -17,9 +17,9 @@
 
   <insert id="insertOrderBaseGenerateId" useGeneratedKeys="true" keyProperty="id">
     INSERT INTO `order`
-    (order_no, user_id, total_price, order_status, is_deleted, create_time)
+    (order_no, user_id, address_id, total_price, order_status, is_deleted, create_time)
     VALUES
-    (#{orderNo}, #{userId}, #{totalPrice}, #{orderStatus}, #{isDeleted}, #{createTime})
+    (#{orderNo}, #{userId}, #{addressId} #{totalPrice}, #{orderStatus}, #{isDeleted}, #{createTime})
   </insert>
 
   <resultMap id="orderVoResultMap" type="cn.yangwanhao.bookstore.vo.OrderVo">
@@ -55,5 +55,69 @@
     LEFT JOIN customer_address ca ON ca.id=o.address_id
     WHERE o.order_no=#{orderNo} AND o.user_id=#{loginUserId}
   </select>
+
+  <resultMap id="orderListVoResultMap" type="cn.yangwanhao.bookstore.vo.OrderListVo">
+    <result column="id" property="orderId" jdbcType="BIGINT" />
+    <result column="order_no" property="orderNo" jdbcType="VARCHAR" />
+    <result column="order_status" property="orderStatus" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="total_price" property="totalPrice" jdbcType="BIGINT" />
+    <result column="address" property="address" jdbcType="BIGINT" />
+    <collection property="goods" select="portalListOrderGoods" column="id" />
+  </resultMap>
+  <select id="portalListOrder" resultMap="orderListVoResultMap">
+    SELECT
+    id, order_no, order_status, create_time, total_price
+    FROM `order`
+    WHERE user_id=#{loginUserId}
+    ORDER BY create_time DESC
+  </select>
+
+  <select id="portalListOrderGoods" resultType="cn.yangwanhao.bookstore.vo.OrderGoodsListVo">
+    SELECT
+    og.goods_id AS goodsId, og.goods_num AS goodsNum,
+    gi.imgs AS img, gi.title AS goodsTitle,
+    gb.price AS price
+    FROM order_goods og
+    LEFT JOIN goods_base gb ON og.goods_id=gb.id
+    LEFT JOIN goods_info gi ON og.goods_id=gi.id
+    WHERE og.order_id=#{id}
+  </select>
+
+  <select id="adminListOrder" resultType="cn.yangwanhao.bookstore.vo.OrderListVo">
+    SELECT
+    o.id AS orderId, o.order_no AS orderNo, o.order_status AS orderStatus, o.create_time AS createTime, o.total_price AS totalPrice,
+    CONCAT(ca.receiver_name, "-",ca.receiver_phone, "-", ca.receiver_address) AS address
+    FROM `order` o
+    LEFT JOIN customer_address ca ON ca.id=o.address_id
+    ORDER BY create_time ASC
+  </select>
+
+  <select id="listOrderGoods" resultType="cn.yangwanhao.bookstore.vo.OrderGoodsListVo">
+    SELECT
+    og.goods_num AS goodsNum, gi.title AS goodsTitle, og.goods_id AS goodsId
+    FROM `order` o
+    LEFT JOIN order_goods og ON og.order_id=o.id
+    LEFT JOIN goods_info gi ON gi.id=og.goods_id
+    WHERE o.order_no=#{orderNo}
+  </select>
+
+  <select id="selectOrders" resultMap="BaseResultMap">
+    SELECT *
+    FROM `order`
+    WHERE id IN
+    <foreach collection="ids" item="id" open="(" close=")" separator=",">
+      #{id}
+    </foreach>
+  </select>
+
+  <update id="startOrder">
+    UPDATE `order`
+    SET order_status=6, shipments_time=now()
+    WHERE id IN
+    <foreach collection="ids" item="id" open="(" close=")" separator=",">
+      #{id}
+    </foreach>
+  </update>
 
 </mapper>

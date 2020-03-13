@@ -70,4 +70,10 @@ public class AdminPageController extends BaseController {
         return "admin/goods_edit";
     }
 
+    @RequestMapping("/orderList")
+    public String orderList(Model model) {
+        model.addAttribute("path", "orders");
+        return "/admin/order";
+    }
+
 }

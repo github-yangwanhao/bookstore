@@ -2,7 +2,12 @@ package cn.yangwanhao.bookstore.service;
 
 
 import cn.yangwanhao.bookstore.dto.OrderDto;
+import cn.yangwanhao.bookstore.vo.OrderGoodsListVo;
+import cn.yangwanhao.bookstore.vo.OrderListVo;
 import cn.yangwanhao.bookstore.vo.OrderVo;
+import com.github.pagehelper.PageInfo;
+
+import java.util.List;
 
 /**
  * description
@@ -32,5 +37,44 @@ public interface OrderService {
      * @date 2020/3/12 14:31
      */
     OrderVo getOrderDetail(String orderNo, Long loginUserId);
+
+    /**
+     * Description: 顾客个人订单列表
+     * @param pageNum num
+     * @param pageSize size
+     * @param userId userId
+     * @return
+     * @author 杨万浩
+     * @date 2020/3/13 9:23
+     */
+    PageInfo<OrderListVo> portalOrderList(Integer pageNum, Integer pageSize, Long userId);
+    
+    /**
+     * Description: 管理员订单列表
+     * @param pageNum num
+     * @param pageSize size
+     * @return
+     * @author 杨万浩
+     * @date 2020/3/13 10:19
+     */
+    PageInfo<OrderListVo> adminOrderList(Integer pageNum, Integer pageSize);
+
+    /**
+     * Description: 查看订单商品列表
+     * @param orderNo no
+     * @return
+     * @author 杨万浩
+     * @date 2020/3/13 11:17
+     */
+    List<OrderGoodsListVo> selectOrderItem(String orderNo);
+
+    /**
+     * Description: 订单发货
+     * @param ids ids
+     * @return
+     * @author 杨万浩
+     * @date 2020/3/13 11:39
+     */
+    Integer orderStart(Integer[] ids);
 
 }

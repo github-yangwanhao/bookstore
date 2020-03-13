@@ -12,12 +12,15 @@ import cn.yangwanhao.bookstore.service.CustomerAddressService;
 import cn.yangwanhao.bookstore.service.OrderService;
 import cn.yangwanhao.bookstore.vo.CartGoodsListVo;
 import cn.yangwanhao.bookstore.vo.CustomerAddressVo;
+import cn.yangwanhao.bookstore.vo.OrderListVo;
 import cn.yangwanhao.bookstore.vo.OrderVo;
+import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
@@ -80,6 +83,16 @@ public class PortalOrderController extends BaseController {
         OrderVo vo = orderService.getOrderDetail(orderNo, super.getLoginUserId(request));
         model.addAttribute("vo", vo);
         return "mall/order-detail";
+    }
+
+    @RequestMapping("/list")
+    public String orderList(@RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum,
+                            @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize,
+                            HttpServletRequest request, Model model) {
+        Long loginUserId = super.getLoginUserId(request);
+        PageInfo<OrderListVo> page = orderService.portalOrderList(pageNum, pageSize, loginUserId);
+        model.addAttribute("page", page);
+        return "mall/my-orders";
     }
 
 }

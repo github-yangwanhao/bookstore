@@ -100,7 +100,7 @@ public class CustomerAddressServiceImpl implements CustomerAddressService {
         criteria.andCustomerIdEqualTo(userId);
         List<CustomerAddress> customerAddressList = customerAddressMapper.selectByExample(example);
         // 如果集合的长度为0
-        if (customerAddressList != null || customerAddressList.size() == 0) {
+        if (customerAddressList == null || customerAddressList.size() == 0) {
             throw new GlobalException(ErrorCodeEnum.U5003002);
         }
         CustomerAddressVo vo = new CustomerAddressVo();

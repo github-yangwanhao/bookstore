@@ -5,10 +5,7 @@ import cn.yangwanhao.bookstore.common.enums.ErrorCodeEnum;
 import cn.yangwanhao.bookstore.common.enums.GoodsStatusEnum;
 import cn.yangwanhao.bookstore.common.enums.OrderStatusEnum;
 import cn.yangwanhao.bookstore.common.exception.GlobalException;
-import cn.yangwanhao.bookstore.common.util.BigDecimalUtils;
-import cn.yangwanhao.bookstore.common.util.IdUtils;
-import cn.yangwanhao.bookstore.common.util.PicNameUtils;
-import cn.yangwanhao.bookstore.common.util.PubUtils;
+import cn.yangwanhao.bookstore.common.util.*;
 import cn.yangwanhao.bookstore.dto.OrderDto;
 import cn.yangwanhao.bookstore.entity.Order;
 import cn.yangwanhao.bookstore.entity.OrderGoods;
@@ -20,7 +17,11 @@ import cn.yangwanhao.bookstore.service.CartService;
 import cn.yangwanhao.bookstore.service.GoodsService;
 import cn.yangwanhao.bookstore.service.OrderService;
 import cn.yangwanhao.bookstore.vo.GoodsVo;
+import cn.yangwanhao.bookstore.vo.OrderGoodsListVo;
+import cn.yangwanhao.bookstore.vo.OrderListVo;
 import cn.yangwanhao.bookstore.vo.OrderVo;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -143,5 +144,60 @@ public class OrderServiceImpl implements OrderService {
             }
         });
         return vo;
+    }
+
+    @Override
+    public PageInfo<OrderListVo> portalOrderList(Integer pageNum, Integer pageSize, Long userId) {
+        PageHelper.startPage(pageNum, pageSize);
+        List<OrderListVo> list = customOrderMapper.portalListOrder(userId);
+        list.forEach(vo->{
+            vo.setOrderStatusString(OrderStatusEnum.getByStatus(vo.getOrderStatus()).getDesc());
+            vo.setTotalPriceDouble(BigDecimalUtils.movePointLeft(String.valueOf(vo.getTotalPrice()), 2).doubleValue());
+            vo.getGoods().forEach(goods->{
+                goods.setPriceDouble(BigDecimalUtils.movePointLeft(String.valueOf(goods.getPrice()), 2).doubleValue());
+                goods.setGoodsTotalPrice(BigDecimalUtils.mul(String.valueOf(goods.getPriceDouble()), String.valueOf(goods.getGoodsNum())).doubleValue());
+                goods.setImg(PicNameUtils.getThumbnailName(picHost + goods.getImg()));
+                if (goods.getGoodsTitle().length() > 25) {
+                    goods.setGoodsTitle(goods.getGoodsTitle().substring(0,25));
+                }
+            });
+        });
+        return new PageInfo<>(list);
+    }
+
+    @Override
+    public PageInfo<OrderListVo> adminOrderList(Integer pageNum, Integer pageSize) {
+        PageHelper.startPage(pageNum, pageSize);
+        List<OrderListVo> list = customOrderMapper.adminListOrder();
+        list.forEach(vo->{
+            vo.setOrderStatusString(OrderStatusEnum.getByStatus(vo.getOrderStatus()).getDesc());
+            vo.setTotalPriceDouble(BigDecimalUtils.movePointLeft(String.valueOf(vo.getTotalPrice()), 2).doubleValue());
+            vo.setPayType(vo.getOrderStatus()>OrderStatusEnum.CANCELED_BEFORE_PAID.getStatus() ? 1:0);
+        });
+        return new PageInfo<>(list);
+    }
+
+    @Override
+    public List<OrderGoodsListVo> selectOrderItem(String orderNo) {
+        List<OrderGoodsListVo> list = customOrderMapper.listOrderGoods(orderNo);
+        if (!PublicUtils.isEmpty(list)) {
+            list.forEach(vo->{
+                if (vo.getGoodsTitle().length()>20) {
+                    vo.setGoodsTitle(vo.getGoodsTitle().substring(0,20));
+                }
+            });
+        }
+        return list;
+    }
+
+    @Override
+    public Integer orderStart(Integer[] ids) {
+        List<Order> orders = customOrderMapper.selectOrders(ids);
+        for (Order o : orders) {
+            if (!o.getOrderStatus().equals(OrderStatusEnum.WAIT_TO_SHIPMENTS.getStatus())) {
+                throw new GlobalException(ErrorCodeEnum.O5009013, o.getOrderNo());
+            }
+        }
+        return customOrderMapper.startOrder(ids);
     }
 }
