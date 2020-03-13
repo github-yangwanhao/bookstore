@@ -56,6 +56,12 @@
     WHERE o.order_no=#{orderNo} AND o.user_id=#{loginUserId}
   </select>
 
+  <select id="getOrderByOrderNo" resultMap="BaseResultMap">
+    SELECT *
+    FROM `order`
+    WHERE order_no=#{orderNo}
+  </select>
+
   <resultMap id="orderListVoResultMap" type="cn.yangwanhao.bookstore.vo.OrderListVo">
     <result column="id" property="orderId" jdbcType="BIGINT" />
     <result column="order_no" property="orderNo" jdbcType="VARCHAR" />
@@ -118,6 +124,12 @@
     <foreach collection="ids" item="id" open="(" close=")" separator=",">
       #{id}
     </foreach>
+  </update>
+
+  <update id="customerPaidOrder">
+    UPDATE `order`
+    SET order_status=5, pay_time=now()
+    WHERE order_no=#{orderNo} AND order_status=1
   </update>
 
 </mapper>

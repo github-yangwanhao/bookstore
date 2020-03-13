@@ -2,6 +2,7 @@ package cn.yangwanhao.bookstore.service;
 
 
 import cn.yangwanhao.bookstore.dto.OrderDto;
+import cn.yangwanhao.bookstore.entity.Order;
 import cn.yangwanhao.bookstore.vo.OrderGoodsListVo;
 import cn.yangwanhao.bookstore.vo.OrderListVo;
 import cn.yangwanhao.bookstore.vo.OrderVo;
@@ -36,7 +37,16 @@ public interface OrderService {
      * @author 杨万浩
      * @date 2020/3/12 14:31
      */
+
     OrderVo getOrderDetail(String orderNo, Long loginUserId);
+    /**
+     * Description: 获取订单详情
+     * @param orderNo no
+     * @return
+     * @author 杨万浩
+     * @date 2020/3/12 14:31
+     */
+    Order getOrderByOrderNo(String orderNo);
 
     /**
      * Description: 顾客个人订单列表
@@ -76,5 +86,14 @@ public interface OrderService {
      * @date 2020/3/13 11:39
      */
     Integer orderStart(Integer[] ids);
+    
+    /**
+     * Description: 顾客付款后修改订单状态和支付时间
+     * @param orderNo orderNo
+     * @return 
+     * @author 杨万浩
+     * @date 2020/3/13 20:14
+     */
+    Integer customerPaidOrder(String orderNo);
 
 }

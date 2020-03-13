@@ -10,7 +10,6 @@ import cn.yangwanhao.bookstore.dto.OrderDto;
 import cn.yangwanhao.bookstore.entity.Order;
 import cn.yangwanhao.bookstore.entity.OrderGoods;
 import cn.yangwanhao.bookstore.mapper.OrderGoodsMapper;
-import cn.yangwanhao.bookstore.mapper.OrderMapper;
 import cn.yangwanhao.bookstore.mapper.custom.CustomOrderGoodsMapper;
 import cn.yangwanhao.bookstore.mapper.custom.CustomOrderMapper;
 import cn.yangwanhao.bookstore.service.CartService;
@@ -42,8 +41,6 @@ import java.util.List;
 @Service
 public class OrderServiceImpl implements OrderService {
 
-    @Resource
-    private OrderMapper orderMapper;
     @Resource
     private OrderGoodsMapper orderGoodsMapper;
     @Resource
@@ -147,6 +144,11 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    public Order getOrderByOrderNo(String orderNo) {
+        return customOrderMapper.getOrderByOrderNo(orderNo);
+    }
+
+    @Override
     public PageInfo<OrderListVo> portalOrderList(Integer pageNum, Integer pageSize, Long userId) {
         PageHelper.startPage(pageNum, pageSize);
         List<OrderListVo> list = customOrderMapper.portalListOrder(userId);
@@ -199,5 +201,10 @@ public class OrderServiceImpl implements OrderService {
             }
         }
         return customOrderMapper.startOrder(ids);
+    }
+
+    @Override
+    public Integer customerPaidOrder(String orderNo) {
+        return customOrderMapper.customerPaidOrder(orderNo);
     }
 }

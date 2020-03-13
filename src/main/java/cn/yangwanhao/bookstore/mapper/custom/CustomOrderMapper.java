@@ -34,6 +34,15 @@ public interface CustomOrderMapper {
     OrderVo getOrderDetail(@Param("orderNo") String orderNo, @Param("loginUserId") Long loginUserId);
 
     /**
+     * Description: 订单详情
+     * @param orderNo no
+     * @return
+     * @author 杨万浩
+     * @date 2020/3/12 14:33
+     */
+    Order getOrderByOrderNo(@Param("orderNo") String orderNo);
+
+    /**
      * Description: 顾客查看订单列表
      * @param loginUserId userId
      * @return
@@ -76,4 +85,13 @@ public interface CustomOrderMapper {
      * @date 2020/3/13 12:31
      */
     Integer startOrder(@Param("ids") Integer[] ids);
+
+    /**
+     * Description: 顾客付款后修改订单状态和支付时间
+     * @param orderNo orderNo
+     * @return
+     * @author 杨万浩
+     * @date 2020/3/13 20:18
+     */
+    Integer customerPaidOrder(@Param("orderNo") String orderNo);
 }

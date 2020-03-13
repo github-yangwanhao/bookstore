@@ -64,23 +64,24 @@
 
         <!-- 指定在数据库中已经存在的表名 -->
         <!-- user -->
-        <table schema="" tableName="role" />
+        <!--<table schema="" tableName="role" />
         <table schema="" tableName="user_role" />
         <table schema="" tableName="user" />
         <table schema="" tableName="customer_address" />
-        <table schema="" tableName="dictionary" />
+        <table schema="" tableName="dictionary" />-->
         <!-- cart -->
-        <table schema="" tableName="cart" />
+        <!--<table schema="" tableName="cart" />-->
         <!-- goods -->
-        <table schema="" tableName="advertisements" />
+        <!--<table schema="" tableName="advertisements" />
         <table schema="" tableName="category" />
         <table schema="" tableName="goods_base" />
         <table schema="" tableName="goods_books" />
-        <table schema="" tableName="goods_info" />
+        <table schema="" tableName="goods_info" />-->
         <!-- order -->
-        <table schema="" tableName="order" />
+        <!--<table schema="" tableName="order" />
         <table schema="" tableName="order_goods" />
-        <table schema="" tableName="trade_record" />
+        <table schema="" tableName="trade_record" />-->
+        <table schema="" tableName="pay_record" />
         <!--
         有些表的字段需要指定java类型
 		<table schema="" tableName="">
