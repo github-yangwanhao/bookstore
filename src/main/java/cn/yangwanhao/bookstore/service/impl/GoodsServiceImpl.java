@@ -1,7 +1,9 @@
 package cn.yangwanhao.bookstore.service.impl;
 
 import cn.yangwanhao.bookstore.common.constant.GlobalConstant;
+import cn.yangwanhao.bookstore.common.enums.ErrorCodeEnum;
 import cn.yangwanhao.bookstore.common.enums.GoodsStatusEnum;
+import cn.yangwanhao.bookstore.common.exception.GlobalException;
 import cn.yangwanhao.bookstore.common.util.BigDecimalUtils;
 import cn.yangwanhao.bookstore.common.util.IdUtils;
 import cn.yangwanhao.bookstore.common.util.PicNameUtils;
@@ -228,5 +230,17 @@ public class GoodsServiceImpl implements GoodsService {
             }
         });
         return new PageInfo<>(list);
+    }
+
+    @Override
+    public Integer decreaseStock(Long[] goodsIds, Integer[] goodsNums) {
+        if (goodsIds.length != goodsNums.length) {
+            throw new GlobalException(ErrorCodeEnum.G500101);
+        }
+        Integer result = 0;
+        for (int i=0; i<goodsIds.length; i++) {
+            result += customGoodsMapper.decreaseStock(goodsIds[i], goodsNums[i]);
+        }
+        return result;
     }
 }

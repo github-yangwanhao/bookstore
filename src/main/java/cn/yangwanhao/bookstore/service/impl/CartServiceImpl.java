@@ -13,6 +13,7 @@ import cn.yangwanhao.bookstore.mapper.custom.CustomCartMapper;
 import cn.yangwanhao.bookstore.service.CartService;
 import cn.yangwanhao.bookstore.service.GoodsService;
 import cn.yangwanhao.bookstore.vo.CartGoodsListVo;
+import cn.yangwanhao.bookstore.vo.GoodsVo;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -108,6 +109,18 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public Integer modifyCartGoods(Long cartId, Integer num, Long loginUserId) {
+        // 判断商品库存
+        Cart cart = cartMapper.selectByPrimaryKey(cartId);
+        if (cart == null) {
+            throw new GlobalException(ErrorCodeEnum.C5003003);
+        }
+        GoodsVo goodsInfo = goodsService.getGoodsInfo(cart.getGoodsId());
+        if (goodsInfo == null) {
+            throw new GlobalException(ErrorCodeEnum.C5003003);
+        }
+        if (num > goodsInfo.getStock()) {
+            throw new GlobalException(ErrorCodeEnum.I5009005);
+        }
         CartExample cartExample = new CartExample();
         CartExample.Criteria criteria = cartExample.createCriteria();
         criteria.andUserIdEqualTo(loginUserId);
@@ -132,5 +145,13 @@ public class CartServiceImpl implements CartService {
     @Override
     public Integer manageDeleteGoods(Long goodsId) {
         return customCartMapper.manageDeleteGoods(goodsId);
+    }
+
+    @Override
+    public Integer clearCart(Long loginUserId) {
+        CartExample example = new CartExample();
+        CartExample.Criteria criteria = example.createCriteria();
+        criteria.andUserIdEqualTo(loginUserId);
+        return cartMapper.deleteByExample(example);
     }
 }

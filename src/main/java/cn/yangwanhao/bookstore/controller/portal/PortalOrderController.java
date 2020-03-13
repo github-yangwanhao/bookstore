@@ -1,12 +1,17 @@
 package cn.yangwanhao.bookstore.controller.portal;
 
+import cn.yangwanhao.bookstore.common.enums.ErrorCodeEnum;
 import cn.yangwanhao.bookstore.common.enums.GoodsStatusEnum;
+import cn.yangwanhao.bookstore.common.exception.GlobalException;
 import cn.yangwanhao.bookstore.common.support.BaseController;
 import cn.yangwanhao.bookstore.common.util.BigDecimalUtils;
+import cn.yangwanhao.bookstore.common.util.PublicUtils;
 import cn.yangwanhao.bookstore.dto.OrderDto;
 import cn.yangwanhao.bookstore.service.CartService;
+import cn.yangwanhao.bookstore.service.CustomerAddressService;
 import cn.yangwanhao.bookstore.service.OrderService;
 import cn.yangwanhao.bookstore.vo.CartGoodsListVo;
+import cn.yangwanhao.bookstore.vo.CustomerAddressVo;
 import cn.yangwanhao.bookstore.vo.OrderVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -31,12 +36,21 @@ public class PortalOrderController extends BaseController {
     private CartService cartService;
     @Autowired
     private OrderService orderService;
+    @Autowired
+    private CustomerAddressService customerAddressService;
 
     @RequestMapping("/save/{addressId}")
     public String saveOrder(@PathVariable("addressId") Long addressId, HttpServletRequest request) {
         Long loginUserId = super.getLoginUserId(request);
+        CustomerAddressVo address = customerAddressService.getUserAddress(addressId, loginUserId);
+        if (address == null) {
+            throw new GlobalException(ErrorCodeEnum.U5003006);
+        }
         // 获取购物车商品列表
         List<CartGoodsListVo> cartGoodsList = cartService.getCart(loginUserId);
+        if (PublicUtils.isEmpty(cartGoodsList)) {
+            throw new GlobalException(ErrorCodeEnum.C5003007);
+        }
         Long cartTotalPrice = 0L;
         StringBuffer goodsIds = new StringBuffer();
         StringBuffer goodsNums = new StringBuffer();

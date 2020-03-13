@@ -89,4 +89,14 @@ public interface CustomGoodsMapper {
      */
     List<GoodsSearchListVo> searchGoods(GoodsSearchDto dto);
 
+    /**
+     * Description: 顾客下单后减少商品库存
+     * @param goodsId id
+     * @param num num
+     * @return
+     * @author 杨万浩
+     * @date 2020/3/12 16:04
+     */
+    Integer decreaseStock(@Param("goodsId") Long goodsId, @Param("num") Integer num);
+
 }

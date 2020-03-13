@@ -60,13 +60,13 @@
                                         <th:block th:if="${vo.orderStatus==2 or vo.orderStatus==3 or vo.orderStatus==4}">订单已取消~</th:block>
 
                                     </div>
-                                    <th:block th:if="${vo.orderStatus>=0}">
+                                    <th:block th:if="${vo.orderStatus!=2 and vo.orderStatus!=3 and vo.orderStatus!=4}">
                                         <div class="order-progress">
                                             <ol class="progress-list clearfix progress-list-5">
-                                                <th:block th:if="${vo.orderStatus==0}">
+                                                <th:block th:if="${vo.orderStatus==1}">
                                                     <li class="step step-active">
                                                 </th:block>
-                                                <th:block th:if="${vo.orderStatus>0}">
+                                                <th:block th:if="${vo.orderStatus>1}">
                                                     <li class="step step-first">
                                                 </th:block>
                                                 <div class="progress"><span class="text">下单</span></div>
@@ -75,13 +75,13 @@
                                                     02月07日
                                                 </div>
                                                 </li>
-                                                <th:block th:if="${vo.orderStatus<1}">
+                                                <th:block th:if="${vo.orderStatus==1}">
                                                     <li class="step">
                                                 </th:block>
-                                                <th:block th:if="${vo.orderStatus==1}">
+                                                <th:block th:if="${vo.orderStatus==5}">
                                                     <li class="step step-active">
                                                 </th:block>
-                                                <th:block th:if="${vo.orderStatus>1}">
+                                                <th:block th:if="${vo.orderStatus>5}">
                                                     <li class="step step-done">
                                                 </th:block>
                                                 <div class="progress"><span class="text">付款</span></div>
@@ -96,19 +96,7 @@
                                                 <th:block th:if="${vo.orderStatus>2}">
                                                     <li class="step step-done">
                                                 </th:block>
-                                                <div class="progress"><span class="text">配货</span></div>
-                                                <div class="info"></div>
-                                                </li>
-                                                <th:block th:if="${vo.orderStatus<3}">
-                                                    <li class="step">
-                                                </th:block>
-                                                <th:block th:if="${vo.orderStatus==3}">
-                                                    <li class="step step-active">
-                                                </th:block>
-                                                <th:block th:if="${vo.orderStatus>3}">
-                                                    <li class="step step-done">
-                                                </th:block>
-                                                <div class="progress"><span class="text">出库</span></div>
+                                                <div class="progress"><span class="text">发货</span></div>
                                                 <div class="info"></div>
                                                 </li>
                                                 <th:block th:if="${vo.orderStatus<4}">

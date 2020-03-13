@@ -159,8 +159,6 @@
         $.ajax({
             type: 'POST',
             url: '/store/cart/update/goodsNum',
-            // contentType: 'application/json',
-            // data: JSON.stringify(data),
             data: data,
             success: function (result) {
                 if (result.code == 200) {
@@ -172,7 +170,7 @@
                 }
             },
             error: function (result) {
-                swal(result.responseJson.message, {
+                swal(result.responseJSON.message, {
                     icon: "error",
                 });
             }

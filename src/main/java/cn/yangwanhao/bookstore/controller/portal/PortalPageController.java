@@ -5,9 +5,11 @@ import cn.yangwanhao.bookstore.common.support.BaseController;
 import cn.yangwanhao.bookstore.common.util.BigDecimalUtils;
 import cn.yangwanhao.bookstore.service.CartService;
 import cn.yangwanhao.bookstore.service.CustomerAddressService;
+import cn.yangwanhao.bookstore.service.GoodsService;
 import cn.yangwanhao.bookstore.service.UserService;
 import cn.yangwanhao.bookstore.vo.CartGoodsListVo;
 import cn.yangwanhao.bookstore.vo.CustomerAddressListVo;
+import cn.yangwanhao.bookstore.vo.GoodsVo;
 import cn.yangwanhao.bookstore.vo.UserInfoVo;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -39,6 +41,8 @@ public class PortalPageController extends BaseController {
     private UserService userService;
     @Autowired
     private CustomerAddressService customerAddressService;
+    @Autowired
+    private GoodsService goodsService;
 
     @RequestMapping("/login")
     public ModelAndView toLogin(@RequestParam(value = "history", required = false) String history) {
@@ -67,6 +71,10 @@ public class PortalPageController extends BaseController {
         List<CartGoodsListVo> expired = new ArrayList<>();
         for (CartGoodsListVo vo: vos) {
             if (vo.getGoodsStatus().equals(GoodsStatusEnum.NORMAL.getValue())) {
+                GoodsVo goodsInfo = goodsService.getGoodsInfo(vo.getGoodsId());
+                if (goodsInfo.getStock() < vo.getGoodsNum()) {
+                    vo.setGoodsTitle(vo.getGoodsTitle() + "(商品库存不足)");
+                }
                 effective.add(vo);
                 cartTotalGoodsNum += vo.getGoodsNum();
                 cartTotalPrice = BigDecimalUtils.add(String.valueOf(cartTotalPrice), String.valueOf(vo.getGoodsTotalPrice())).doubleValue();

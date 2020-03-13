@@ -119,4 +119,10 @@
         AND gb.stock>0
         AND CONCAT(c.name, " ", gi.title, " ", gi.tags) LIKE CONCAT("%", #{q}, "%")
     </select>
+
+    <update id="decreaseStock">
+        UPDATE goods_base
+        SET stock=stock-#{num}
+        WHERE id=#{goodsId}
+    </update>
 </mapper>

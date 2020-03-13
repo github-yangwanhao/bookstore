@@ -83,4 +83,13 @@ public interface CartService {
      */
     Integer manageDeleteGoods(Long goodsId);
 
+    /**
+     * Description: 顾客下单后清空购物车
+     * @param loginUserId userId
+     * @return
+     * @author 杨万浩
+     * @date 2020/3/12 16:09
+     */
+    Integer clearCart(Long loginUserId);
+
 }

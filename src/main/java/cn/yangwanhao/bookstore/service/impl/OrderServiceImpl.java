@@ -16,10 +16,12 @@ import cn.yangwanhao.bookstore.mapper.OrderGoodsMapper;
 import cn.yangwanhao.bookstore.mapper.OrderMapper;
 import cn.yangwanhao.bookstore.mapper.custom.CustomOrderGoodsMapper;
 import cn.yangwanhao.bookstore.mapper.custom.CustomOrderMapper;
+import cn.yangwanhao.bookstore.service.CartService;
 import cn.yangwanhao.bookstore.service.GoodsService;
 import cn.yangwanhao.bookstore.service.OrderService;
 import cn.yangwanhao.bookstore.vo.GoodsVo;
 import cn.yangwanhao.bookstore.vo.OrderVo;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -49,6 +51,8 @@ public class OrderServiceImpl implements OrderService {
     private CustomOrderGoodsMapper customOrderGoodsMapper;
     @Resource
     private GoodsService goodsService;
+    @Autowired
+    private CartService cartService;
     @Value("${pic.host}")
     private String picHost;
 
@@ -66,6 +70,10 @@ public class OrderServiceImpl implements OrderService {
         Long[] goodsPrices = new Long[goodsIds.length];
         for (int i=0; i<goodsIds.length; i++) {
             GoodsVo goodsVo = goodsService.getGoodsInfo(goodsIds[i]);
+            // 库存不足
+            if (goodsNums[i] > goodsVo.getStock()) {
+                throw new GlobalException(ErrorCodeEnum.I5009005);
+            }
             goodsPrices[i] = goodsVo.getPrice();
         }
 
@@ -79,7 +87,6 @@ public class OrderServiceImpl implements OrderService {
         if (totalPrice != orderDto.getTotalPrice()) {
             throw new GlobalException(ErrorCodeEnum.O5009008);
         }
-        // TODO 判断库存
 
         // 插入order表
         Order order = new Order();
@@ -109,9 +116,11 @@ public class OrderServiceImpl implements OrderService {
         }
         // 批量插入订单商品表
         result += customOrderGoodsMapper.insertBatchOrderGoods(orderGoodsList);
-        // TODO 减少库存
-        // TODO 删除购物车
         if (result > 1) {
+            // 减少库存
+            goodsService.decreaseStock(goodsIds, goodsNums);
+            // 删除购物车
+            cartService.clearCart(orderDto.getUserId());
             return orderNo;
         }
         return null;
@@ -121,7 +130,7 @@ public class OrderServiceImpl implements OrderService {
     public OrderVo getOrderDetail(String orderNo, Long loginUserId) {
         OrderVo vo = customOrderMapper.getOrderDetail(orderNo, loginUserId);
         if (vo == null) {
-            throw new GlobalException(ErrorCodeEnum.O5003004);
+            throw new GlobalException(ErrorCodeEnum.O5003005);
         }
         vo.setTotalPriceDouble(BigDecimalUtils.movePointLeft(String.valueOf(vo.getTotalPrice()), 2).doubleValue());
         vo.setOrderStatusString(OrderStatusEnum.getByStatus(vo.getOrderStatus()).getDesc());

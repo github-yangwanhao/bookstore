@@ -115,4 +115,14 @@ public interface GoodsService {
      */
     PageInfo<GoodsSearchListVo> searchGoods(GoodsSearchDto dto);
 
+    /**
+     * Description: 顾客下单后减少库存
+     * @param goodsIds ids
+     * @param goodsNums nums
+     * @return
+     * @author 杨万浩
+     * @date 2020/3/12 16:01
+     */
+    Integer decreaseStock(Long[] goodsIds, Integer[] goodsNums);
+
 }
