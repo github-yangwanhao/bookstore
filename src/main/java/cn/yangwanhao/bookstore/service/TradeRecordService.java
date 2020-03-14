@@ -16,6 +16,6 @@ public interface TradeRecordService {
      * @author 杨万浩
      * @date 2020/3/13 19:57
      */
-    Integer saveTradeRecord(TradeRecordDto dto);
+    Integer paidSuccess(TradeRecordDto dto);
 
 }

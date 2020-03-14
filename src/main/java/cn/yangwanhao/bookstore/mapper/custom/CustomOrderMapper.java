@@ -94,4 +94,13 @@ public interface CustomOrderMapper {
      * @date 2020/3/13 20:18
      */
     Integer customerPaidOrder(@Param("orderNo") String orderNo);
+
+    /**
+     * Description: 订单超时未支付
+     * @param orderNo orderNo
+     * @return 
+     * @author 杨万浩
+     * @date 2020/3/14 9:49
+     */
+    Integer notPaidCancelOrder(@Param("orderNo") String orderNo);
 }

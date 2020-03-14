@@ -1,9 +1,13 @@
 package cn.yangwanhao.bookstore.service.impl;
 
+import cn.yangwanhao.bookstore.common.constant.GlobalConstant;
 import cn.yangwanhao.bookstore.dto.TradeRecordDto;
 import cn.yangwanhao.bookstore.entity.TradeRecord;
 import cn.yangwanhao.bookstore.mapper.TradeRecordMapper;
+import cn.yangwanhao.bookstore.service.OrderService;
 import cn.yangwanhao.bookstore.service.TradeRecordService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -19,9 +23,13 @@ public class TradeRecordServiceImpl implements TradeRecordService {
 
     @Resource
     private TradeRecordMapper tradeRecordMapper;
+    @Autowired
+    private OrderService orderService;
+    @Resource
+    private StringRedisTemplate stringRedisTemplate;
 
     @Override
-    public Integer saveTradeRecord(TradeRecordDto dto) {
+    public Integer paidSuccess(TradeRecordDto dto) {
         TradeRecord record = new TradeRecord();
         // record.setId() 自增
         record.setUserId(dto.getUserId());
@@ -31,6 +39,12 @@ public class TradeRecordServiceImpl implements TradeRecordService {
         record.setMoney(dto.getMoney());
         record.setAlipayTransactionNum(dto.getAliPayTradeNo());
         record.setCreateTime(new Date());
-        return tradeRecordMapper.insertSelective(record);
+        int result = 0;
+        result += tradeRecordMapper.insertSelective(record);
+        // 修改订单状态
+        result += orderService.customerPaidOrder(dto.getOrderNo());
+        // 删除key
+        stringRedisTemplate.delete(GlobalConstant.RedisPrefixKey.ORDER_PREFIX + dto.getOrderNo());
+        return result;
     }
 }

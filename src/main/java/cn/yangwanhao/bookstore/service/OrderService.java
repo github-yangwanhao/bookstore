@@ -96,4 +96,13 @@ public interface OrderService {
      */
     Integer customerPaidOrder(String orderNo);
 
+    /**
+     * Description: 订单超时未支付
+     * @param orderNo orderNo
+     * @return
+     * @author 杨万浩
+     * @date 2020/3/14 9:47
+     */
+    Integer notPaidCancelOrder(String orderNo);
+
 }

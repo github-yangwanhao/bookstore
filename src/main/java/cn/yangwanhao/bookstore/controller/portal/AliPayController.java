@@ -15,7 +15,6 @@ import com.alipay.api.AlipayClient;
 import com.alipay.api.DefaultAlipayClient;
 import com.alipay.api.internal.util.AlipaySignature;
 import com.alipay.api.request.AlipayTradePagePayRequest;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -45,8 +44,12 @@ public class AliPayController extends BaseController {
 
     @Value("${aliPay.returnUrl}")
     private String aliPayReturnUrl;
+    @Value("${aliPay.expiredTime}")
+    private String expiredTime;
 
-    // 创建AliPayClient
+    /**
+     * 创建AliPayClient
+     */
     AliPaySandBoxConfig config = new AliPaySandBoxConfig();
 
     @RequestMapping("/toPay")
@@ -75,7 +78,7 @@ public class AliPayController extends BaseController {
         //订单名称,必填
         String subject = orderNo;
         //商品描述,可空
-        String body = "";
+        String body = expiredTime;
         // 该笔订单允许的最晚付款时间,逾期将关闭交易.取值范围:1m~15d.m-分钟,h-小时,d-天,1c-当天(1c-当天的情况下,无论交易何时创建,都在0点关闭).该参数数值不接受小数点,如1.5h,可转换为90m.
         String timeout_express = "30m";
         String requestBody = "{\"out_trade_no\":\""+ outTradeNo +"\","
@@ -109,9 +112,7 @@ public class AliPayController extends BaseController {
             dto.setTradeType(TradeRecordTypeEnum.PAY.getType());
             dto.setAliPayTradeNo(tradeNo);
             // 添加交易记录
-            tradeRecordService.saveTradeRecord(dto);
-            // 修改订单状态
-            orderService.customerPaidOrder(orderNo);
+            tradeRecordService.paidSuccess(dto);
             return "redirect:/store/order/detail/"+orderNo;
         }else{
             throw new GlobalException(ErrorCodeEnum.O5009014);

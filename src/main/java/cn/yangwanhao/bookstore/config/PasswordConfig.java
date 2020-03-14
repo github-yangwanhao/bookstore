@@ -11,7 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
  * @date 2020/3/3 16
  */
 @Configuration
-public class OtherConfig {
+public class PasswordConfig {
 
     @Bean
     public PasswordEncoder passwordEncoder() {

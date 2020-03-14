@@ -19,7 +19,7 @@
     INSERT INTO `order`
     (order_no, user_id, address_id, total_price, order_status, is_deleted, create_time)
     VALUES
-    (#{orderNo}, #{userId}, #{addressId} #{totalPrice}, #{orderStatus}, #{isDeleted}, #{createTime})
+    (#{orderNo}, #{userId}, #{addressId}, #{totalPrice}, #{orderStatus}, #{isDeleted}, #{createTime})
   </insert>
 
   <resultMap id="orderVoResultMap" type="cn.yangwanhao.bookstore.vo.OrderVo">
@@ -129,6 +129,12 @@
   <update id="customerPaidOrder">
     UPDATE `order`
     SET order_status=5, pay_time=now()
+    WHERE order_no=#{orderNo} AND order_status=1
+  </update>
+
+  <update id="notPaidCancelOrder">
+    UPDATE `order`
+    SET order_status=2
     WHERE order_no=#{orderNo} AND order_status=1
   </update>
 

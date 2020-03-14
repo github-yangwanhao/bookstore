@@ -23,12 +23,14 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * description
@@ -51,8 +53,13 @@ public class OrderServiceImpl implements OrderService {
     private GoodsService goodsService;
     @Autowired
     private CartService cartService;
+    @Resource
+    private StringRedisTemplate stringRedisTemplate;
+
     @Value("${pic.host}")
     private String picHost;
+    @Value("${order.expiredMinute}")
+    private String orderExpiredMinute;
 
     @Override
     public String createOrder(OrderDto orderDto) {
@@ -119,6 +126,9 @@ public class OrderServiceImpl implements OrderService {
             goodsService.decreaseStock(goodsIds, goodsNums);
             // 删除购物车
             cartService.clearCart(orderDto.getUserId());
+            // 开始订单失效时间计算
+            stringRedisTemplate.opsForValue().set(GlobalConstant.RedisPrefixKey.ORDER_PREFIX+orderNo, orderNo,
+                    Integer.parseInt(orderExpiredMinute), TimeUnit.MINUTES);
             return orderNo;
         }
         return null;
@@ -206,5 +216,10 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public Integer customerPaidOrder(String orderNo) {
         return customOrderMapper.customerPaidOrder(orderNo);
+    }
+
+    @Override
+    public Integer notPaidCancelOrder(String orderNo) {
+        return customOrderMapper.notPaidCancelOrder(orderNo);
     }
 }
