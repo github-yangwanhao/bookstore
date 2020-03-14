@@ -1,0 +1,51 @@
+server:
+  port: 8080
+spring:
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/bookshop
+    username: root
+    password: '******'
+  redis:
+    database: 0
+    host: 121.36.150.173
+    port: 6480
+    password: huaweiyun_yangwanhao
+  data:
+    mongodb:
+      uri: mongodb://root:******@121.36.150.173:27017/?authSource=admin
+      database: bookstore
+  thymeleaf:
+    cache: false
+mybatis:
+  type-aliases-package: cn.yangwanhao.bookstore.entity
+logging:
+  config: classpath:logback-spring.xml
+  level:
+    org.springframework.data.mongodb.core.MongoTemplate: DEBUG
+    cn.yangwanhao.bookstore.mapper: DEBUG
+    web: DEBUG
+fdfs:
+  # 读取时间
+  soTimeout: 1501
+  # 连接超时时间
+  connectTimeout: 601
+  # 编码默认UTF-8，charset属性不能自定义
+  # charset: UTF-8
+  # 缩略图
+  thumbImage:
+    # 宽
+    width: 80
+    # 高
+    height: 80
+  # tracker列表
+  trackerList:
+    - 121.36.150.173:22122
+pic:
+  host: http://121.36.150.173:8888/
+aliPay:
+  returnUrl: https://yangwanhao.utools.club/store/aliPay/return
+  expiredTime: 5m
+order:
+  expiredMinute: 5

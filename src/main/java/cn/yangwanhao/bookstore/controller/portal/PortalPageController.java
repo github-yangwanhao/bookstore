@@ -1,8 +1,11 @@
 package cn.yangwanhao.bookstore.controller.portal;
 
+import cn.yangwanhao.bookstore.common.enums.ErrorCodeEnum;
 import cn.yangwanhao.bookstore.common.enums.GoodsStatusEnum;
+import cn.yangwanhao.bookstore.common.exception.GlobalException;
 import cn.yangwanhao.bookstore.common.support.BaseController;
 import cn.yangwanhao.bookstore.common.util.BigDecimalUtils;
+import cn.yangwanhao.bookstore.common.util.PublicUtils;
 import cn.yangwanhao.bookstore.service.CartService;
 import cn.yangwanhao.bookstore.service.CustomerAddressService;
 import cn.yangwanhao.bookstore.service.GoodsService;
@@ -94,6 +97,9 @@ public class PortalPageController extends BaseController {
         Long loginUserId = super.getLoginUserId(request);
         // 获取收货地址列表
         List<CustomerAddressListVo> addressList = customerAddressService.listUserAddresses(loginUserId);
+        if (PublicUtils.isEmpty(addressList)) {
+            throw new GlobalException(ErrorCodeEnum.O5009015);
+        }
         // 获取购物车商品列表
         List<CartGoodsListVo> cartGoodsList = cartService.getCart(loginUserId);
         Integer cartTotalGoodsNum = 0;

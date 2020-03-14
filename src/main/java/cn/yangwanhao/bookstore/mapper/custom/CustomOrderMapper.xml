@@ -96,7 +96,7 @@
     CONCAT(ca.receiver_name, "-",ca.receiver_phone, "-", ca.receiver_address) AS address
     FROM `order` o
     LEFT JOIN customer_address ca ON ca.id=o.address_id
-    ORDER BY create_time ASC
+    ORDER BY create_time DESC
   </select>
 
   <select id="listOrderGoods" resultType="cn.yangwanhao.bookstore.vo.OrderGoodsListVo">

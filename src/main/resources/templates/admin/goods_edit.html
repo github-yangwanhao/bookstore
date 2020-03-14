@@ -44,49 +44,49 @@
                                 <input type="text" class="form-control col-sm-6" id="title" name="title"
                                        placeholder="请输入商品名称(必填)"
                                        th:value="${vo!=null and vo.title!=null }?${vo.title}: ''"
-                                       required="true">
+                                       required="true" autocomplete="off">
                             </div>
                             <div class="form-group" style="display:flex;">
                                 <label class="control-label">*请输入商品价格:&nbsp;&nbsp;&nbsp;&nbsp;</label>
                                 <input type="text" class="form-control col-sm-6" id="priceDouble" name="priceDouble"
                                        placeholder="请输入商品价格(单位:元)"
                                        th:value="${vo!=null and vo.priceDouble!=null }?${vo.priceDouble}: ''"
-                                       required="true">
+                                       required="true" autocomplete="off">
                             </div>
                             <div class="form-group" style="display:flex;">
                                 <label class="control-label">*请输入商品库存:&nbsp;&nbsp;&nbsp;&nbsp;</label>
                                 <input type="number" class="form-control col-sm-6" id="stock" name="stock"
                                        placeholder="请输入商品库存数"
                                        th:value="${vo!=null and vo.stock!=null }?${vo.stock}: 1"
-                                       required="true">
+                                       required="true" autocomplete="off">
                             </div>
                             <div class="form-group" style="display:flex;">
                                 <label class="control-label">*请输入商品标签:&nbsp;&nbsp;&nbsp;&nbsp;</label>
                                 <input type="text" class="form-control col-sm-6" id="tags" name="tags"
                                        placeholder="请输入商品标签(英文逗号分隔)"
                                        th:value="${vo!=null and vo.tags!=null }?${vo.tags}: ''"
-                                       required="true">
+                                       required="true" autocomplete="off">
                             </div>
                             <div class="form-group" style="display:flex;">
                                 <label class="control-label">*请输入图书作者:&nbsp;&nbsp;&nbsp;&nbsp;</label>
                                 <input type="text" class="form-control col-sm-6" id="author" name="author"
                                        placeholder="请输入图书作者"
                                        th:value="${vo!=null and vo.author!=null }?${vo.author}: ''"
-                                       required="true">
+                                       required="true" autocomplete="off">
                             </div>
                             <div class="form-group" style="display:flex;">
                                 <label class="control-label">*请输入出版社名称:&nbsp;&nbsp;&nbsp;&nbsp;</label>
                                 <input type="text" class="form-control col-sm-6" id="publisher" name="publisher"
                                        placeholder="请输入出版社名称"
                                        th:value="${vo!=null and vo.publisher!=null }?${vo.publisher}: ''"
-                                       required="true">
+                                       required="true" autocomplete="off">
                             </div>
                             <div class="form-group" style="display:flex;">
                                 <label class="control-label">*请输入图书ISBN:&nbsp;&nbsp;&nbsp;&nbsp;</label>
                                 <input type="text" class="form-control col-sm-6" id="isbn" name="isbn"
                                        placeholder="请输入图书ISBN"
                                        th:value="${vo!=null and vo.isbn!=null }?${vo.isbn}: ''"
-                                       required="true">
+                                       required="true" autocomplete="off">
                             </div>
                             <div class="form-group">
                                 <div class="col-sm-4">

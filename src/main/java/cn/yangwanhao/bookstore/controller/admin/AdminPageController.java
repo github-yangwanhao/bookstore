@@ -80,7 +80,7 @@ public class AdminPageController extends BaseController {
     @RequestMapping("/orderList")
     public String orderList(Model model) {
         model.addAttribute("path", "orders");
-        return "/admin/order";
+        return "admin/order";
     }
 
     @RequestMapping("/profile")

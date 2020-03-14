@@ -78,9 +78,9 @@ public class AliPayController extends BaseController {
         //订单名称,必填
         String subject = orderNo;
         //商品描述,可空
-        String body = expiredTime;
+        String body = "";
         // 该笔订单允许的最晚付款时间,逾期将关闭交易.取值范围:1m~15d.m-分钟,h-小时,d-天,1c-当天(1c-当天的情况下,无论交易何时创建,都在0点关闭).该参数数值不接受小数点,如1.5h,可转换为90m.
-        String timeout_express = "30m";
+        String timeout_express = expiredTime;
         String requestBody = "{\"out_trade_no\":\""+ outTradeNo +"\","
                 + "\"total_amount\":\""+ totalAmount +"\","
                 + "\"subject\":\""+ subject +"\","
@@ -95,6 +95,7 @@ public class AliPayController extends BaseController {
 
     @RequestMapping("/return")
     public String aliPayReturn(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        logger.error("-------------------------returnUrl------------------------");
         response.setContentType("text/html;charset=utf-8");
         boolean verifyResult = rsaCheckV1(request);
         //验证成功
@@ -119,7 +120,7 @@ public class AliPayController extends BaseController {
         }
     }
 
-    @RequestMapping("notify")
+    @RequestMapping("/notify")
     public String notify(HttpServletRequest request) throws Exception{
         // 一定要验签，防止黑客篡改参数
         Map<String, String[]> parameterMap = request.getParameterMap();
