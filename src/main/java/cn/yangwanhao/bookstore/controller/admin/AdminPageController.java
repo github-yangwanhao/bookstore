@@ -3,8 +3,11 @@ package cn.yangwanhao.bookstore.controller.admin;
 import cn.yangwanhao.bookstore.common.support.BaseController;
 import cn.yangwanhao.bookstore.service.GoodsCategoryService;
 import cn.yangwanhao.bookstore.service.GoodsService;
+import cn.yangwanhao.bookstore.service.UserService;
 import cn.yangwanhao.bookstore.vo.CategoryTreeVo;
 import cn.yangwanhao.bookstore.vo.GoodsVo;
+import cn.yangwanhao.bookstore.vo.LoginUserVo;
+import cn.yangwanhao.bookstore.vo.UserInfoVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,7 +15,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.List;
 
 /**
@@ -28,6 +33,8 @@ public class AdminPageController extends BaseController {
     private GoodsCategoryService goodsCategoryService;
     @Autowired
     private GoodsService goodsService;
+    @Autowired
+    private UserService userService;
 
     @RequestMapping("/login")
     public String toAdminLogin() {
@@ -74,6 +81,14 @@ public class AdminPageController extends BaseController {
     public String orderList(Model model) {
         model.addAttribute("path", "orders");
         return "/admin/order";
+    }
+
+    @RequestMapping("/profile")
+    public String toProfile(HttpServletRequest request, Model model) throws ParseException {
+        UserInfoVo vo = userService.getUserInfoById(super.getLoginUserId(request));
+        model.addAttribute("path", "profile");
+        model.addAttribute("vo", vo);
+        return  "admin/profile";
     }
 
 }
