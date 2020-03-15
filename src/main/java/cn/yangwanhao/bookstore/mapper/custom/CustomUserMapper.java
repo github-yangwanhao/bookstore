@@ -36,4 +36,20 @@ public interface CustomUserMapper {
      */
     UserInfoVo getUserInfoById(@Param("loginUserId") Long loginUserId);
 
+    /**
+     * Description: 解锁今天之前被锁定的账户(防止宕机造成凌晨的定时任务未执行)
+     * @return
+     * @author 杨万浩
+     * @date 2020/3/14 20:47
+     */
+    Integer unlockAccountBeforeToday();
+
+    /**
+     * Description: 定时任务解锁账户
+     * @return
+     * @author 杨万浩
+     * @date 2020/3/14 20:55
+     */
+    Integer unlockAccount();
+
 }

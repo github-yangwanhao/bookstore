@@ -27,15 +27,28 @@
   </select>
 
   <update id="addPwdErrorCount">
-    UPDATE user
+    UPDATE `user`
     SET pwd_error_count=pwd_error_count+1
     WHERE id=#{userId}
   </update>
 
-  <select id="getUserInfoById" resultType="cn.yangwanhao.bookstore.vo.UserInfoVo">
+    <select id="getUserInfoById" resultType="cn.yangwanhao.bookstore.vo.UserInfoVo">
     SELECT
     id AS userId, realname, loginname, phone, email, sex, birthday
     FROM user
     where id=#{loginUserId}
   </select>
+
+  <update id="unlockAccountBeforeToday">
+    UPDATE `user`
+    SET pwd_error_count=0, is_locked=0, lock_time=null
+    WHERE is_locked=1 AND TO_DAYS(NOW())-TO_DAYS(lock_time)&gt;=1
+  </update>
+
+  <update id="unlockAccount">
+    UPDATE `user`
+    SET pwd_error_count=0, is_locked=0, lock_time=null
+    WHERE is_locked=1
+  </update>
+
 </mapper>

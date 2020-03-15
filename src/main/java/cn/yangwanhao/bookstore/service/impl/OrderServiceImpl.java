@@ -219,7 +219,49 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Integer notPaidCancelOrder(String orderNo) {
-        return customOrderMapper.notPaidCancelOrder(orderNo);
+    public Integer orderPaidTimeout(String orderNo) {
+        returnGoodsStock(orderNo);
+        return customOrderMapper.orderPaidTimeout(orderNo);
+    }
+
+    @Override
+    public Integer cancelNotPaidOrder(String orderNo) {
+        Order order = getOrderByOrderNo(orderNo);
+        if (order.getOrderStatus() >= OrderStatusEnum.ALREADY_SHIPMENTS.getStatus()) {
+            throw new GlobalException(ErrorCodeEnum.O5009018, orderNo);
+        }
+        returnGoodsStock(orderNo);
+        return customOrderMapper.cancelNotPaidOrder(orderNo);
+    }
+
+    @Override
+    public Integer cancelPaidOrder(String orderNo) {
+        Order order = getOrderByOrderNo(orderNo);
+        if (order.getOrderStatus() >= OrderStatusEnum.ALREADY_SHIPMENTS.getStatus()) {
+            throw new GlobalException(ErrorCodeEnum.O5009018, orderNo);
+        }
+        returnGoodsStock(orderNo);
+        return customOrderMapper.cancelPaidOrder(orderNo);
+    }
+
+    @Override
+    public Integer completeOrder(String orderNo, Long loginUserId) {
+        Order order = getOrderByOrderNo(orderNo);
+        if (!order.getOrderStatus().equals(OrderStatusEnum.ALREADY_SHIPMENTS.getStatus())) {
+            throw new GlobalException(ErrorCodeEnum.O5009019, orderNo);
+        }
+        return customOrderMapper.completeOrder(orderNo, loginUserId);
+    }
+
+    private void returnGoodsStock(String orderNo) {
+        List<OrderGoodsListVo> vos = customOrderMapper.listOrderGoods(orderNo);
+        Long[] ids = new Long[vos.size()];
+        Integer[] nums = new Integer[vos.size()];
+        for (int i=0; i<vos.size(); i++) {
+            OrderGoodsListVo vo = vos.get(i);
+            ids[i] = vo.getGoodsId();
+            nums[i] = vo.getGoodsNum();
+        }
+        goodsService.increaseStock(ids, nums);
     }
 }

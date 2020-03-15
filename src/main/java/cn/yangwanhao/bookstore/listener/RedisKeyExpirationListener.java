@@ -32,7 +32,7 @@ public class RedisKeyExpirationListener extends KeyExpirationEventMessageListene
             // 获取订单orderNO
             String orderNo = expiredKey.substring(expiredKey.lastIndexOf(":")+1);
             // 将待支付的订单改为已取消(超时未支付)
-            orderService.notPaidCancelOrder(orderNo);
+            orderService.orderPaidTimeout(orderNo);
         }
     }
 }

@@ -1,4 +1,4 @@
-package cn.yangwanhao.bookstore.config;
+package cn.yangwanhao.bookstore.common.properties;
 
 import lombok.Data;
 
@@ -8,7 +8,7 @@ import lombok.Data;
  * @date 2020/3/13 15
  */
 @Data
-public class AliPaySandBoxConfig {
+public class AliPaySandBoxProperties {
 
     /**
      * 沙箱网关地址

@@ -99,4 +99,14 @@ public interface CustomGoodsMapper {
      */
     Integer decreaseStock(@Param("goodsId") Long goodsId, @Param("num") Integer num);
 
+    /**
+     * Description: 顾客取消订单后回退商品库存
+     * @param goodsId id
+     * @param num num
+     * @return
+     * @author 杨万浩
+     * @date 2020/3/12 16:04
+     */
+    Integer increaseStock(@Param("goodsId") Long goodsId, @Param("num") Integer num);
+
 }

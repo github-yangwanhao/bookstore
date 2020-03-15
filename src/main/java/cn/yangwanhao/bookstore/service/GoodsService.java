@@ -124,5 +124,15 @@ public interface GoodsService {
      * @date 2020/3/12 16:01
      */
     Integer decreaseStock(Long[] goodsIds, Integer[] goodsNums);
+    
+    /**
+     * Description: 顾客取消订单后库存回退
+     * @param goodsIds ids
+     * @param goodsNums nums
+     * @return 
+     * @author 杨万浩
+     * @date 2020/3/15 14:17
+     */
+    Integer increaseStock(Long[] goodsIds, Integer[] goodsNums);
 
 }

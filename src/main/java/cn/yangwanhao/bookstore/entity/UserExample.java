@@ -782,6 +782,66 @@ public class UserExample {
             return (Criteria) this;
         }
 
+        public Criteria andLockTimeIsNull() {
+            addCriterion("lock_time is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andLockTimeIsNotNull() {
+            addCriterion("lock_time is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andLockTimeEqualTo(Date value) {
+            addCriterion("lock_time =", value, "lockTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andLockTimeNotEqualTo(Date value) {
+            addCriterion("lock_time <>", value, "lockTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andLockTimeGreaterThan(Date value) {
+            addCriterion("lock_time >", value, "lockTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andLockTimeGreaterThanOrEqualTo(Date value) {
+            addCriterion("lock_time >=", value, "lockTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andLockTimeLessThan(Date value) {
+            addCriterion("lock_time <", value, "lockTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andLockTimeLessThanOrEqualTo(Date value) {
+            addCriterion("lock_time <=", value, "lockTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andLockTimeIn(List<Date> values) {
+            addCriterion("lock_time in", values, "lockTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andLockTimeNotIn(List<Date> values) {
+            addCriterion("lock_time not in", values, "lockTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andLockTimeBetween(Date value1, Date value2) {
+            addCriterion("lock_time between", value1, value2, "lockTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andLockTimeNotBetween(Date value1, Date value2) {
+            addCriterion("lock_time not between", value1, value2, "lockTime");
+            return (Criteria) this;
+        }
+
         public Criteria andUserTypeIsNull() {
             addCriterion("user_type is null");
             return (Criteria) this;

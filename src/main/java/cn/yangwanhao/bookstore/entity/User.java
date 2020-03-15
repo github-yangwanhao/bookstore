@@ -24,6 +24,8 @@ public class User implements Serializable {
 
     private Integer isLocked;
 
+    private Date lockTime;
+
     private Integer userType;
 
     private String lastLoginIp;
@@ -114,6 +116,14 @@ public class User implements Serializable {
 
     public void setIsLocked(Integer isLocked) {
         this.isLocked = isLocked;
+    }
+
+    public Date getLockTime() {
+        return lockTime;
+    }
+
+    public void setLockTime(Date lockTime) {
+        this.lockTime = lockTime;
     }
 
     public Integer getUserType() {

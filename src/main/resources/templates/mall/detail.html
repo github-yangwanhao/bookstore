@@ -107,12 +107,8 @@
             data: JSON.stringify(data),
             success: function (result) {
                 if (result.code == 200) {
-                    swal({
-                        title: "添加成功",
-                        text: "确认框",
-                        icon: "success",
-                        buttons: true,
-                        dangerMode: true,
+                    swal("添加成功", {
+                        icon: "success"
                     }).then((flag) => {
                             window.location.reload();
                         }

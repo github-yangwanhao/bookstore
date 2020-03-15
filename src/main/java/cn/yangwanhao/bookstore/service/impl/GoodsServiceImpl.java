@@ -243,4 +243,16 @@ public class GoodsServiceImpl implements GoodsService {
         }
         return result;
     }
+
+    @Override
+    public Integer increaseStock(Long[] goodsIds, Integer[] goodsNums) {
+        if (goodsIds.length != goodsNums.length) {
+            throw new GlobalException(ErrorCodeEnum.G500101);
+        }
+        Integer result = 0;
+        for (int i=0; i<goodsIds.length; i++) {
+            result += customGoodsMapper.increaseStock(goodsIds[i], goodsNums[i]);
+        }
+        return result;
+    }
 }

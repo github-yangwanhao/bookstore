@@ -213,7 +213,7 @@
                 if (flag) {
                     $.ajax({
                         type: 'PUT',
-                        url: '/orders/' + orderNo + '/cancel',
+                        url: '/store/order/cancel/' + orderNo,
                         success: function (result) {
                             if (result.code == 200) {
                                 window.location.reload();
@@ -223,8 +223,8 @@
                                 });
                             }
                         },
-                        error: function () {
-                            swal("操作失败", {
+                        error: function (result) {
+                            swal(JSON.stringify(result.responseJSON.message), {
                                 icon: "error",
                             });
                         }
@@ -244,7 +244,7 @@
         var orderNo = $("#orderNoValue").val();
         $.ajax({
             type: 'PUT',
-            url: '/orders/' + orderNo + '/finish',
+            url: '/store/order/complete/' + orderNo,
             success: function (result) {
                 if (result.code == 200) {
                     window.location.reload();

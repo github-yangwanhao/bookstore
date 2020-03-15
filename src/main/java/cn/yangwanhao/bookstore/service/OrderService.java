@@ -103,6 +103,34 @@ public interface OrderService {
      * @author 杨万浩
      * @date 2020/3/14 9:47
      */
-    Integer notPaidCancelOrder(String orderNo);
+    Integer orderPaidTimeout(String orderNo);
+
+    /**
+     * Description: 取消未支付的订单
+     * @param orderNo orderNo
+     * @return
+     * @author 杨万浩
+     * @date 2020/3/15 10:03
+     */
+    Integer cancelNotPaidOrder(String orderNo);
+
+    /**
+     * Description: 取消已支付的订单
+     * @param orderNo orderNo
+     * @return
+     * @author 杨万浩
+     * @date 2020/3/15 12:23
+     */
+    Integer cancelPaidOrder(String orderNo);
+
+    /**
+     * Description: 订单确认收货
+     * @param orderNo orderNo
+     * @param loginUserId userId
+     * @return
+     * @author 杨万浩
+     * @date 2020/3/15 14:48
+     */
+    Integer completeOrder(String orderNo, Long loginUserId);
 
 }

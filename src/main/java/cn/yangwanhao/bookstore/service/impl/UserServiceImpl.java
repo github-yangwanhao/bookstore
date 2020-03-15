@@ -50,10 +50,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Integer unlockAccount() {
-        User user = new User();
-        user.setPwdErrorCount(0);
-        user.setIsLocked(0);
-        return userMapper.updateByExampleSelective(user, new UserExample());
+        return customUserMapper.unlockAccount();
     }
 
     @Override
@@ -72,9 +69,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public Integer lockAccount(Long userId) {
         User user = new User();
+        Date date = new Date();
         user.setIsLocked(GlobalConstant.YES);
         user.setId(userId);
-        user.setLastUpdateTime(new Date());
+        user.setLockTime(date);
+        user.setLastUpdateTime(date);
         return userMapper.updateByPrimaryKeySelective(user);
     }
 
@@ -235,5 +234,10 @@ public class UserServiceImpl implements UserService {
         user.setBirthday(dto.getBirthday());
         user.setLastUpdateTime(new Date());
         return userMapper.updateByPrimaryKeySelective(user);
+    }
+
+    @Override
+    public Integer unlockAccountBeforeToday() {
+        return customUserMapper.unlockAccountBeforeToday();
     }
 }

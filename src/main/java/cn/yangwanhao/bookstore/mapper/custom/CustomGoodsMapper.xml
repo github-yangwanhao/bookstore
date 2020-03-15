@@ -118,11 +118,18 @@
         gb.goods_status=1
         AND gb.stock>0
         AND CONCAT(c.name, " ", gi.title, " ", gi.tags) LIKE CONCAT("%", #{q}, "%")
+        ORDER BY gb.goods_buy_version DESC
     </select>
 
     <update id="decreaseStock">
         UPDATE goods_base
-        SET stock=stock-#{num}
+        SET stock=stock-#{num}, goods_buy_version=goods_buy_version+1
+        WHERE id=#{goodsId}
+    </update>
+
+    <update id="increaseStock">
+        UPDATE goods_base
+        SET stock=stock+#{num}, goods_buy_version=goods_buy_version-1
         WHERE id=#{goodsId}
     </update>
 </mapper>

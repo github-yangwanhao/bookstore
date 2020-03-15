@@ -1,13 +1,16 @@
 package cn.yangwanhao.bookstore.controller.portal;
 
+import cn.yangwanhao.bookstore.common.beans.ResponseMessage;
 import cn.yangwanhao.bookstore.common.enums.ErrorCodeEnum;
+import cn.yangwanhao.bookstore.common.enums.OrderStatusEnum;
 import cn.yangwanhao.bookstore.common.enums.TradeRecordTypeEnum;
 import cn.yangwanhao.bookstore.common.exception.GlobalException;
 import cn.yangwanhao.bookstore.common.support.BaseController;
 import cn.yangwanhao.bookstore.common.util.BigDecimalUtils;
-import cn.yangwanhao.bookstore.config.AliPaySandBoxConfig;
+import cn.yangwanhao.bookstore.common.properties.AliPaySandBoxProperties;
 import cn.yangwanhao.bookstore.dto.TradeRecordDto;
 import cn.yangwanhao.bookstore.entity.Order;
+import cn.yangwanhao.bookstore.entity.TradeRecord;
 import cn.yangwanhao.bookstore.service.OrderService;
 import cn.yangwanhao.bookstore.service.TradeRecordService;
 import com.alipay.api.AlipayApiException;
@@ -15,9 +18,12 @@ import com.alipay.api.AlipayClient;
 import com.alipay.api.DefaultAlipayClient;
 import com.alipay.api.internal.util.AlipaySignature;
 import com.alipay.api.request.AlipayTradePagePayRequest;
+import com.alipay.api.request.AlipayTradeRefundRequest;
+import com.alipay.api.response.AlipayTradeRefundResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -44,28 +50,32 @@ public class AliPayController extends BaseController {
 
     @Value("${aliPay.returnUrl}")
     private String aliPayReturnUrl;
+    @Value("${aliPay.notifyUrl}")
+    private String notifyUrl;
     @Value("${aliPay.expiredTime}")
     private String expiredTime;
 
     /**
      * 创建AliPayClient
      */
-    AliPaySandBoxConfig config = new AliPaySandBoxConfig();
+    AliPaySandBoxProperties properties = new AliPaySandBoxProperties();
 
     @RequestMapping("/toPay")
     @ResponseBody
     public String payMoney(String orderNo) throws AlipayApiException {
         // 获取订单详情
         Order order = orderService.getOrderByOrderNo(orderNo);
-
+        if (!order.getOrderStatus().equals(OrderStatusEnum.WAIT_TO_PAY.getStatus())) {
+            throw new GlobalException(ErrorCodeEnum.O5009017, orderNo);
+        }
         AlipayClient client = new DefaultAlipayClient(
-                config.getGateway(),
-                config.getAppId(),
-                config.getAliPayPrivateKey(),
-                config.getFormat(),
-                config.getCharset(),
-                config.getAliPayPublicKey(),
-                config.getSignType()
+                properties.getGateway(),
+                properties.getAppId(),
+                properties.getAliPayPrivateKey(),
+                properties.getFormat(),
+                properties.getCharset(),
+                properties.getAliPayPublicKey(),
+                properties.getSignType()
         );
         AlipayTradePagePayRequest aliPayRequest = new AlipayTradePagePayRequest();
         aliPayRequest.setReturnUrl(aliPayReturnUrl);
@@ -93,7 +103,7 @@ public class AliPayController extends BaseController {
         return result;
     }
 
-    @RequestMapping("/return")
+    @RequestMapping("/paidReturn")
     public String aliPayReturn(HttpServletRequest request, HttpServletResponse response) throws Exception {
         logger.error("-------------------------returnUrl------------------------");
         response.setContentType("text/html;charset=utf-8");
@@ -173,6 +183,45 @@ public class AliPayController extends BaseController {
         throw new GlobalException(ErrorCodeEnum.O5009014);
     }
 
+    @RequestMapping("/refund")
+    @ResponseBody
+    public ResponseMessage<Integer> refund(String orderNo) throws AlipayApiException {
+        AlipayClient client = new DefaultAlipayClient(
+                properties.getGateway(),
+                properties.getAppId(),
+                properties.getAliPayPrivateKey(),
+                properties.getFormat(),
+                properties.getCharset(),
+                properties.getAliPayPublicKey(),
+                properties.getSignType()
+        );
+        AlipayTradeRefundRequest request = new AlipayTradeRefundRequest();
+        Order order = orderService.getOrderByOrderNo(orderNo);
+        TradeRecord tradeRecord = tradeRecordService.getPaidRecordByOrderNo(orderNo);
+        DecimalFormat format = new DecimalFormat("0.00");
+        String totalAmount = format.format(BigDecimalUtils.movePointLeft(String.valueOf(order.getTotalPrice()), 2));
+        String bizContent = "{" +
+                "\"out_trade_no\":\""+orderNo+"\"," +
+                "\"trade_no\":\""+tradeRecord.getAlipayTransactionNum()+"\"," +
+                "\"out_request_no\":\""+order.getId()+"\"," +
+                "\"refund_amount\":\""+totalAmount+"\"}";
+        request.setBizContent(bizContent);
+        AlipayTradeRefundResponse response = client.execute(request);
+        System.err.print(response.getBody());
+        if (BigDecimalUtils.movePointRight(response.getRefundFee(), 2).longValue() == order.getTotalPrice()) {
+            TradeRecordDto dto = new TradeRecordDto();
+            dto.setUserId(order.getUserId());
+            dto.setOrderId(order.getId());
+            dto.setOrderNo(orderNo);
+            dto.setMoney(order.getTotalPrice());
+            dto.setTradeType(TradeRecordTypeEnum.RETURN.getType());
+            dto.setAliPayTradeNo(tradeRecord.getAlipayTransactionNum());
+            // 添加交易记录
+            return ResponseMessage.handleResult(tradeRecordService.refundSuccess(dto));
+        }
+        throw new GlobalException(ErrorCodeEnum.O5009016);
+    }
+
     private boolean rsaCheckV1(HttpServletRequest request){
         // https://docs.open.alipay.com/54/106370
         // 获取支付宝POST过来反馈信息
@@ -190,9 +239,9 @@ public class AliPayController extends BaseController {
         }
         try {
             boolean verifyResult = AlipaySignature.rsaCheckV1(params,
-                    config.getAliPayPrivateKey(),
-                    config.getCharset(),
-                    config.getSignType());
+                    properties.getAliPayPrivateKey(),
+                    properties.getCharset(),
+                    properties.getSignType());
             return verifyResult;
         } catch (AlipayApiException e) {
             return true;

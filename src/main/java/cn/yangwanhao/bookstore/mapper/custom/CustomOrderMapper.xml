@@ -96,7 +96,7 @@
     CONCAT(ca.receiver_name, "-",ca.receiver_phone, "-", ca.receiver_address) AS address
     FROM `order` o
     LEFT JOIN customer_address ca ON ca.id=o.address_id
-    ORDER BY create_time DESC
+    ORDER BY FIELD(o.order_status, '5', '1', '6', '7', '2', '3', '4'), create_time DESC
   </select>
 
   <select id="listOrderGoods" resultType="cn.yangwanhao.bookstore.vo.OrderGoodsListVo">
@@ -132,10 +132,28 @@
     WHERE order_no=#{orderNo} AND order_status=1
   </update>
 
-  <update id="notPaidCancelOrder">
+  <update id="orderPaidTimeout">
     UPDATE `order`
     SET order_status=2
     WHERE order_no=#{orderNo} AND order_status=1
+  </update>
+
+  <update id="cancelNotPaidOrder">
+    UPDATE `order`
+    SET order_status=3
+    WHERE order_no=#{orderNo} AND order_status=1
+  </update>
+
+  <update id="cancelPaidOrder">
+    UPDATE `order`
+    SET order_status=4
+    WHERE order_no=#{orderNo} AND order_status=5
+  </update>
+
+  <update id="completeOrder">
+    UPDATE `order`
+    SET order_status=7
+    WHERE order_no=#{orderNo} AND user_id=#{loginUserId} AND order_status=6
   </update>
 
 </mapper>

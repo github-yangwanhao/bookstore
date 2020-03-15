@@ -102,5 +102,33 @@ public interface CustomOrderMapper {
      * @author 杨万浩
      * @date 2020/3/14 9:49
      */
-    Integer notPaidCancelOrder(@Param("orderNo") String orderNo);
+    Integer orderPaidTimeout(@Param("orderNo") String orderNo);
+
+    /**
+     * Description: 取消未支付订单
+     * @param orderNo orderNo
+     * @return
+     * @author 杨万浩
+     * @date 2020/3/15 10:00
+     */
+    Integer cancelNotPaidOrder(@Param("orderNo") String orderNo);
+
+    /**
+     * Description: 取消已支付订单
+     * @param orderNo orderNo
+     * @return
+     * @author 杨万浩
+     * @date 2020/3/15 12:24
+     */
+    Integer cancelPaidOrder(String orderNo);
+
+    /**
+     * Description: 顾客确认收货
+     * @param orderNo orderNo
+     * @param loginUserId loginUserId
+     * @return
+     * @author 杨万浩
+     * @date 2020/3/15 14:56
+     */
+    Integer completeOrder(@Param("orderNo") String orderNo, @Param("loginUserId") Long loginUserId);
 }

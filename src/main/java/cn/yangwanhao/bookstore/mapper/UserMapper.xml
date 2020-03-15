@@ -12,6 +12,7 @@
     <result column="email" property="email" jdbcType="VARCHAR" />
     <result column="pwd_error_count" property="pwdErrorCount" jdbcType="INTEGER" />
     <result column="is_locked" property="isLocked" jdbcType="INTEGER" />
+    <result column="lock_time" property="lockTime" jdbcType="TIMESTAMP" />
     <result column="user_type" property="userType" jdbcType="INTEGER" />
     <result column="last_login_ip" property="lastLoginIp" jdbcType="VARCHAR" />
     <result column="last_login_time" property="lastLoginTime" jdbcType="TIMESTAMP" />
@@ -78,7 +79,7 @@
   </sql>
   <sql id="Base_Column_List" >
     id, loginname, password, realname, sex, birthday, phone, email, pwd_error_count, 
-    is_locked, user_type, last_login_ip, last_login_time, create_time, last_update_time
+    is_locked, lock_time, user_type, last_login_ip, last_login_time, create_time, last_update_time
   </sql>
   <select id="selectByExample" resultMap="BaseResultMap" parameterType="cn.yangwanhao.bookstore.entity.UserExample" >
     select
@@ -114,15 +115,15 @@
     insert into user (id, loginname, password, 
       realname, sex, birthday, 
       phone, email, pwd_error_count, 
-      is_locked, user_type, last_login_ip, 
-      last_login_time, create_time, last_update_time
-      )
+      is_locked, lock_time, user_type, 
+      last_login_ip, last_login_time, create_time, 
+      last_update_time)
     values (#{id,jdbcType=BIGINT}, #{loginname,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, 
       #{realname,jdbcType=VARCHAR}, #{sex,jdbcType=INTEGER}, #{birthday,jdbcType=DATE}, 
       #{phone,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, #{pwdErrorCount,jdbcType=INTEGER}, 
-      #{isLocked,jdbcType=INTEGER}, #{userType,jdbcType=INTEGER}, #{lastLoginIp,jdbcType=VARCHAR}, 
-      #{lastLoginTime,jdbcType=TIMESTAMP}, #{createTime,jdbcType=TIMESTAMP}, #{lastUpdateTime,jdbcType=TIMESTAMP}
-      )
+      #{isLocked,jdbcType=INTEGER}, #{lockTime,jdbcType=TIMESTAMP}, #{userType,jdbcType=INTEGER}, 
+      #{lastLoginIp,jdbcType=VARCHAR}, #{lastLoginTime,jdbcType=TIMESTAMP}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{lastUpdateTime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="cn.yangwanhao.bookstore.entity.User" >
     insert into user
@@ -156,6 +157,9 @@
       </if>
       <if test="isLocked != null" >
         is_locked,
+      </if>
+      <if test="lockTime != null" >
+        lock_time,
       </if>
       <if test="userType != null" >
         user_type,
@@ -203,6 +207,9 @@
       </if>
       <if test="isLocked != null" >
         #{isLocked,jdbcType=INTEGER},
+      </if>
+      <if test="lockTime != null" >
+        #{lockTime,jdbcType=TIMESTAMP},
       </if>
       <if test="userType != null" >
         #{userType,jdbcType=INTEGER},
@@ -260,6 +267,9 @@
       <if test="record.isLocked != null" >
         is_locked = #{record.isLocked,jdbcType=INTEGER},
       </if>
+      <if test="record.lockTime != null" >
+        lock_time = #{record.lockTime,jdbcType=TIMESTAMP},
+      </if>
       <if test="record.userType != null" >
         user_type = #{record.userType,jdbcType=INTEGER},
       </if>
@@ -292,6 +302,7 @@
       email = #{record.email,jdbcType=VARCHAR},
       pwd_error_count = #{record.pwdErrorCount,jdbcType=INTEGER},
       is_locked = #{record.isLocked,jdbcType=INTEGER},
+      lock_time = #{record.lockTime,jdbcType=TIMESTAMP},
       user_type = #{record.userType,jdbcType=INTEGER},
       last_login_ip = #{record.lastLoginIp,jdbcType=VARCHAR},
       last_login_time = #{record.lastLoginTime,jdbcType=TIMESTAMP},
@@ -331,6 +342,9 @@
       <if test="isLocked != null" >
         is_locked = #{isLocked,jdbcType=INTEGER},
       </if>
+      <if test="lockTime != null" >
+        lock_time = #{lockTime,jdbcType=TIMESTAMP},
+      </if>
       <if test="userType != null" >
         user_type = #{userType,jdbcType=INTEGER},
       </if>
@@ -360,6 +374,7 @@
       email = #{email,jdbcType=VARCHAR},
       pwd_error_count = #{pwdErrorCount,jdbcType=INTEGER},
       is_locked = #{isLocked,jdbcType=INTEGER},
+      lock_time = #{lockTime,jdbcType=TIMESTAMP},
       user_type = #{userType,jdbcType=INTEGER},
       last_login_ip = #{lastLoginIp,jdbcType=VARCHAR},
       last_login_time = #{lastLoginTime,jdbcType=TIMESTAMP},

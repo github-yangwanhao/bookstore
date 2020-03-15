@@ -45,7 +45,8 @@ fdfs:
 pic:
   host: http://121.36.150.173:8888/
 aliPay:
-  returnUrl: https://yangwanhao.utools.club/store/aliPay/return
+  returnUrl: https://yangwanhao.utools.club/store/aliPay/paidReturn
+  notifyUrl: https://yangwanhao.utools.club/store/aliPay/notify
   expiredTime: 5m
 order:
   expiredMinute: 5
