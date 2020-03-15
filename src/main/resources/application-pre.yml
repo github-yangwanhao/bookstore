@@ -15,7 +15,7 @@ spring:
   data:
     mongodb:
       uri: mongodb://root:******@121.36.150.173:27017/?authSource=admin
-      database: bookstore
+      database: bookstore-pre
   thymeleaf:
     cache: false
 mybatis:

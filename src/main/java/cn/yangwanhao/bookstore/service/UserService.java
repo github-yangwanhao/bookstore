@@ -30,15 +30,6 @@ public interface UserService {
     Integer unlockAccount();
 
     /**
-     * Description: 清零一个用户的pwdErrorCount
-     * @param userId 用户id
-     * @return
-     * @author 杨万浩
-     * @createDate 2019/11/30 14:52
-     */
-    Integer resetPwdErrorCount(Long userId);
-
-    /**
      * Description: 用户密码错误次数+1
      * @param userId userId
      * @return num
@@ -55,16 +46,6 @@ public interface UserService {
      * @date 2020/3/3 21:52
      */
     Integer lockAccount(Long userId);
-
-    /**
-     * Description: 更改最后登录ip
-     * @param userId userId
-     * @param ipAddress ip地址
-     * @return num
-     * @author 杨万浩
-     * @date 2020/3/3 22:00
-     */
-    Integer updateLastLoginIp(Long userId, String ipAddress);
 
     /**
      * Description: 检查登录名是否已经存在
@@ -148,5 +129,15 @@ public interface UserService {
      * @date 2020/3/14 20:57
      */
     Integer unlockAccountBeforeToday();
+
+    /**
+     * Description: 登陆成功后的处理
+     * @param userId userId
+     * @param ipAddress ip地址
+     * @return
+     * @author 杨万浩
+     * @date 2020/3/15 20:49
+     */
+    Integer loginSuccess(Long userId, String ipAddress);
 
 }

@@ -1,6 +1,7 @@
 package cn.yangwanhao.bookstore.controller.admin;
 
 import cn.yangwanhao.bookstore.common.beans.Captcha;
+import cn.yangwanhao.bookstore.common.beans.UserLoginLog;
 import cn.yangwanhao.bookstore.common.constant.GlobalConstant;
 import cn.yangwanhao.bookstore.common.enums.LoginTypeEnum;
 import cn.yangwanhao.bookstore.common.support.BaseController;
@@ -11,6 +12,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -21,6 +23,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.Date;
 
 /**
  * @author 杨万浩
@@ -33,6 +36,8 @@ public class AdminLoginController extends BaseController {
 
     @Resource
     private StringRedisTemplate stringRedisTemplate;
+    @Resource
+    private MongoTemplate mongoTemplate;
     @Autowired
     private UserService userService;
     @Autowired
@@ -73,13 +78,15 @@ public class AdminLoginController extends BaseController {
             return "redirect:/admin/page/login";
         }
         // 登陆成功
-        // 清零密码错误次数
-        userService.resetPwdErrorCount(vo.getId());
-        userService.updateLastLoginIp(vo.getId(), HttpUtils.getIpAddr(request));
+        String ipAddr = HttpUtils.getIpAddr(request);
+        userService.loginSuccess(vo.getId(), ipAddr);
         // 设置用户信息session
         request.getSession().setAttribute(GlobalConstant.ADMIN_LOGIN_SESSION_KEY, vo);
         HttpSession session = request.getSession();
         session.setMaxInactiveInterval(30 * 60);
+        // mongoDB日志
+        UserLoginLog log = new UserLoginLog(null, vo.getId(), vo.getLoginname(), ipAddr, new Date());
+        mongoTemplate.insert(log);
         // 删除错误信息session
         request.getSession().removeAttribute("errorMsg");
         return loginSuccess(request, vo);

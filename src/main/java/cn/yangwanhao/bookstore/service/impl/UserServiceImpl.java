@@ -54,14 +54,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Integer resetPwdErrorCount(Long userId) {
-        User user = new User();
-        user.setPwdErrorCount(0);
-        user.setId(userId);
-        return userMapper.updateByPrimaryKeySelective(user);
-    }
-
-    @Override
     public Integer addPwdErrorCount(Long userId) {
         return customUserMapper.addPwdErrorCount(userId);
     }
@@ -74,15 +66,6 @@ public class UserServiceImpl implements UserService {
         user.setId(userId);
         user.setLockTime(date);
         user.setLastUpdateTime(date);
-        return userMapper.updateByPrimaryKeySelective(user);
-    }
-
-    @Override
-    public Integer updateLastLoginIp(Long userId, String ipAddress) {
-        User user = new User();
-        user.setId(userId);
-        user.setLastLoginIp(ipAddress);
-        user.setLastUpdateTime(new Date());
         return userMapper.updateByPrimaryKeySelective(user);
     }
 
@@ -239,5 +222,18 @@ public class UserServiceImpl implements UserService {
     @Override
     public Integer unlockAccountBeforeToday() {
         return customUserMapper.unlockAccountBeforeToday();
+    }
+
+    @Override
+    public Integer loginSuccess(Long userId, String ipAddress) {
+        User user = new User();
+        user.setId(userId);
+        // 清空密码错误次数
+        user.setPwdErrorCount(0);
+        // 更新登录ip
+        user.setLastLoginIp(ipAddress);
+        // 更新登陆时间
+        user.setLastLoginTime(new Date());
+        return userMapper.updateByPrimaryKeySelective(user);
     }
 }
