@@ -99,13 +99,13 @@
                                                 <div class="progress"><span class="text">发货</span></div>
                                                 <div class="info"></div>
                                                 </li>
-                                                <th:block th:if="${vo.orderStatus<4}">
+                                                <th:block th:if="${vo.orderStatus<7}">
                                                     <li class="step">
                                                 </th:block>
-                                                <th:block th:if="${vo.orderStatus==4}">
+                                                <th:block th:if="${vo.orderStatus==7}">
                                                     <li class="step step-active">
                                                 </th:block>
-                                                <th:block th:if="${vo.orderStatus>4}">
+                                                <th:block th:if="${vo.orderStatus>7}">
                                                     <li class="step step-last">
                                                 </th:block>
                                                 <div class="progress"><span class="text">交易成功</span></div>

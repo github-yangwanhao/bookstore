@@ -4,7 +4,7 @@ spring:
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource
     driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql://121.36.150.173:3306/bookshop
+    url: jdbc:mysql://121.36.150.173:3306/bookshop?useUnicode=true&amp;characterEncoding=UTF-8
     username: root
     password: '******'
   redis:
@@ -45,7 +45,8 @@ fdfs:
 pic:
   host: http://121.36.150.173:8888/
 aliPay:
-  returnUrl: http://47.102.151.245:${server.port}/store/aliPay/paidReturn
+  # returnUrl: http://47.102.151.245:${server.port}/store/aliPay/paidReturn
+  returnUrl: http://www.yangwanhao.cn/store/aliPay/paidReturn
   notifyUrl: https://yangwanhao.utools.club/store/aliPay/notify
   expiredTime: 5m
 order:
