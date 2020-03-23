@@ -36,6 +36,7 @@ public class PortalGoodsController {
     public String search(GoodsSearchDto dto, Model model) {
         PageInfo<GoodsSearchListVo> page = goodsService.searchGoods(dto);
         model.addAttribute("page", page);
+        model.addAttribute("keyword", dto.getQ());
         return "mall/search";
     }
 

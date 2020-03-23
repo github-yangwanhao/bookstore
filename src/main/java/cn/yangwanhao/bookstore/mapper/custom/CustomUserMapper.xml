@@ -48,7 +48,7 @@
   <update id="unlockAccount">
     UPDATE `user`
     SET pwd_error_count=0, is_locked=0, lock_time=null
-    WHERE is_locked=1 AND pwd_error_count!=0
+    WHERE pwd_error_count!=0
   </update>
 
 </mapper>

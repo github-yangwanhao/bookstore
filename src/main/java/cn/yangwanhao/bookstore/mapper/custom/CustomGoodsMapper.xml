@@ -113,12 +113,13 @@
         gi.title AS title, gi.imgs AS image
         FROM goods_base gb
         LEFT JOIN goods_info gi ON gi.id=gb.id
+        LEFT JOIN goods_books gbb ON gbb.goods_id=gb.id
         LEFT JOIN category c ON gb.category=c.id
         WHERE
         gb.goods_status=1
         AND gb.stock>0
-        AND CONCAT(c.name, " ", gi.title, " ", gi.tags) LIKE CONCAT("%", #{q}, "%")
-        ORDER BY gb.goods_buy_version DESC
+        AND CONCAT(c.name, " ", gi.title, " ", gi.tags, " ", gbb.author) LIKE CONCAT("%", #{q}, "%")
+        ORDER BY gb.goods_buy_version DESC, gb.create_time DESC
     </select>
 
     <update id="decreaseStock">

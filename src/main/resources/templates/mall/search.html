@@ -40,7 +40,7 @@
 </div>
 
 <!--排序-->
-<div class="sort">
+<!--<div class="sort">
     <div class="list">
         <a th:href="@{'/search?keyword='+${keyword==null?'':keyword}+'&goodsCategoryId='+${goodsCategoryId==null?'':goodsCategoryId}+'&orderBy=default'}">
             <div th:class="${orderBy==null || orderBy=='default'?'active':''}">推荐</div>
@@ -52,7 +52,7 @@
             <div th:class="${orderBy=='price'?'active':''}">价格</div>
         </a>
     </div>
-</div>
+</div>-->
 
 <div class="goods_item center">
     <div class="main center">
@@ -82,26 +82,36 @@
         <div class="page_wrap">
             <th:block th:if="${null != page and !#lists.isEmpty(page.list)}">
             <span class="page_span1">
-                 <a th:href="@{${page.pageNum==1}?'##':'/search?keyword='+${keyword==null?'':keyword}+'&page=' + ${page.pageNum-1}+'&goodsCategoryId='+${goodsCategoryId==null?'':goodsCategoryId}+'&orderBy='+${orderBy==null?'':orderBy}}">
-                                    < 上一页
-                                </a>
-                <th:block th:if="${page.pageNum-2 >=1}"><a
-                        th:href="@{'/search?keyword='+${keyword==null?'':keyword}+'&page=' + ${page.pageNum-2}+'&goodsCategoryId='+${goodsCategoryId==null?'':goodsCategoryId}+'&orderBy='+${orderBy==null?'':orderBy}}"
-                        th:text="${page.pageNum -2}">1</a></th:block>
-                <th:block th:if="${page.pageNum-1 >=1}"><a
-                        th:href="@{'/search?keyword='+${keyword==null?'':keyword}+'&page=' + ${page.pageNum-1}+'&goodsCategoryId='+${goodsCategoryId==null?'':goodsCategoryId}+'&orderBy='+${orderBy==null?'':orderBy}}"
-                        th:text="${page.pageNum -1}">1</a></th:block>
-                <a href="##" class="active" th:text="${page.pageNum}">1</a>
-                <th:block th:if="${page.pageNum+1<=page.pages}"><a
-                        th:href="@{'/search?keyword='+${keyword==null?'':keyword}+'&page=' + ${page.pageNum+1}+'&goodsCategoryId='+${goodsCategoryId==null?'':goodsCategoryId}+'&orderBy='+${orderBy==null?'':orderBy}}"
-                        th:text="${page.pageNum +1}">1</a></th:block>
-                <th:block th:if="${page.pageNum+2<=page.pages}"><a
-                        th:href="@{'/search?keyword='+${keyword==null?'':keyword}+'&page=' + ${page.pageNum+2}+'&goodsCategoryId='+${goodsCategoryId==null?'':goodsCategoryId}+'&orderBy='+${orderBy==null?'':orderBy}}"
-                        th:text="${page.pageNum +2}">1</a></th:block>
-                 <a th:href="@{${page.pageNum>=page.pages}?'##':'/search?keyword='+${keyword==null?'':keyword}+'&page=' + ${page.pageNum+1}+'&goodsCategoryId='+${goodsCategoryId==null?'':goodsCategoryId}+'&orderBy='+${orderBy==null?'':orderBy}}">
-                                    下一页 >
-                                </a>
-					</span>
+                 <a th:href="@{${page.pageNum==1}?'##':'/store/goods/search?q='+${keyword==null?'':keyword}+'&pageNum='+${page.pageNum-1}}">
+                     < 上一页
+                 </a>
+                <th:block th:if="${page.pageNum-2 >=1}">
+                    <a th:href="@{'/store/goods/search?q='+${keyword==null?'':keyword}+'&pageNum='+${page.pageNum-2}}" th:text="${page.pageNum -2}">
+                        1
+                    </a>
+                </th:block>
+                <th:block th:if="${page.pageNum-1 >=1}">
+                    <a th:href="@{'/store/goods/search?q='+${keyword==null?'':keyword}+'&pageNum='+${page.pageNum-1}}" th:text="${page.pageNum -1}">
+                        1
+                    </a>
+                </th:block>
+                <a href="##" class="active" th:text="${page.pageNum}">
+                    1
+                </a>
+                <th:block th:if="${page.pageNum+1<=page.pages}">
+                    <a th:href="@{'/store/goods/search?q='+${keyword==null?'':keyword}+'&pageNum='+${page.pageNum+1}}" th:text="${page.pageNum +1}">
+                        1
+                    </a>
+                </th:block>
+                <th:block th:if="${page.pageNum+2<=page.pages}">
+                    <a th:href="@{'/store/goods/search?q='+${keyword==null?'':keyword}+'&pageNum='+${page.pageNum+2}}" th:text="${page.pageNum +2}">
+                        1
+                    </a>
+                </th:block>
+                <a th:href="@{${page.pageNum>=page.pages}?'##':'/store/goods/search?q='+${keyword==null?'':keyword}+'&pageNum='+${page.pageNum+1}}">
+                    下一页 >
+                </a>
+            </span>
             </th:block>
         </div>
     </div>
