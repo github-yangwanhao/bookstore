@@ -3,6 +3,7 @@ package cn.yangwanhao.bookstore.service;
 
 import cn.yangwanhao.bookstore.entity.Category;
 import cn.yangwanhao.bookstore.vo.CategoryListVo;
+import cn.yangwanhao.bookstore.vo.CategoryMenuTreeVo;
 import cn.yangwanhao.bookstore.vo.CategoryTreeVo;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.pagehelper.PageInfo;
@@ -85,5 +86,13 @@ public interface GoodsCategoryService {
      * @date 2020/3/6 16:38
      */
     List<CategoryTreeVo> listCategoryTree() throws IOException;
+
+    /**
+     * Description: 首页分类菜单
+     * @return
+     * @author 杨万浩
+     * @date 2020/3/26 9:01
+     */
+    List<CategoryMenuTreeVo> listCategoryMenuTree() throws IOException;
 
 }

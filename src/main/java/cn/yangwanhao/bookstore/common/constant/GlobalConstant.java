@@ -69,6 +69,8 @@ public final class GlobalConstant {
         public static final String DICTIONARY_PREFIX = "dictionary:";
         // redis中商品分类树缓存key值前缀
         public static final String CATEGORY_TREE = "goods:category:tree";
+        // redis中商品分类菜单树缓存key值前缀
+        public static final String CATEGORY_MENU_TREE = "goods:category:menu:tree";
         // redis中订单失效时长缓存key值前缀
         public static final String ORDER_PREFIX = "order:orderNo:";
     }

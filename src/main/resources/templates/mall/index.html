@@ -8,18 +8,18 @@
     <nav th:replace="mall/header::nav-fragment"></nav>
     <div id="banner">
         <div class="all-sort-list">
-            <th:block th:each="category : ${categories}">
+            <th:block th:each="category : ${list}">
             <div class="item">
-                <h3><span>·</span><a href="##"><th:block th:text="${category.categoryName}"></th:block></a></h3>
+                <h3><span>·</span><a href="##"><th:block th:text="${category.name}"></th:block></a></h3>
                 <div class="item-list clearfix">
                     <div class="subitem">
-                        <th:block th:each="secondLevelCategory : ${category.secondLevelCategoryVOS}">
+                        <th:block th:each="secondLevelCategory : ${category.children}">
                         <dl class="fore1">
-                            <dt><a href="#"><th:block th:text="${secondLevelCategory.categoryName}"></th:block></a></dt>
+                            <dt><a href="#"><th:block th:text="${secondLevelCategory.name}"></th:block></a></dt>
                             <dd>
-                                <th:block th:each="thirdLevelCategory : ${secondLevelCategory.thirdLevelCategoryVOS}">
-                                <em><a href="#"th:href="@{'/search?goodsCategoryId='+${thirdLevelCategory.categoryId}}">
-                                    <th:block th:text="${thirdLevelCategory.categoryName}"></th:block>
+                                <th:block th:each="thirdLevelCategory : ${secondLevelCategory.children}">
+                                <em><a href="#">
+                                    <th:block th:text="${thirdLevelCategory.name}"></th:block>
                                 </a></em>
                                 </th:block>
                             </dd>

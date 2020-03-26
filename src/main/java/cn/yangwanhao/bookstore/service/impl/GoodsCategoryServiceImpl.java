@@ -10,6 +10,7 @@ import cn.yangwanhao.bookstore.mapper.custom.CustomCategoryMapper;
 import cn.yangwanhao.bookstore.service.GoodsCategoryService;
 import cn.yangwanhao.bookstore.service.GoodsService;
 import cn.yangwanhao.bookstore.vo.CategoryListVo;
+import cn.yangwanhao.bookstore.vo.CategoryMenuTreeVo;
 import cn.yangwanhao.bookstore.vo.CategoryTreeVo;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -71,8 +72,10 @@ public class GoodsCategoryServiceImpl implements GoodsCategoryService {
         int result = categoryMapper.insertSelective(category);
         if (result == 1) {
             // 删除redis
-            stringRedisTemplate.delete(GlobalConstant.RedisPrefixKey.CATEGORY_TREE);
             log.info("从redis中删除分类树缓存");
+            stringRedisTemplate.delete(GlobalConstant.RedisPrefixKey.CATEGORY_TREE);
+            log.info("从redis中删除分类菜单树缓存");
+            stringRedisTemplate.delete(GlobalConstant.RedisPrefixKey.CATEGORY_MENU_TREE);
         }
         return result;
     }
@@ -122,8 +125,10 @@ public class GoodsCategoryServiceImpl implements GoodsCategoryService {
         }
         if (count >= 1) {
             // 删除redis
-            stringRedisTemplate.delete(GlobalConstant.RedisPrefixKey.CATEGORY_TREE);
             log.info("从redis中删除分类树缓存");
+            stringRedisTemplate.delete(GlobalConstant.RedisPrefixKey.CATEGORY_TREE);
+            log.info("从redis中删除分类菜单树缓存");
+            stringRedisTemplate.delete(GlobalConstant.RedisPrefixKey.CATEGORY_MENU_TREE);
         }
         return count;
     }
@@ -136,8 +141,10 @@ public class GoodsCategoryServiceImpl implements GoodsCategoryService {
         int result = categoryMapper.updateByPrimaryKeySelective(category);
         if (result >= 1) {
             // 删除redis
-            stringRedisTemplate.delete(GlobalConstant.RedisPrefixKey.CATEGORY_TREE);
             log.info("从redis中删除分类树缓存");
+            stringRedisTemplate.delete(GlobalConstant.RedisPrefixKey.CATEGORY_TREE);
+            log.info("从redis中删除分类菜单树缓存");
+            stringRedisTemplate.delete(GlobalConstant.RedisPrefixKey.CATEGORY_MENU_TREE);
         }
         return result;
     }
@@ -159,7 +166,7 @@ public class GoodsCategoryServiceImpl implements GoodsCategoryService {
         // redis缓存 ①查询缓存 有则返回 无则进行下一步
         String value = stringRedisTemplate.opsForValue().get(GlobalConstant.RedisPrefixKey.CATEGORY_TREE);
         if (StringUtils.isNotBlank(value)) {
-            List<CategoryTreeVo> result = result = objectMapper.readValue(value, new TypeReference<List<CategoryTreeVo>>() {
+            List<CategoryTreeVo> result = objectMapper.readValue(value, new TypeReference<List<CategoryTreeVo>>() {
             });
             log.info("从缓存中查询得到分类树");
             return result;
@@ -173,10 +180,57 @@ public class GoodsCategoryServiceImpl implements GoodsCategoryService {
         List<CategoryTreeVo> resultVoList = new ArrayList<>();
         setNameList(allCategories, rootCategories, prefix, resultVoList);
         // 查询完成 添加缓存
-        String json = json = objectMapper.writeValueAsString(resultVoList);;
+        String json = objectMapper.writeValueAsString(resultVoList);;
         stringRedisTemplate.opsForValue().set(GlobalConstant.RedisPrefixKey.CATEGORY_TREE, json);
         log.info("向缓存中加入分类树");
         return resultVoList;
+    }
+
+    @Override
+    public List<CategoryMenuTreeVo> listCategoryMenuTree() throws IOException {
+        // redis缓存 ①查询缓存 有则返回 无则进行下一步
+        String value = stringRedisTemplate.opsForValue().get(GlobalConstant.RedisPrefixKey.CATEGORY_MENU_TREE);
+        if (StringUtils.isNotBlank(value)) {
+            List<CategoryMenuTreeVo> result = objectMapper.readValue(value, new TypeReference<List<CategoryMenuTreeVo>>() {
+            });
+            log.info("从缓存中查询得到分类菜单树");
+            return result;
+        }
+        List<Category> all = categoryMapper.selectByExample(new CategoryExample());
+        List<CategoryMenuTreeVo> list = buildTree(all);
+        // 查询完成 添加缓存
+        String json = objectMapper.writeValueAsString(list);;
+        stringRedisTemplate.opsForValue().set(GlobalConstant.RedisPrefixKey.CATEGORY_MENU_TREE, json);
+        log.info("向缓存中加入分类菜单树");
+        return list;
+    }
+
+    private List<CategoryMenuTreeVo> buildTree(List<Category> all) {
+        List<CategoryMenuTreeVo> menu = new ArrayList<>();
+        for (Category c : all) {
+            if (c.getParentId() == 0) {
+                CategoryMenuTreeVo vo = new CategoryMenuTreeVo();
+                vo.setId(c.getId());
+                vo.setName(c.getName());
+                vo.setChildren(buildChildrenTree(all, c));
+                menu.add(vo);
+            }
+        }
+        return menu;
+    }
+
+    private List<CategoryMenuTreeVo> buildChildrenTree(List<Category> all, Category root) {
+        List<CategoryMenuTreeVo> children = new ArrayList<>();
+        for (Category c : all) {
+            if (c.getParentId().equals(root.getId())) {
+                CategoryMenuTreeVo child = new CategoryMenuTreeVo();
+                child.setId(c.getId());
+                child.setName(c.getName());
+                child.setChildren(buildChildrenTree(all, c));
+                children.add(child);
+            }
+        }
+        return children;
     }
 
     private void setNameList(List<Category> allData, List<Category> rootList, String prefix, List<CategoryTreeVo> result) {
