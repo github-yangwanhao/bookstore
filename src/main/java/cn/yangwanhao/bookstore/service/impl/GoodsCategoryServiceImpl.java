@@ -214,6 +214,9 @@ public class GoodsCategoryServiceImpl implements GoodsCategoryService {
                 vo.setName(c.getName());
                 vo.setChildren(buildChildrenTree(all, c));
                 menu.add(vo);
+                if (menu.size() == 9) {
+                    break;
+                }
             }
         }
         return menu;
