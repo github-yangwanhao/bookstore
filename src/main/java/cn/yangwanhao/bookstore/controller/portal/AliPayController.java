@@ -79,7 +79,7 @@ public class AliPayController extends BaseController {
         );
         AlipayTradePagePayRequest aliPayRequest = new AlipayTradePagePayRequest();
         aliPayRequest.setReturnUrl(aliPayReturnUrl);
-        // TODO 页面跳转同步通知页面路径,需http://格式的完整路径,必须外网可以正常访问aliPayRequest.setNotifyUrl(config.notify_url);
+        aliPayRequest.setNotifyUrl(notifyUrl);
         //商户订单号,商户网站订单系统中唯一订单号,必填
         String outTradeNo = orderNo;
         //付款金额,必填
@@ -97,6 +97,7 @@ public class AliPayController extends BaseController {
                 + "\"body\":\""+ body +"\","
                 + "\"timeout_express\":\""+ timeout_express +"\","
                 + "\"product_code\":\"FAST_INSTANT_TRADE_PAY\"}";
+        System.err.println(requestBody);
         aliPayRequest.setBizContent(requestBody);
         //请求
         String result = client.pageExecute(aliPayRequest).getBody();
@@ -132,8 +133,8 @@ public class AliPayController extends BaseController {
 
     @RequestMapping("/notify")
     public String notify(HttpServletRequest request) throws Exception{
+        System.err.println("----------------------------异步通知---------------------------------------------------");
         // 一定要验签，防止黑客篡改参数
-        Map<String, String[]> parameterMap = request.getParameterMap();
         boolean flag = this.rsaCheckV1(request);
         if (flag) {
             /**
@@ -152,11 +153,12 @@ public class AliPayController extends BaseController {
             // 商户订单号
             String orderNo = new String(request.getParameter("out_trade_no").getBytes("ISO-8859-1"),"UTF-8");
             //支付宝交易号
-            String trade_no = new String(request.getParameter("trade_no").getBytes("ISO-8859-1"),"UTF-8");
+            String tradeNo = new String(request.getParameter("trade_no").getBytes("ISO-8859-1"),"UTF-8");
             //付款金额
             String total_amount = new String(request.getParameter("total_amount").getBytes("ISO-8859-1"),"UTF-8");
             // TRADE_FINISHED(表示交易已经成功结束，并不能再对该交易做后续操作);
             // TRADE_SUCCESS(表示交易已经成功结束，可以对该交易做后续操作，如：分润、退款等);
+            System.err.println("---------------------------------"+tradeStatus+"---------------------------------------------");
             if(tradeStatus.equals("TRADE_FINISHED")){
                 //判断该笔订单是否在商户网站中已经做过处理
                 //如果没有做过处理，根据订单号（out_trade_no）在商户网站的订单系统中查到该笔订单的详细，
@@ -167,6 +169,18 @@ public class AliPayController extends BaseController {
                 //注意：
                 //如果签约的是可退款协议，退款日期超过可退款期限后（如三个月可退款），支付宝系统发送该交易状态通知
                 //如果没有签约可退款协议，那么付款完成后，支付宝系统发送该交易状态通知。
+                //商户订单号
+                //支付宝交易号
+                Order order = orderService.getOrderByOrderNo(orderNo);
+                TradeRecordDto dto = new TradeRecordDto();
+                dto.setUserId(order.getUserId());
+                dto.setOrderId(order.getId());
+                dto.setOrderNo(orderNo);
+                dto.setMoney(order.getTotalPrice());
+                dto.setTradeType(TradeRecordTypeEnum.PAY.getType());
+                dto.setAliPayTradeNo(tradeNo);
+                // 添加交易记录
+                tradeRecordService.paidSuccess(dto);
             } else if (tradeStatus.equals("TRADE_SUCCESS")){
                 //判断该笔订单是否在商户网站中已经做过处理
                 //如果没有做过处理，根据订单号（out_trade_no）在商户网站的订单系统中查到该笔订单的详细，
@@ -176,7 +190,16 @@ public class AliPayController extends BaseController {
 
                 //注意：
                 //如果签约的是可退款协议，那么付款完成后，支付宝系统发送该交易状态通知。
-
+                Order order = orderService.getOrderByOrderNo(orderNo);
+                TradeRecordDto dto = new TradeRecordDto();
+                dto.setUserId(order.getUserId());
+                dto.setOrderId(order.getId());
+                dto.setOrderNo(orderNo);
+                dto.setMoney(order.getTotalPrice());
+                dto.setTradeType(TradeRecordTypeEnum.PAY.getType());
+                dto.setAliPayTradeNo(tradeNo);
+                // 添加交易记录
+                tradeRecordService.paidSuccess(dto);
             }
             return "redirect:/store/order/detail/"+orderNo;
         }

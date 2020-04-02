@@ -118,7 +118,7 @@
         WHERE
         gb.goods_status=1
         AND gb.stock>0
-        AND CONCAT(c.name, " ", gi.title, " ", gi.tags, " ", gbb.author) LIKE CONCAT("%", #{q}, "%")
+        AND CONCAT(c.name, " ", gi.title, " ", gi.tags, " ", gbb.author, " ", gbb.publisher) LIKE CONCAT("%", #{q}, "%")
         ORDER BY gb.goods_buy_version DESC, gb.create_time DESC
     </select>
 
