@@ -47,7 +47,7 @@ pic:
 aliPay:
   # returnUrl: http://47.102.151.245:${server.port}/store/aliPay/paidReturn
   returnUrl: http://www.yangwanhao.cn/store/aliPay/paidReturn
-  notifyUrl: https://yangwanhao.utools.club/store/aliPay/notify
+  notifyUrl: http://www.yangwanhao.cn/store/aliPay/notify
   expiredTime: 5m
 order:
   expiredMinute: 5
