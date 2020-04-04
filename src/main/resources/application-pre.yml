@@ -8,7 +8,7 @@ spring:
     username: root
     password: '******'
   redis:
-    database: 0
+    database: 1
     host: 121.36.150.173
     port: 6480
     password: huaweiyun_yangwanhao
