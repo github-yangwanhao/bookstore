@@ -231,6 +231,8 @@ public class OrderServiceImpl implements OrderService {
             throw new GlobalException(ErrorCodeEnum.O5009018, orderNo);
         }
         returnGoodsStock(orderNo);
+        // 删除redis中的key
+        stringRedisTemplate.delete(GlobalConstant.RedisPrefixKey.ORDER_PREFIX+orderNo);
         return customOrderMapper.cancelNotPaidOrder(orderNo);
     }
 

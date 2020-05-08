@@ -45,9 +45,8 @@ fdfs:
 pic:
   host: http://121.36.150.173:8888/
 aliPay:
-  # returnUrl: http://47.102.151.245:${server.port}/store/aliPay/paidReturn
   returnUrl: http://www.yangwanhao.cn/store/aliPay/paidReturn
   notifyUrl: http://www.yangwanhao.cn/store/aliPay/notify
-  expiredTime: 5m
+  expiredTime: 30m
 order:
   expiredMinute: 5

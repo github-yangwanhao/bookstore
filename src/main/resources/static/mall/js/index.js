@@ -1,8 +1,8 @@
-$(function () {
+/*$(function () {
     swal("本网站是个人基于兴趣设计的网站,不是真实的购物网站,不具有真实的支付功能,且不具有真实的订单流程！请勿下单！", {
        icon: "warning"
     });
-});
+});*/
 var newbeeSwiper = new Swiper('.swiper-container', {
     //设置自动播放
     autoplay: {

@@ -36,11 +36,6 @@ public class AdminPageController extends BaseController {
     @Autowired
     private UserService userService;
 
-    @RequestMapping("/login")
-    public String toAdminLogin() {
-        return "admin/login";
-    }
-
     @RequestMapping("/index")
     public String toIndex() {
         return "admin/index";

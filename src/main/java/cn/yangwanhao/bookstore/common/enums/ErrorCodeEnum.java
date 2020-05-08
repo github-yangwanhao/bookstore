@@ -11,7 +11,7 @@ import lombok.Getter;
  * @version 1.0.0
  */
 
-public enum ErrorCodeEnum {
+public enum  ErrorCodeEnum {
 
     /**
      * 全局异常以 G500 开头
