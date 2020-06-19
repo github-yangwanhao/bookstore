@@ -2,4 +2,4 @@ spring:
   application:
     name: bookstore
   profiles:
-    active: dev
+    active: commit

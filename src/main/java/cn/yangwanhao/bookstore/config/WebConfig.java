@@ -41,7 +41,7 @@ public class WebConfig extends WebMvcConfigurationSupport {
                 .excludePathPatterns("/store/goods/search")
                 .excludePathPatterns("/store/login/login")
                 .excludePathPatterns("/store/user/register")
-                .excludePathPatterns("/store/aliPay/return")
+                .excludePathPatterns("/store/aliPay/paidReturn")
                 .excludePathPatterns("/store/aliPay/notify")
                 .excludePathPatterns("/")
                 .excludePathPatterns("/index")

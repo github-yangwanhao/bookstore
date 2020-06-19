@@ -1,0 +1,35 @@
+server:
+  port: 8080
+spring:
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/bookshop?useUnicode=true&amp;characterEncoding=UTF-8
+    username: root
+    password: root
+  redis:
+    database: 2
+    host: 127.0.0.1
+    port: 6379
+    password: bookstore
+  data:
+    mongodb:
+      uri: mongodb://root:******@127.0.0.1:27017/?authSource=admin
+      database: bookstore-dev
+
+fdfs:
+  soTimeout: 1501
+  connectTimeout: 601
+  thumbImage:
+    width: 80
+    height: 80
+  trackerList:
+    - 127.0.0.1:22122
+pic:
+  host: http://127.0.0.1:8888/
+aliPay:
+  returnUrl: 127.0.0.1:8080/store/aliPay/paidReturn
+  notifyUrl: 127.0.0.1:8080/store/aliPay/notify
+  expiredTime: 5m
+order:
+  expiredMinute: 5
