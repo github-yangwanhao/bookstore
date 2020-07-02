@@ -26,7 +26,7 @@
         <mybatis.starter.version>2.1.0</mybatis.starter.version>
         <mybatis.version>3.5.1</mybatis.version>
         <druid.version>1.1.9</druid.version>
-        <mysql.version>5.1.2</mysql.version>
+        <mysql.version>8.0.16</mysql.version>
         <pagehelper.version>1.2.3</pagehelper.version>
         <boot.plugin.version>2.1.8.RELEASE</boot.plugin.version>
         <fastDFS.client.version>1.26.1-RELEASE</fastDFS.client.version>
